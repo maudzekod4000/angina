@@ -18,6 +18,10 @@
 
 #undef main
 
+// Plan for action.
+// 1. Create a enginev3 version and let's implement the logic for an engine from scratch.
+// 2. Think about abstract actions that will be needed to implement the chess but are not concrete to chess.
+// 3. First step would be just to render a texture.
 int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	try {
 		Graphics g;
