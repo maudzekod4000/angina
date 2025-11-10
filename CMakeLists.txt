@@ -9,86 +9,39 @@ ${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
 
 project(angina LANGUAGES CXX)
 
-add_executable(${PROJECT_NAME} 
+file(GLOB_RECURSE ENGINE_SOURCES
+	${DIR}/engine/*.cpp
+	${DIR}/engine/*.h
+)
+
+file(GLOB_RECURSE PLATFORM_SOURCES
+	${DIR}/platform/*.cpp
+	${DIR}/platform/*.h
+)
+
+file(GLOB_RECURSE RENDERER_SOURCES
+	${DIR}/renderer/*.cpp
+	${DIR}/renderer/*.h
+)
+
+file(GLOB_RECURSE CORE_SOURCES
+	${DIR}/core/*.cpp
+	${DIR}/core/*.h
+)
+
+file(GLOB_RECURSE CHESS_SOURCES
+	${DIR}/examples/chess/*.cpp
+	${DIR}/examples/chess/*.h
+)
+
+add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
-	${DIR}/enginev2/graphics/sdl/init/Graphics.h
-	${DIR}/enginev2/graphics/sdl/init/Graphics.cpp
-	${DIR}/enginev2/graphics/sdl/renderer/SurfaceRendererComponent.h
-	${DIR}/enginev2/graphics/sdl/renderer/SurfaceRendererComponent.cpp
-	${DIR}/enginev2/graphics/sdl/renderer/TextureRendererComponent.h
-	${DIR}/enginev2/graphics/sdl/renderer/TextureRendererComponent.cpp
-	${DIR}/enginev2/graphics/sdl/renderer/TextureLoaderComponent.h
-	${DIR}/enginev2/graphics/sdl/renderer/TextureLoaderComponent.cpp
-	${DIR}/enginev2/graphics/sdl/window/Window.h
-	${DIR}/enginev2/graphics/sdl/window/Window.cpp
-	${DIR}/enginev2/graphics/sdl/primitives/Surface.h
-	${DIR}/enginev2/graphics/sdl/primitives/Surface.cpp
-	${DIR}/enginev2/graphics/sdl/primitives/Texture.h
-	${DIR}/enginev2/graphics/sdl/primitives/Texture.cpp
-	${DIR}/enginev2/graphics/sdl/primitives/Rectangle.h
-	${DIR}/enginev2/graphics/sdl/primitives/Rectangle.cpp
-	${DIR}/enginev2/graphics/models/Width.h
-	${DIR}/enginev2/graphics/models/Height.h
-	${DIR}/enginev2/graphics/models/Dimensions.h
-	${DIR}/enginev2/graphics/models/Dimensions.cpp
-	${DIR}/enginev2/graphics/models/Point.h
-	${DIR}/enginev2/graphics/models/Point.cpp
-	${DIR}/enginev2/graphics/models/Color.h
-	${DIR}/enginev2/graphics/models/Color.cpp
-	${DIR}/enginev2/graphics/models/Pixel.h
-	${DIR}/enginev2/graphics/models/Pixel.cpp
-	${DIR}/enginev2/graphics/models/Line.h
-	${DIR}/enginev2/graphics/models/Line.cpp
-	
-	${DIR}/enginev2/models/GameObject.h
-	${DIR}/enginev2/models/GameObject.cpp
-	${DIR}/enginev2/models/Direction.h
-	
-	${DIR}/enginev2/events/EventDefines.h
-	${DIR}/enginev2/events/GlobalInputComponent.h
-	${DIR}/enginev2/events/GlobalInputComponent.cpp
-	${DIR}/enginev2/components/AnimationComponent.h
-	${DIR}/enginev2/components/AnimationComponent.cpp
-	${DIR}/enginev2/components/PrimitivesStorage.h
-	${DIR}/enginev2/components/ID.h
-	
-	${DIR}/enginev2/GameEngine.h
-	${DIR}/enginev2/GameEngine.cpp
-
-	${DIR}/enginev2/graphics/animation/Sprite.h
-	${DIR}/enginev2/graphics/animation/Sprite.cpp
-	${DIR}/enginev2/graphics/animation/SpriteAnimator.h
-	${DIR}/enginev2/graphics/animation/SpriteAnimator.cpp
-
-	${DIR}/enginev2/debug/Debug.h
-	${DIR}/enginev2/debug/Debug.cpp
-
-	${DIR}/enginev2/collisions/BoundingBox.h
-	${DIR}/enginev2/collisions/BoundingBox.cpp
-	${DIR}/enginev2/collisions/CollisionDetector.h
-	${DIR}/enginev2/collisions/CollisionDetector.cpp
-
-	${DIR}/enginev2/platform/time/Time.h
-	${DIR}/enginev2/platform/time/Time.cpp
-
-	${DIR}/enginev2/platform/thread/ThreadUtils.h
-	${DIR}/enginev2/platform/thread/ThreadUtils.cpp
-
-	${DIR}/enginev2/movement/MovementCmpt.h
-	${DIR}/enginev2/movement/MovementCmpt.cpp
-
-	${DIR}/platform/ids/ForwardIdGenerator.h
-	${DIR}/platform/ids/ForwardIdGenerator.cpp
-	${DIR}/platform/ids/IdGenerator.h
-	${DIR}/platform/ids/IdGenerator.cpp
-	
-	${DIR}/examples/SkeletalRainOfBlood/Game.h
-	${DIR}/examples/SkeletalRainOfBlood/Game.cpp
-	
-	${DIR}/exceptions/BaseException.h
+	${ENGINE_SOURCES}
+	${PLATFORM_SOURCES}
+	${RENDERER_SOURCES}
+	${CORE_SOURCES}
+	${CHESS_SOURCES}
 	${DIR}/exceptions/BaseException.cpp
-	
-	${DIR}/resources/Resources.h
 )
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory

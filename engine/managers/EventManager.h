@@ -8,8 +8,7 @@
 #include "renderer/primitives/Point.h"
 #include "renderer/utils/PrimitivesUtils.h"
 
-struct InputEvent;
-struct Renderer;
+class InputEvent;
 
 /**
  * Holds reference to something that has position, dimensions and a callback and gets called to check whether it has been clicked.

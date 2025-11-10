@@ -1,4 +1,5 @@
 #include "ChessMoveManager.h"
+#include <algorithm>
 
 #include "examples/chess/chess-engine/FriendlyFireExcludedMoveGenerator.h"
 
@@ -25,7 +26,7 @@ bool ChessMoveManager::movePiece(const Cell &source, const Cell &destination, bo
 std::vector<Move> ChessMoveManager::getAIMoves(Side side) {
 	std::vector<Move> allMoves = calculateAllAvailableMoves(side);
 
-	sort(allMoves.begin(), allMoves.end(),
+	std::sort(allMoves.begin(), allMoves.end(),
 			[](const Move &lMove, const Move &rMove) {
 				return lMove.score > rMove.score;
 			});
