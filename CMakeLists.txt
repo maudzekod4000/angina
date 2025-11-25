@@ -10,8 +10,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
 project(angina LANGUAGES CXX)
 
 file(GLOB_RECURSE ENGINE_SOURCES
-	${DIR}/engine/*.cpp
-	${DIR}/engine/*.h
+	${DIR}/enginev3/*.cpp
+	${DIR}/enginev3/*.h
 )
 
 file(GLOB_RECURSE PLATFORM_SOURCES
@@ -48,7 +48,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	${CMAKE_CURRENT_SOURCE_DIR}/resources
 	$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 
-set_target_cpp_standard(${PROJECT_NAME} 17)
+set_target_cpp_standard(${PROJECT_NAME} 23)
 
 if (UNIX)
 enable_target_warnings(${PROJECT_NAME})

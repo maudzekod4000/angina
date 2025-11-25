@@ -3,11 +3,11 @@
 
 #include <cstdint>
 
-class ThreadUtils {
+class ThreadUtils final {
 public:
 	ThreadUtils() = delete;
 
-	static void sleepFor(int64_t microseconds);
+	static void sleepFor(int64_t nanoseconds);
 };
 
 #endif /* UTILS_THREAD_THREADUTILS_H_ */
