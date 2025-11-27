@@ -1,6 +1,8 @@
 #ifndef V3_ENGINE_H
 #define V3_ENGINE_H
 
+#include "enginev3/EngineState.h"
+
 namespace Angina::EngineV3 {
 
 class Engine {
@@ -26,7 +28,7 @@ protected:
 	/// @return Non-zero if there was an error.
 	virtual int beforeEnd() = 0;
 private:
-
+	EngineState state;
 };
 
 }
