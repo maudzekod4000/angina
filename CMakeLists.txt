@@ -29,6 +29,11 @@ file(GLOB_RECURSE CORE_SOURCES
 	${DIR}/core/*.h
 )
 
+file(GLOB_RECURSE UI_SOURCES
+	${DIR}/ui/*.cpp
+	${DIR}/ui/*.h
+)
+
 file(GLOB_RECURSE CHESS_SOURCES
 	${DIR}/examples/chess/*.cpp
 	${DIR}/examples/chess/*.h
@@ -41,6 +46,7 @@ add_executable(${PROJECT_NAME}
 	${RENDERER_SOURCES}
 	${CORE_SOURCES}
 	${CHESS_SOURCES}
+	${UI_SOURCES}
 	${DIR}/exceptions/BaseException.cpp
 )
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
