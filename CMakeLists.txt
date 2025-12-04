@@ -17,6 +17,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
 file(GLOB_RECURSE PLATFORM_SOURCES
 	${DIR}/platform/*.cpp
 	${DIR}/platform/*.h
+	${DIR}/platform/*.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
