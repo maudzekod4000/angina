@@ -27,6 +27,7 @@ file(GLOB_RECURSE RENDERER_SOURCES
 file(GLOB_RECURSE CORE_SOURCES
 	${DIR}/core/*.cpp
 	${DIR}/core/*.h
+	${DIR}/core/*.ixx
 )
 
 file(GLOB_RECURSE UI_SOURCES

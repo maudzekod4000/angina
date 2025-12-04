@@ -12,4 +12,3 @@ EngineState::State EngineState::get() const {
 void EngineState::set(State state) {
 	currentState.store(state, std::memory_order_release);
 }
-
