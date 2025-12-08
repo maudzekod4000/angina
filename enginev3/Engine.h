@@ -7,6 +7,7 @@ namespace Angina::EngineV3 {
 
 class Engine {
 public:
+	explicit Engine() = default;
 	virtual ~Engine() = default;
 	/// Initializes subsystems and, if successful, starts the main loop.
 	/// @return Non-zero if there was an error.
