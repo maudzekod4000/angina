@@ -23,10 +23,11 @@ std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 		return nullptr;
 	}
 
-	return std::make_unique<SDLWindow>(window, c);
+	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));
 }
 
 ErrorCode SDLWindow::resize(Width w, Height h)
 {
 	SDL_SetWindowSize(window, w.value, h.value);
+	return ErrorCode();
 }

@@ -28,6 +28,8 @@ public:
 	/// @param state The new state to set
 	void set(State state);
 
+	bool isRunning() const;
+
 private:
 	std::atomic<State> currentState;
 };

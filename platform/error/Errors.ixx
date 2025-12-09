@@ -1,6 +1,8 @@
-export module errors;
+module;
 
 #include <string>
+
+export module errors;
 
 namespace Angina::Errors {
 

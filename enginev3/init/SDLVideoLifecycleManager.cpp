@@ -11,11 +11,16 @@ std::expected<void, ErrorCode> SDLVideoLifecycleManager::init(uint64_t flags)
 		return std::unexpected(ErrorCode(res, SDL_GetError()));
 	}
 
-	return;
+	return {};
 }
 
 std::expected<void, ErrorCode> SDLVideoLifecycleManager::destroy()
 {
 	SDL_Quit();
-	return;
+	return {};
+}
+
+bool Angina::Init::SDLVideoLifecycleManager::isCriticalSubsystem()
+{
+	return true;
 }

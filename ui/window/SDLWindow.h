@@ -2,12 +2,13 @@
 #define UI_SDL_WINDOW_H
 
 import errors;
+import units;
 
 #include <memory>
 
 #include "BaseWindow.h"
 
-class SDL_Window;
+struct SDL_Window;
 
 namespace Angina::UI {
 

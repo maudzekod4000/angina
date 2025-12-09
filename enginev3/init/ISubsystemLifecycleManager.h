@@ -14,6 +14,7 @@ class ISubsystemLifecycleManager {
 public:
 	virtual std::expected<void, Errors::ErrorCode> init(uint64_t flags) = 0;
 	virtual std::expected<void, Errors::ErrorCode> destroy() = 0;
+	virtual bool isCriticalSubsystem() = 0;
 };
 }
 

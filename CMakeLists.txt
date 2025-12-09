@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.28.0)
 
 set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,9 +15,11 @@ file(GLOB_RECURSE ENGINE_SOURCES
 )
 
 file(GLOB_RECURSE PLATFORM_SOURCES
-	${DIR}/platform/*.cpp
-	${DIR}/platform/*.h
-	${DIR}/platform/*.ixx
+	${DIR}/platform/errors/*.cpp
+	${DIR}/platform/errors/*.h
+	${DIR}/platform/time/*.cpp
+	${DIR}/platform/time/*.h
+	${DIR}/platform/error/Errors.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
@@ -26,9 +28,9 @@ file(GLOB_RECURSE RENDERER_SOURCES
 )
 
 file(GLOB_RECURSE CORE_SOURCES
-	${DIR}/core/*.cpp
-	${DIR}/core/*.h
-	${DIR}/core/*.ixx
+	#${DIR}/core/*.cpp
+	#${DIR}/core/*.h
+	${DIR}/core/units/Units.ixx
 )
 
 file(GLOB_RECURSE UI_SOURCES
@@ -45,12 +47,11 @@ add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
 	${ENGINE_SOURCES}
 	${PLATFORM_SOURCES}
-	${RENDERER_SOURCES}
 	${CORE_SOURCES}
-	${CHESS_SOURCES}
 	${UI_SOURCES}
 	${DIR}/exceptions/BaseException.cpp
 )
+
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_CURRENT_SOURCE_DIR}/resources
