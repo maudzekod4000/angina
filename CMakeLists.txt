@@ -15,11 +15,9 @@ file(GLOB_RECURSE ENGINE_SOURCES
 )
 
 file(GLOB_RECURSE PLATFORM_SOURCES
-	${DIR}/platform/errors/*.cpp
-	${DIR}/platform/errors/*.h
-	${DIR}/platform/time/*.cpp
-	${DIR}/platform/time/*.h
-	${DIR}/platform/error/Errors.ixx
+	${DIR}/platform/*.cpp
+	${DIR}/platform/*.h
+	${DIR}/platform/*.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
