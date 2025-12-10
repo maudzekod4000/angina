@@ -9,7 +9,7 @@ Engine::Engine(const SubsystemLifecycleManagers& slms): subsystemLifecycleManage
 
 int Engine::start()
 {
-    subsystemLifecycleManagers.init(0);
+    auto initRes = subsystemLifecycleManagers.init(0);
     beforeStart();
 
     while (state.isRunning()) {
@@ -18,6 +18,6 @@ int Engine::start()
     }
 
     beforeEnd();
-    subsystemLifecycleManagers.destroy();
+    auto destroyRes = subsystemLifecycleManagers.destroy();
     return 0;
 }

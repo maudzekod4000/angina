@@ -1,8 +1,6 @@
 #include "WaitableTimer.h"
 
 #ifdef _WIN32
-#include <synchapi.h>
-#include <handleapi.h>
 #include <Windows.h>
 #else
 #include <thread>
@@ -92,6 +90,7 @@ bool WaitableTimer::wait(int64_t nanoseconds) {
 
 #ifdef _WIN32
 	timerSleep(nanoseconds / 1e9, true);
+	return true;
 #else
 	// On non-Windows, use standard library
 	std::this_thread::sleep_for(std::chrono::nanoseconds(nanoseconds));
