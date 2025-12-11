@@ -15,9 +15,15 @@ file(GLOB_RECURSE ENGINE_SOURCES
 )
 
 file(GLOB_RECURSE PLATFORM_SOURCES
-	${DIR}/platform/*.cpp
-	${DIR}/platform/*.h
-	${DIR}/platform/*.ixx
+	${DIR}/platform/time/*.cpp
+	${DIR}/platform/time/*.h
+	${DIR}/platform/time/*.ixx
+	${DIR}/platform/error/*.cpp
+	${DIR}/platform/error/*.h
+	${DIR}/platform/error/*.ixx
+	${DIR}/platform/logging/*.cpp
+	${DIR}/platform/logging/*.h
+	${DIR}/platform/logging/*.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
