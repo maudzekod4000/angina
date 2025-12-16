@@ -16,7 +16,6 @@ public:
 	std::expected<void, Errors::ErrorCode> destroy() override;
 	bool isCriticalSubsystem() override;
 private:
-	// Haha vector cannot be with a abstract class...dummy me....
 	std::vector<std::shared_ptr<ISubsystemLifecycleManager>> lifecycleManagers;
 };
 }

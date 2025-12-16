@@ -3,12 +3,13 @@
 
 #include "enginev3/EngineState.h"
 #include "enginev3/init/SubsystemLifecycleManagers.h"
+#include "platform/logging/Logger.h"
 
 namespace Angina::EngineV3 {
 
 class Engine {
 public:
-	explicit Engine(const Init::SubsystemLifecycleManagers&);
+	explicit Engine(const Init::SubsystemLifecycleManagers&, Logging::Logger logger);
 	virtual ~Engine() = default;
 	/// Initializes subsystems and, if successful, starts the main loop.
 	/// @return Non-zero if there was an error.
@@ -32,6 +33,7 @@ protected:
 private:
 	EngineState state;
 	Init::SubsystemLifecycleManagers subsystemLifecycleManagers;
+	Logging::Logger logger;
 };
 
 }
