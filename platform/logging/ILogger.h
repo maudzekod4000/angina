@@ -2,6 +2,7 @@
 #define LOGGER_LOGGER_H
 
 #include <string_view>
+#include <memory>
 
 namespace Angina::Logging {
 
@@ -14,6 +15,9 @@ class ILogger {
 public:
 	virtual void log(Level, std::string_view msg) = 0;
 };
+
+using LoggerPtr = std::shared_ptr<ILogger>;
+
 }
 
 #endif // !LOGGER_LOGGER_H

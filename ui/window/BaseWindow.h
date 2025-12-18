@@ -4,6 +4,8 @@
 import errors;
 import units;
 
+#include <memory>
+
 #include "ui/window/WindowConfig.h"
 
 namespace Angina::UI {
@@ -23,6 +25,8 @@ public:
 protected:
 	const WindowConfig config;
 };
+
+using WindowPtr = std::shared_ptr<BaseWindow>;
 
 }
 
