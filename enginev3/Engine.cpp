@@ -1,5 +1,7 @@
 #include "Engine.h"
 
+#include <cassert>
+
 #include "platform/time/WaitableTimer.h"
 #include "platform/logging/ILogger.h"
 
@@ -12,7 +14,10 @@ Engine::Engine(SubsystemLifecycleManagers slms, LoggerPtr logger, WindowPtr wind
     subsystemLifecycleManagers(std::move(slms)),
     logger(logger),
     window(window)
-{}
+{
+    assert(logger);
+    assert(window);
+}
 
 int Engine::start()
 {

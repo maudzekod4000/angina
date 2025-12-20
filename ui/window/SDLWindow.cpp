@@ -9,7 +9,7 @@ using namespace Angina::Units;
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
 	BaseWindow(c), window(w) {}
 
-std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
+std::shared_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 {
 	SDL_Window* window = SDL_CreateWindow(
 		c.title.c_str(),
@@ -23,7 +23,7 @@ std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 		return nullptr;
 	}
 
-	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));
+	return std::shared_ptr<SDLWindow>(new SDLWindow(window, c));
 }
 
 ErrorCode SDLWindow::resize(Width w, Height h)

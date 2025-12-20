@@ -28,8 +28,9 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	std::vector<std::shared_ptr<Angina::Init::ISubsystemLifecycleManager>> slmsVec;
 	slmsVec.push_back(std::make_shared<Angina::Init::SDLVideoLifecycleManager>());
 	Angina::Init::SubsystemLifecycleManagers slms(slmsVec);
-
-	Angina::UI::WindowPtr window = std::make_shared<Angina::UI::SDLWindow>();
+	Angina::UI::WindowConfig winConfig("Hi!", Angina::Units::AbsX(0), Angina::Units::AbsY(0),
+		Angina::Units::Width(640), Angina::Units::Height(480));
+	Angina::UI::WindowPtr window = Angina::UI::SDLWindow::make(winConfig);
 	
 	MyTestEngine eng(std::move(slms), log, window);
 	eng.start();

@@ -15,7 +15,7 @@ namespace Angina::UI {
 class SDLWindow : public BaseWindow {
 	SDLWindow(SDL_Window*, const WindowConfig&);
 public:
-	static std::unique_ptr<SDLWindow> make(const WindowConfig&);
+	static std::shared_ptr<SDLWindow> make(const WindowConfig&);
 
 	Errors::ErrorCode resize(Units::Width w, Units::Height h) override;
 private:
