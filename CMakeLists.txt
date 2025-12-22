@@ -24,6 +24,9 @@ file(GLOB_RECURSE PLATFORM_SOURCES
 	${DIR}/platform/logging/*.cpp
 	${DIR}/platform/logging/*.h
 	${DIR}/platform/logging/*.ixx
+	${DIR}/platform/input/*.cpp
+	${DIR}/platform/input/*.h
+	${DIR}/platform/input/*.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
