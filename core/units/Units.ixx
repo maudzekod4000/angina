@@ -7,9 +7,25 @@ export module units;
 
 namespace Angina::Units {
 
+// Notes: I am a bit unsure of the implementation of these classes and the use of asserts.
+// I think, as long as the class is instantiated dynamically by the gameplay logic, it is fine to 
+// have asserts.
+// The intention of these classes is to configure various subsystems and objects,
+// but if I start using them to dynamically create objects with non-deterministic data,
+// then i suppose there should be some validation before creating the objects, in some factory method.
+// The benefit of having some assertions is that while I am developing a game I can be guarded and 
+// warned about wrong uses of the object.
 struct Dimension {
-	explicit constexpr Dimension(uint32_t w): value(w) {
-		assert(w > 0);
+	explicit constexpr Dimension(uint32_t v): value(v) {
+		constexpr const char msg[] = "Value must be > 0";
+		if consteval {
+			if (v > 0) {
+				throw msg;
+			}
+		}
+		else {
+			assert(v > 0 && msg);
+		}
 	}
 
 	const uint32_t value;
@@ -20,10 +36,33 @@ export using Height = Dimension;
 
 struct AbsPosition {
 	explicit constexpr AbsPosition(uint32_t p) : value(p) {
-		assert(p >= 0);
+		constexpr const char msg[] = "Value must be >= 0.";
+		if consteval {
+			if (p >= 0) {
+				throw msg;
+			}
+		}
+		assert(p >= 0 && msg);
 	}
 
 	const uint32_t value;
+};
+
+export template <int64_t Min, int64_t Max>
+struct BoundedInt {
+	explicit constexpr BoundedInt(int64_t v): value(v) {
+		constexpr const char msg[] = "Value must be within bounds.";
+		if consteval {
+			if (v < Min || v > Max) {
+				throw msg;
+			}
+		}
+		else {
+			assert((v < Min || v > Max) && msg);
+		}
+	}
+
+	const int64_t value;
 };
 
 export using AbsX = AbsPosition;
