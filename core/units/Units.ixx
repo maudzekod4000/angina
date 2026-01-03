@@ -2,6 +2,7 @@ module;
 
 #include <cstdint>
 #include <cassert>
+#include <chrono>
 
 export module units;
 
@@ -19,7 +20,7 @@ struct Dimension {
 	explicit constexpr Dimension(uint32_t v): value(v) {
 		constexpr const char msg[] = "Value must be > 0";
 		if consteval {
-			if (v > 0) {
+			if (v <= 0) {
 				throw msg;
 			}
 		}
@@ -38,7 +39,7 @@ struct AbsPosition {
 	explicit constexpr AbsPosition(uint32_t p) : value(p) {
 		constexpr const char msg[] = "Value must be >= 0.";
 		if consteval {
-			if (p >= 0) {
+			if (p < 0) {
 				throw msg;
 			}
 		}
@@ -58,11 +59,22 @@ struct BoundedInt {
 			}
 		}
 		else {
-			assert((v < Min || v > Max) && msg);
+			assert((v >= Min || v <= Max) && msg);
 		}
 	}
 
 	const int64_t value;
+};
+
+export template<int64_t Max>
+struct RatePerSecond : public BoundedInt<1, Max> {
+	explicit constexpr RatePerSecond(int64_t v) : BoundedInt<1, Max>(v) {}
+
+	/// Returns the duration between events, based on the rate per second.
+	std::chrono::nanoseconds toNano() const {
+		using namespace std::chrono;
+		return duration_cast<nanoseconds>(1s) / this->value;
+	}
 };
 
 export using AbsX = AbsPosition;

@@ -5,11 +5,19 @@
 #include "enginev3/init/SubsystemLifecycleManagers.h"
 #include "ui/window/BaseWindow.h"
 #include "platform/logging/ILogger.h"
+#include "platform/input/IInputEventManager.h"
 
 namespace Angina::EngineV3 {
 
 class Engine {
 public:
+
+	// Note: Hm....It might be better to have the logger, window and input manager as unique pointers and 
+	// create them outside but transfer ownership to the engine...
+	// The other option is to have a wrapper around the engine which will configure the engine-related stuff.
+	// It will take care of the ownership and will pass just references to the engine.
+	// something like a DI container.
+	// Ok, I suppose i will create the dependencies outside and transfer ownership to the Engine class via move.
 	explicit Engine(
 		Init::SubsystemLifecycleManagers,
 		Logging::LoggerPtr,

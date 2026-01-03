@@ -1,5 +1,5 @@
-#ifndef PLATFORM_BASE_INPUT_EVENT_SNAPSHOT_H
-#define PLATFORM_BASE_INPUT_EVENT_SNAPSHOT_H
+#ifndef PLATFORM_BASE_INPUT_EVENT_MANAGER_H
+#define PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 
 import units;
 
@@ -7,14 +7,16 @@ import units;
 #include <atomic>
 #include <stop_token>
 
-#include "IInputEventSnapshot.h"
+#include "IInputEventManager.h"
 
 namespace Angina::Input {
 
 // Constrained type wont allow too small or too big refresh rate.
 // Having a high refresh rate would provide the freshest input data, but for some applications
 // that may be an overkill and will put strain on the input thread.
-using InputRefreshRate = Units::BoundedInt<1, 120>;
+// Note: The implementation does not take into account the 'work' that is done between waits,
+// so the actual rate will be always equal or less than the specified value.
+using InputRefreshRate = Units::RatePerSecond<120>;
 
 /// Accumulates input events into state object. Does so in a separate thread, which this class manages.
 /// Classes, inheriting from this class, will be referred to as 'clients' in the comments.
@@ -30,9 +32,9 @@ using InputRefreshRate = Units::BoundedInt<1, 120>;
 /// Haven't thought about multiple writers and single reader...Although that scenario I will avoid.
 /// start() and stop() should be called from the same thread.
 /// getSnapshot and setSnapshot can be called from separate threads safely.
-class BaseInputEventSnapshot : public IInputEventSnapshot {
+class BaseInputEventManager : public IInputEventManager {
 public:
-	explicit BaseInputEventSnapshot(InputRefreshRate);
+	explicit BaseInputEventManager(InputRefreshRate);
 
 	/// Starts the worker thread.
 	std::expected<void, Errors::ErrorCode> start() override;
@@ -65,4 +67,4 @@ private:
 };
 }
 
-#endif // !PLATFORM_BASE_INPUT_EVENT_SNAPSHOT_H
+#endif // !PLATFORM_BASE_INPUT_EVENT_MANAGER_H

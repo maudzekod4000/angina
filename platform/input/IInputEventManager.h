@@ -1,5 +1,5 @@
-#ifndef PLATFORM_INPUT_EVENT_SNAPSHOT_H
-#define PLATFORM_INPUT_EVENT_SNAPSHOT_H
+#ifndef PLATFORM_IINPUT_EVENT_MANAGER_H
+#define PLATFORM_IINPUT_EVENT_MANAGER_H
 
 import errors;
 
@@ -15,7 +15,7 @@ struct InputSnapshot {
 
 /// Interface for a family of classes that accumulate and provide read access to
 /// accumulated input state.
-class IInputEventSnapshot {
+class IInputEventManager {
 public:
 	virtual std::expected<void, Errors::ErrorCode> start() = 0;
 	virtual std::expected<void, Errors::ErrorCode> stop() = 0;
@@ -23,4 +23,4 @@ public:
 };
 }
 
-#endif // !PLATFORM_INPUT_EVENT_SNAPSHOT_H
+#endif // !PLATFORM_INPUT_EVENT_MANAGER_H
