@@ -1,6 +1,8 @@
 #ifndef V3_ENGINE_H
 #define V3_ENGINE_H
 
+#include <memory>
+
 #include "enginev3/EngineState.h"
 #include "enginev3/init/SubsystemLifecycleManagers.h"
 #include "ui/window/BaseWindow.h"
@@ -21,7 +23,8 @@ public:
 	explicit Engine(
 		Init::SubsystemLifecycleManagers,
 		Logging::LoggerPtr,
-		UI::WindowPtr
+		UI::WindowPtr,
+		Input::InputEventManagerPtr inputMgr
 	);
 
 	virtual ~Engine() = default;
@@ -50,6 +53,10 @@ private:
 	Init::SubsystemLifecycleManagers subsystemLifecycleManagers;
 	Logging::LoggerPtr logger;
 	UI::WindowPtr window;
+	Input::InputEventManagerPtr inputEventMgr;
+
+	/// Returns true when a quit event has been detected.
+	bool processInput();
 };
 
 }

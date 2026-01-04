@@ -49,32 +49,29 @@ struct AbsPosition {
 	const uint32_t value;
 };
 
-export template <int64_t Min, int64_t Max>
-struct BoundedInt {
-	explicit constexpr BoundedInt(int64_t v): value(v) {
-		constexpr const char msg[] = "Value must be within bounds.";
+/// Helps catching configuration bugs at compile time and enforces invariants on the rate per second value.
+/// Improves the API to the client with a more readable, distinct type.
+export struct RatePerSecond {
+	explicit constexpr RatePerSecond(uint32_t v): value(v) {
+		constexpr const char msg[] = "Value must be between 1 and 'max'";
 		if consteval {
-			if (v < Min || v > Max) {
+			if (v <= 0 || v > max) {
 				throw msg;
 			}
 		}
-		else {
-			assert((v >= Min || v <= Max) && msg);
-		}
+		assert(v > 0 && v <= max);
 	}
-
-	const int64_t value;
-};
-
-export template<int64_t Max>
-struct RatePerSecond : public BoundedInt<1, Max> {
-	explicit constexpr RatePerSecond(int64_t v) : BoundedInt<1, Max>(v) {}
 
 	/// Returns the duration between events, based on the rate per second.
 	std::chrono::nanoseconds toNano() const {
 		using namespace std::chrono;
 		return duration_cast<nanoseconds>(1s) / this->value;
 	}
+
+	// Note: Hardcoded value...maybe there is a better way to configure this. Macros or constexprs
+	static const uint32_t max = 120;
+
+	const uint32_t value;
 };
 
 export using AbsX = AbsPosition;

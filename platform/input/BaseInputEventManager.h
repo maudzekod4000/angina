@@ -16,7 +16,7 @@ namespace Angina::Input {
 // that may be an overkill and will put strain on the input thread.
 // Note: The implementation does not take into account the 'work' that is done between waits,
 // so the actual rate will be always equal or less than the specified value.
-using InputRefreshRate = Units::RatePerSecond<120>;
+using InputRefreshRate = Units::RatePerSecond;
 
 /// Accumulates input events into state object. Does so in a separate thread, which this class manages.
 /// Classes, inheriting from this class, will be referred to as 'clients' in the comments.
@@ -58,7 +58,7 @@ private:
 	std::atomic<InputSnapshot*> publishedSnapshot = nullptr; ///< Pointer to the snapshot which is completely written and safe to read from another thread.
 	std::atomic_int writeIdx = 0; ///< Index in the snapshots array marking the snapshot which is safe to write to.
 	std::atomic_bool snapshotRequested = false; ///< Client will set this flag via a call to getSnapshot. This will signal the worker thread procedure to swap the buffers.
-	InputRefreshRate refreshRate; ///< How quickly should the system check for new input data?
+	InputRefreshRate refreshRate; ///< How often should the system check for new input data? Checks per second.
 
 	/// Procedure (work unit) to run on the worker thread.
 	/// @param s Allows for graceful termination of the thread, after the work (iteration)

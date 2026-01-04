@@ -14,6 +14,7 @@ std::expected<void, ErrorCode> BaseInputEventManager::start()
 	return std::expected<void, ErrorCode>();
 }
 
+
 std::expected<void, ErrorCode> BaseInputEventManager::stop()
 {
 	worker.request_stop();

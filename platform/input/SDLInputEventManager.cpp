@@ -2,10 +2,16 @@
 
 using namespace Angina::Errors;
 using namespace Angina::Input;
+using namespace Angina::Units;
 
 #include "SDL_events.h"
 
 SDLInputEventManager::SDLInputEventManager(InputRefreshRate r): BaseInputEventManager(r) {}
+
+std::unique_ptr<SDLInputEventManager> Angina::Input::SDLInputEventManager::make(InputRefreshRate r)
+{
+	return std::unique_ptr<SDLInputEventManager>(new SDLInputEventManager(r));
+}
 
 std::expected<void, ErrorCode> SDLInputEventManager::onWorkTick()
 {

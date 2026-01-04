@@ -3,6 +3,7 @@
 
 import errors;
 
+#include <memory>
 #include <expected>
 
 namespace Angina::Input {
@@ -21,6 +22,9 @@ public:
 	virtual std::expected<void, Errors::ErrorCode> stop() = 0;
 	virtual InputSnapshot getSnapshot() = 0;
 };
+
+using InputEventManagerPtr = std::unique_ptr<Input::IInputEventManager>;
+
 }
 
 #endif // !PLATFORM_INPUT_EVENT_MANAGER_H
