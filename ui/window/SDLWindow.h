@@ -2,11 +2,11 @@
 #define UI_SDL_WINDOW_H
 
 import errors;
-import units;
 
 #include <memory>
 
 #include "BaseWindow.h"
+#include "core/units/Units.ixx"
 
 struct SDL_Window;
 

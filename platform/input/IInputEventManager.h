@@ -4,7 +4,6 @@
 import errors;
 
 #include <memory>
-#include <expected>
 
 namespace Angina::Input {
 
@@ -16,10 +15,12 @@ struct InputSnapshot {
 
 /// Interface for a family of classes that accumulate and provide read access to
 /// accumulated input state.
+/// TODO: Jesus....it didn't occur to me that the events should be received on the main thread.
+/// So this class can be assumed to be used from the same thread. Although, getSnapshot should be synchronized.
+/// I think we need a method to update the snapshot by polling and the double-buffering can stay.
 class IInputEventManager {
 public:
-	virtual std::expected<void, Errors::ErrorCode> start() = 0;
-	virtual std::expected<void, Errors::ErrorCode> stop() = 0;
+	virtual Errors::ErrorCode update() = 0;
 	virtual InputSnapshot getSnapshot() = 0;
 };
 

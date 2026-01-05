@@ -12,8 +12,8 @@ public:
 	explicit SubsystemLifecycleManagers(const std::vector<std::shared_ptr<ISubsystemLifecycleManager>>&);
 
 	// TODO: The flags thing is not very clear...no flags so far so lets skip this detail for now.
-	std::expected<void, Errors::ErrorCode> init(uint64_t flags) override;
-	std::expected<void, Errors::ErrorCode> destroy() override;
+	Errors::ErrorCode init(uint64_t flags) override;
+	Errors::ErrorCode destroy() override;
 	bool isCriticalSubsystem() override;
 private:
 	std::vector<std::shared_ptr<ISubsystemLifecycleManager>> lifecycleManagers;

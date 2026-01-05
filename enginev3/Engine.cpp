@@ -10,17 +10,20 @@ using namespace Angina::Init;
 using namespace Angina::Logging;
 using namespace Angina::UI;
 using namespace Angina::Input;
+using namespace Angina::Units;
 
 Engine::Engine(
     SubsystemLifecycleManagers slms,
     LoggerPtr logger,
     WindowPtr window,
-    InputEventManagerPtr inputMgr
+    InputEventManagerPtr inputMgr,
+    RatePerSecond desiredFPS
 ):
     subsystemLifecycleManagers(std::move(slms)),
     logger(logger),
     window(window),
-    inputEventMgr(std::move(inputMgr))
+    inputEventMgr(std::move(inputMgr)),
+    desiredFPS(desiredFPS)
 {
     assert(logger);
     assert(window);
@@ -29,8 +32,8 @@ Engine::Engine(
 
 int Engine::start()
 {
-    if (const auto res = subsystemLifecycleManagers.init(0); res.has_value() == false) {
-        logger->log(Level::ERROR, res.error());
+    if (const auto err = subsystemLifecycleManagers.init(0); err) {
+        logger->log(Level::ERROR, err);
         return -1; // Error codes enum would be useful but this far into the development its hard to say.
     }
 
@@ -38,19 +41,17 @@ int Engine::start()
 
     // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
     state.set(EngineState::State::RUNNING);
-    
-    if (const auto res = inputEventMgr->start(); res.has_value() == false) {
-        logger->log(Level::ERROR, res.error());
-        return -1;
-    }
 
     while (state.isRunning()) {
+        // Yeah...this wont be like that .........frickin hell, but now i just want to handle the quit event and do something so give me a break.
         if (const bool quit = processInput(); quit) {
             break;
         }
 
         beforeUpdate();
         afterUpdate();
+
+        Platform::WaitableTimer::wait(desiredFPS.toNano().count());
     }
 
     beforeEnd();
@@ -58,20 +59,24 @@ int Engine::start()
     // TODO: I think the start method of the engine should return either expected or just a ErrorCode
     // And then the caller should log on critical stuff. 
     // The engine will also log but just as to say what is going on.
-    if (const auto res = inputEventMgr->stop(); res.has_value() == false) {
-        logger->log(Level::ERROR, res.error());
-        return -1;
-    }
 
-    if (const auto res = subsystemLifecycleManagers.destroy(); res.has_value() == false) {
-        logger->log(Level::ERROR, res.error());
-        return -1; // Error codes enum would be useful but this far into the development its hard to say.
+    if (const auto err = subsystemLifecycleManagers.destroy(); err) {
+        logger->log(Level::ERROR, err);
+        return -1;
     }
     return 0;
 }
 
 bool Engine::processInput()
 {
+    // Poll events
+    if (const auto err = inputEventMgr->update(); err) {
+        return false;
+    }
+
+    // Read and process the input.
+    // Now.........this might not happen like that later, I want to have a multithreaded engine, but the frickin` SDL is so goddamn BAD....
+    // I should not be too harsh tho because miss OPERATING SYSTEM has too much capriche...................................................
     const InputSnapshot input = inputEventMgr->getSnapshot();
 
     if (input.quit) {

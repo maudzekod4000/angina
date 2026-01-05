@@ -5,22 +5,22 @@
 using namespace Angina::Init;
 using namespace Angina::Errors;
 
-std::expected<void, ErrorCode> SDLVideoLifecycleManager::init(uint64_t flags)
+ErrorCode SDLVideoLifecycleManager::init(uint64_t flags)
 {
 	if (const int res = SDL_Init(SDL_INIT_VIDEO); res != 0) {
-		return std::unexpected(ErrorCode(res, SDL_GetError()));
+		return ErrorCode(res, SDL_GetError());
 	}
 
-	return {};
+	return ErrorCode();
 }
 
-std::expected<void, ErrorCode> SDLVideoLifecycleManager::destroy()
+ErrorCode SDLVideoLifecycleManager::destroy()
 {
 	SDL_Quit();
 	return {};
 }
 
-bool Angina::Init::SDLVideoLifecycleManager::isCriticalSubsystem()
+bool SDLVideoLifecycleManager::isCriticalSubsystem()
 {
 	return true;
 }

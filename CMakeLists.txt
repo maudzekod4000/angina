@@ -15,9 +15,8 @@ file(GLOB_RECURSE ENGINE_SOURCES
 )
 
 file(GLOB_RECURSE PLATFORM_SOURCES
-	${DIR}/platform/time/*.cpp
-	${DIR}/platform/time/*.h
-	${DIR}/platform/time/*.ixx
+	${DIR}/platform/time/WaitableTimer.cpp
+	${DIR}/platform/time/WaitableTimer.h
 	${DIR}/platform/error/*.cpp
 	${DIR}/platform/error/*.h
 	${DIR}/platform/error/*.ixx

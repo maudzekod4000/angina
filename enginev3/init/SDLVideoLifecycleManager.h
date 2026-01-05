@@ -6,8 +6,8 @@
 namespace Angina::Init {
 class SDLVideoLifecycleManager final : public ISubsystemLifecycleManager {
 public:
-	std::expected<void, Errors::ErrorCode> init(uint64_t flags) override;
-	std::expected<void, Errors::ErrorCode> destroy() override;
+	Errors::ErrorCode init(uint64_t flags) override;
+	Errors::ErrorCode destroy() override;
 	bool isCriticalSubsystem() override;
 };
 }

@@ -1,5 +1,3 @@
-import units;
-
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
@@ -12,6 +10,7 @@ import units;
 #include "ui/window/SDLWindow.h"
 #include "platform/input/BaseInputEventManager.h"
 #include "platform/input/SDLInputEventManager.h"
+#include "core/units/Units.ixx"
 
 using namespace Angina::Input;
 
@@ -23,7 +22,7 @@ public:
 		Angina::UI::WindowPtr window,
 		InputEventManagerPtr eventMgr
 	):
-		Angina::EngineV3::Engine(std::move(slms), logger, window, std::move(eventMgr)) {}
+		Angina::EngineV3::Engine(std::move(slms), logger, window, std::move(eventMgr), Angina::Units::RatePerSecond(60)) {}
 protected:
 	int beforeStart() override { return 0; }
 	int beforeUpdate() override { return 0; }
@@ -39,10 +38,10 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	std::vector<std::shared_ptr<Angina::Init::ISubsystemLifecycleManager>> slmsVec;
 	slmsVec.push_back(std::make_shared<Angina::Init::SDLVideoLifecycleManager>());
 	Angina::Init::SubsystemLifecycleManagers slms(slmsVec);
-	Angina::UI::WindowConfig winConfig("Hi!", Angina::Units::AbsX(0), Angina::Units::AbsY(0),
+	Angina::UI::WindowConfig winConfig("Hi!", Angina::Units::AbsX(100), Angina::Units::AbsY(100),
 		Angina::Units::Width(640), Angina::Units::Height(480));
 	Angina::UI::WindowPtr window = Angina::UI::SDLWindow::make(winConfig);
-	InputEventManagerPtr evMgr = SDLInputEventManager::make(InputRefreshRate(30));
+	InputEventManagerPtr evMgr = SDLInputEventManager::make();
 	
 	MyTestEngine eng(std::move(slms), log, window, std::move(evMgr));
 	eng.start();

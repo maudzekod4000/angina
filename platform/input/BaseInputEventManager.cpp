@@ -1,24 +1,10 @@
 #include "BaseInputEventManager.h"
 
-#include "platform/time/WaitableTimer.h"
-
 using namespace Angina::Input;
 using namespace Angina::Errors;
 
-BaseInputEventManager::BaseInputEventManager(InputRefreshRate r): refreshRate(r) {}
-
-std::expected<void, ErrorCode> BaseInputEventManager::start()
-{
-	worker = std::jthread([this](std::stop_token t) { workerProc(t); });
-
-	return std::expected<void, ErrorCode>();
-}
-
-
-std::expected<void, ErrorCode> BaseInputEventManager::stop()
-{
-	worker.request_stop();
-	return std::expected<void, ErrorCode>();
+BaseInputEventManager::BaseInputEventManager() {
+	publishedSnapshot = &snapshots[1 - writeIdx];
 }
 
 InputSnapshot BaseInputEventManager::getSnapshot()
@@ -37,18 +23,4 @@ void BaseInputEventManager::setSnapshot(const InputSnapshot& s)
 
 	const int currentIdx = writeIdx.load(std::memory_order_acquire);
 	snapshots[currentIdx] = s;
-}
-
-void BaseInputEventManager::workerProc(std::stop_token stopToken)
-{
-	while (!stopToken.stop_requested()) {
-		auto res = onWorkTick();
-
-		// Give a chance to the client to stop the work.
-		if (res.error()) {
-			break;
-		}
-	}
-
-	Platform::WaitableTimer::wait(refreshRate.toNano().count());
 }

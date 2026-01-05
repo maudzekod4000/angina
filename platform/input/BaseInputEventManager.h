@@ -1,7 +1,7 @@
 #ifndef PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 #define PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 
-import units;
+//import units;
 
 #include <thread>
 #include <atomic>
@@ -16,7 +16,7 @@ namespace Angina::Input {
 // that may be an overkill and will put strain on the input thread.
 // Note: The implementation does not take into account the 'work' that is done between waits,
 // so the actual rate will be always equal or less than the specified value.
-using InputRefreshRate = Units::RatePerSecond;
+//using InputRefreshRate = Units::RatePerSecond;
 
 /// Accumulates input events into state object. Does so in a separate thread, which this class manages.
 /// Classes, inheriting from this class, will be referred to as 'clients' in the comments.
@@ -34,36 +34,19 @@ using InputRefreshRate = Units::RatePerSecond;
 /// getSnapshot and setSnapshot can be called from separate threads safely.
 class BaseInputEventManager : public IInputEventManager {
 public:
-	explicit BaseInputEventManager(InputRefreshRate);
-
-	/// Starts the worker thread.
-	std::expected<void, Errors::ErrorCode> start() override;
-
-	/// Gracefully shuts down the worker thread.
-	std::expected<void, Errors::ErrorCode> stop() override;
+	explicit BaseInputEventManager();
 
 	/// @return Eventually consistent snapshot of the input state.
 	InputSnapshot getSnapshot() override;
 protected:
-	/// Runs on every work tick, on a separate thread.
-	/// The client might read input events and call setSnapshot to store them.
-	virtual std::expected<void, Errors::ErrorCode> onWorkTick() = 0;
 
 	/// Writes a snapshot to the current buffer.
 	void setSnapshot(const InputSnapshot&);
 private:
-	std::jthread worker;
-
 	InputSnapshot snapshots[2]; ///< Double-buffering of the input events.
 	std::atomic<InputSnapshot*> publishedSnapshot = nullptr; ///< Pointer to the snapshot which is completely written and safe to read from another thread.
 	std::atomic_int writeIdx = 0; ///< Index in the snapshots array marking the snapshot which is safe to write to.
 	std::atomic_bool snapshotRequested = false; ///< Client will set this flag via a call to getSnapshot. This will signal the worker thread procedure to swap the buffers.
-	InputRefreshRate refreshRate; ///< How often should the system check for new input data? Checks per second.
-
-	/// Procedure (work unit) to run on the worker thread.
-	/// @param s Allows for graceful termination of the thread, after the work (iteration)
-	/// has completed fully.
-	void workerProc(std::stop_token s);
 };
 }
 

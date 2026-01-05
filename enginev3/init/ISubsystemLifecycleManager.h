@@ -3,7 +3,6 @@
 
 import errors;
 
-#include <expected>
 #include <cstdint>
 
 namespace Angina::Init {
@@ -12,8 +11,8 @@ namespace Angina::Init {
 /// Note: Make sure the implementations are trivially copiable/assignable, preferably, without any state.
 class ISubsystemLifecycleManager {
 public:
-	virtual std::expected<void, Errors::ErrorCode> init(uint64_t flags) = 0;
-	virtual std::expected<void, Errors::ErrorCode> destroy() = 0;
+	virtual Errors::ErrorCode init(uint64_t flags) = 0;
+	virtual Errors::ErrorCode destroy() = 0;
 	virtual bool isCriticalSubsystem() = 0;
 };
 }

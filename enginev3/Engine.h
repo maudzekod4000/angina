@@ -1,13 +1,12 @@
 #ifndef V3_ENGINE_H
 #define V3_ENGINE_H
 
-#include <memory>
-
 #include "enginev3/EngineState.h"
 #include "enginev3/init/SubsystemLifecycleManagers.h"
 #include "ui/window/BaseWindow.h"
 #include "platform/logging/ILogger.h"
 #include "platform/input/IInputEventManager.h"
+#include "core/units/Units.ixx"
 
 namespace Angina::EngineV3 {
 
@@ -24,7 +23,8 @@ public:
 		Init::SubsystemLifecycleManagers,
 		Logging::LoggerPtr,
 		UI::WindowPtr,
-		Input::InputEventManagerPtr inputMgr
+		Input::InputEventManagerPtr inputMgr,
+		Units::RatePerSecond desiredFPS // Haha I added 'desired' before the FPS ;) wink wink, all bets are off!
 	);
 
 	virtual ~Engine() = default;
@@ -54,6 +54,7 @@ private:
 	Logging::LoggerPtr logger;
 	UI::WindowPtr window;
 	Input::InputEventManagerPtr inputEventMgr;
+	Units::RatePerSecond desiredFPS;
 
 	/// Returns true when a quit event has been detected.
 	bool processInput();

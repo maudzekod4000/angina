@@ -1,10 +1,9 @@
-module;
+#ifndef CORE_UNITS_H
+#define CORE_UNITS_H
 
 #include <cstdint>
 #include <cassert>
 #include <chrono>
-
-export module units;
 
 namespace Angina::Units {
 
@@ -32,8 +31,8 @@ struct Dimension {
 	const uint32_t value;
 };
 
-export using Width = Dimension;
-export using Height = Dimension;
+using Width = Dimension;
+using Height = Dimension;
 
 struct AbsPosition {
 	explicit constexpr AbsPosition(uint32_t p) : value(p) {
@@ -51,7 +50,7 @@ struct AbsPosition {
 
 /// Helps catching configuration bugs at compile time and enforces invariants on the rate per second value.
 /// Improves the API to the client with a more readable, distinct type.
-export struct RatePerSecond {
+struct RatePerSecond {
 	explicit constexpr RatePerSecond(uint32_t v): value(v) {
 		constexpr const char msg[] = "Value must be between 1 and 'max'";
 		if consteval {
@@ -74,7 +73,8 @@ export struct RatePerSecond {
 	const uint32_t value;
 };
 
-export using AbsX = AbsPosition;
-export using AbsY = AbsPosition;
+using AbsX = AbsPosition;
+using AbsY = AbsPosition;
 
 }
+#endif

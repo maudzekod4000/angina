@@ -1,9 +1,9 @@
 #ifndef UI_WINDOW_CONFIG_H
 #define UI_WINDOW_CONFIG_H
 
-import units;
-
 #include <string>
+
+#include "core/units/Units.ixx"
 
 namespace Angina::UI {
 

@@ -2,9 +2,8 @@
 #define PLATFORM_INPUT_EVENT_MANAGER_H
 
 import errors;
-import units;
+//import units;
 
-#include <expected>
 #include <memory>
 
 #include "BaseInputEventManager.h"
@@ -15,10 +14,13 @@ namespace Angina::Input {
 
 class SDLInputEventManager : public BaseInputEventManager {
 public:
-	static std::unique_ptr<SDLInputEventManager> make(InputRefreshRate);
-	std::expected<void, Errors::ErrorCode> onWorkTick() override;
+	static std::unique_ptr<SDLInputEventManager> make();
+
+	/// Call from the main thread!
+	Errors::ErrorCode update() override;
 private:
-	explicit SDLInputEventManager(InputRefreshRate);
+	explicit SDLInputEventManager();
+
 	/// Maps an SDL_Event to own event object.
 	InputSnapshot mapEvent(SDL_Event);
 };

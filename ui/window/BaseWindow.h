@@ -2,11 +2,11 @@
 #define UI_BASE_WINDOW_H
 
 import errors;
-import units;
 
 #include <memory>
 
 #include "ui/window/WindowConfig.h"
+#include "core/units/Units.ixx"
 
 namespace Angina::UI {
 

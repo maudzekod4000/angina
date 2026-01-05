@@ -7,25 +7,25 @@ using namespace Angina::Errors;
 
 SubsystemLifecycleManagers::SubsystemLifecycleManagers(const std::vector<std::shared_ptr<ISubsystemLifecycleManager>>& slms): lifecycleManagers(slms) {}
 
-std::expected<void, ErrorCode> SubsystemLifecycleManagers::init(uint64_t flags)
+ErrorCode SubsystemLifecycleManagers::init(uint64_t flags)
 {
 	for (auto& lifecycleManager : lifecycleManagers) {
-		const auto res = lifecycleManager->init(flags);
+		const auto err = lifecycleManager->init(flags);
 
-		if (isCriticalSubsystem() && !res.has_value()) {
-			return res;
+		if (isCriticalSubsystem() && err) {
+			return err;
 		}
 	}
-	return {};
+	return ErrorCode();
 }
 
-std::expected<void, ErrorCode> Angina::Init::SubsystemLifecycleManagers::destroy()
+ErrorCode SubsystemLifecycleManagers::destroy()
 {
 	for (auto& lifecycleManager : std::views::reverse(lifecycleManagers)) {
-		const auto res = lifecycleManager->destroy();
+		const auto err = lifecycleManager->destroy();
 
-		if (isCriticalSubsystem() && !res.has_value()) {
-			return res;
+		if (isCriticalSubsystem() && err) {
+			return err;
 		}
 	}
 	return {};
