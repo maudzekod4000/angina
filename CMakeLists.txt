@@ -9,23 +9,11 @@ ${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
 
 project(angina LANGUAGES CXX)
 
+add_subdirectory(platform)
+
 file(GLOB_RECURSE ENGINE_SOURCES
 	${DIR}/enginev3/*.cpp
 	${DIR}/enginev3/*.h
-)
-
-file(GLOB_RECURSE PLATFORM_SOURCES
-	${DIR}/platform/time/WaitableTimer.cpp
-	${DIR}/platform/time/WaitableTimer.h
-	${DIR}/platform/error/*.cpp
-	${DIR}/platform/error/*.h
-	${DIR}/platform/error/*.ixx
-	${DIR}/platform/logging/*.cpp
-	${DIR}/platform/logging/*.h
-	${DIR}/platform/logging/*.ixx
-	${DIR}/platform/input/*.cpp
-	${DIR}/platform/input/*.h
-	${DIR}/platform/input/*.ixx
 )
 
 file(GLOB_RECURSE RENDERER_SOURCES
@@ -52,7 +40,6 @@ file(GLOB_RECURSE CHESS_SOURCES
 add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
 	${ENGINE_SOURCES}
-	${PLATFORM_SOURCES}
 	${CORE_SOURCES}
 	${UI_SOURCES}
 	${DIR}/exceptions/BaseException.cpp
@@ -99,4 +86,7 @@ endif (UNIX)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIR} ${SDL2_MIXER_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR} ${INTERFACE_INCLUDE_DIRECTORIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${DIR})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+	${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY}
+	platform
+)
