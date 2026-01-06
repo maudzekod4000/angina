@@ -10,3 +10,8 @@ target_include_directories(error
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_link_libraries(error
+	PRIVATE
+		project_options
+)
+

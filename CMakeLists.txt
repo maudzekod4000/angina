@@ -9,6 +9,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
 
 project(angina LANGUAGES CXX)
 
+include(cmake_helpers/ProjectOptions.cmake)
+
 add_subdirectory(platform)
 
 file(GLOB_RECURSE ENGINE_SOURCES
@@ -89,4 +91,5 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 	${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY}
 	platform
+	platform_options
 )

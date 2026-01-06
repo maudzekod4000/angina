@@ -7,8 +7,8 @@ target_sources(time
 		WaitableTimer.h
 )
 
-target_include_directories(time
+target_link_libraries(time
 	PRIVATE
-		${CMAKE_CURRENT_SOURCE_DIR}
+		project_options
 )
 

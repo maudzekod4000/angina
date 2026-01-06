@@ -15,3 +15,7 @@ target_include_directories(input
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_link_libraries(input
+	PRIVATE
+		project_options
+)

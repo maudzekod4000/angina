@@ -13,3 +13,7 @@ target_include_directories(logging
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_link_libraries(logging
+	PRIVATE
+		project_options
+)
