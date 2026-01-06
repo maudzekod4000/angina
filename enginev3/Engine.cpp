@@ -13,26 +13,26 @@ using namespace Angina::Input;
 using namespace Angina::Units;
 
 Engine::Engine(
-    SubsystemLifecycleManagers slms,
+    SubsystemLifecycleManagersPtr slms,
     LoggerPtr logger,
     WindowPtr window,
     InputEventManagerPtr inputMgr,
     RatePerSecond desiredFPS
 ):
     subsystemLifecycleManagers(std::move(slms)),
-    logger(logger),
-    window(window),
+    logger(std::move(logger)),
+    window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
     desiredFPS(desiredFPS)
 {
-    assert(logger);
-    assert(window);
-    assert(inputEventMgr);
+    assert(this->logger);
+    assert(this->window);
+    assert(this->inputEventMgr);
 }
 
 int Engine::start()
 {
-    if (const auto err = subsystemLifecycleManagers.init(0); err) {
+    if (const auto err = subsystemLifecycleManagers->init(0); err) {
         logger->log(Level::ERROR, err);
         return -1; // Error codes enum would be useful but this far into the development its hard to say.
     }
@@ -49,6 +49,9 @@ int Engine::start()
         }
 
         beforeUpdate();
+
+        // update the physics, etc.
+
         afterUpdate();
 
         Platform::WaitableTimer::wait(desiredFPS.toNano().count());
@@ -60,7 +63,7 @@ int Engine::start()
     // And then the caller should log on critical stuff. 
     // The engine will also log but just as to say what is going on.
 
-    if (const auto err = subsystemLifecycleManagers.destroy(); err) {
+    if (const auto err = subsystemLifecycleManagers->destroy(); err) {
         logger->log(Level::ERROR, err);
         return -1;
     }

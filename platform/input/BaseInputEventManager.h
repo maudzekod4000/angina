@@ -1,11 +1,7 @@
 #ifndef PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 #define PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 
-//import units;
-
-#include <thread>
 #include <atomic>
-#include <stop_token>
 
 #include "IInputEventManager.h"
 

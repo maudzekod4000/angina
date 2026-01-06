@@ -16,7 +16,7 @@ public:
 	virtual void log(Level, std::string_view msg) = 0;
 };
 
-using LoggerPtr = std::shared_ptr<ILogger>;
+using LoggerPtr = std::unique_ptr<ILogger>;
 
 }
 

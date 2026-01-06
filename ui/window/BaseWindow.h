@@ -26,7 +26,7 @@ protected:
 	const WindowConfig config;
 };
 
-using WindowPtr = std::shared_ptr<BaseWindow>;
+using WindowPtr = std::unique_ptr<BaseWindow>;
 
 }
 

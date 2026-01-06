@@ -18,6 +18,9 @@ public:
 private:
 	std::vector<std::shared_ptr<ISubsystemLifecycleManager>> lifecycleManagers;
 };
+
+using SubsystemLifecycleManagersPtr = std::unique_ptr<SubsystemLifecycleManagers>;
+
 }
 
 #endif // !INIT_SUBSYSTEM_LIFECYCLE_MANAGERS_H

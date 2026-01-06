@@ -19,8 +19,9 @@ public:
 	// It will take care of the ownership and will pass just references to the engine.
 	// something like a DI container.
 	// Ok, I suppose i will create the dependencies outside and transfer ownership to the Engine class via move.
+	// OKKKKK so make sure that you create the dependencies outside and then pass them to the ENGINE KHUAK KHUAAAK
 	explicit Engine(
-		Init::SubsystemLifecycleManagers,
+		Init::SubsystemLifecycleManagersPtr,
 		Logging::LoggerPtr,
 		UI::WindowPtr,
 		Input::InputEventManagerPtr inputMgr,
@@ -50,7 +51,7 @@ protected:
 	virtual int beforeEnd() = 0;
 private:
 	EngineState state;
-	Init::SubsystemLifecycleManagers subsystemLifecycleManagers;
+	Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
 	Logging::LoggerPtr logger;
 	UI::WindowPtr window;
 	Input::InputEventManagerPtr inputEventMgr;
