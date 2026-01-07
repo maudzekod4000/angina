@@ -35,15 +35,7 @@ using Width = Dimension;
 using Height = Dimension;
 
 struct AbsPosition {
-	explicit constexpr AbsPosition(uint32_t p) : value(p) {
-		constexpr const char msg[] = "Value must be >= 0.";
-		if consteval {
-			if (p < 0) {
-				throw msg;
-			}
-		}
-		assert(p >= 0 && msg);
-	}
+	explicit constexpr AbsPosition(uint32_t p) : value(p) {}
 
 	const uint32_t value;
 };

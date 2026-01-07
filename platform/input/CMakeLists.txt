@@ -3,10 +3,8 @@ add_library(input OBJECT)
 target_sources(input
 	PRIVATE
 		BaseInputEventManager.cpp
-		SDLInputEventManager.cpp
 	PUBLIC
 		BaseInputEventManager.h
-		SDLInputEventManager.h
 		IInputEventManager.h
 )
 
@@ -18,4 +16,5 @@ target_include_directories(input
 target_link_libraries(input
 	PRIVATE
 		project_options
+		error
 )

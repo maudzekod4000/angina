@@ -8,8 +8,7 @@
 #include "enginev3/init/SDLVideoLifecycleManager.h"
 #include "platform/logging/ConsoleLogger.h"
 #include "ui/window/SDLWindow.h"
-#include "platform/input/BaseInputEventManager.h"
-#include "platform/input/SDLInputEventManager.h"
+#include "backend/sdl/input/SDLInputEventManager.h"
 #include "core/units/Units.ixx"
 
 using namespace Angina::Input;

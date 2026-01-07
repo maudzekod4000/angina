@@ -11,11 +11,38 @@ set_target_properties(project_options PROPERTIES
     CXX_EXTENSIONS NO
 )
 
-target_compile_options(project_options
-    INTERFACE
-        $<$<CXX_COMPILER_ID:MSVC>:/W4 /permissive->
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
-)
+if (MSVC)
+    target_compile_options(project_options
+        INTERFACE
+            /W4
+            /permissive-
+            /Zc:__cplusplus
+            /Zc:preprocessor
+            /EHsc
+            /diagnostics:caret
+
+            # Extra warnings
+            /w14242
+            /w14254
+            /w14263
+            /w14265
+            /w14287
+            /w14296
+
+            # Disable noisy warnings
+            /wd4100
+            /wd4201
+            /wd4324
+            /wd4251
+            /wd4275
+
+            # Warnings as errors (Debug only)
+            $<$<CONFIG:Debug>:/WX>
+    )
+endif()
+if (UNIX)
+    enable_target_warnings(${PROJECT_NAME})
+endif (UNIX)
 
 target_compile_definitions(project_options
     INTERFACE

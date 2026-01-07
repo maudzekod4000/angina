@@ -4,14 +4,15 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(${DIR}/cmake_helpers/helpers.cmake)
 set(CMAKE_MODULE_PATH
-${CMAKE_MODULE_PATH}
-${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
+	${CMAKE_MODULE_PATH}
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
 
 project(angina LANGUAGES CXX)
 
-include(cmake_helpers/ProjectOptions.cmake)
+include(${DIR}/cmake_helpers/ProjectOptions.cmake)
 
 add_subdirectory(platform)
+add_subdirectory(backend)
 
 file(GLOB_RECURSE ENGINE_SOURCES
 	${DIR}/enginev3/*.cpp
@@ -47,49 +48,55 @@ add_executable(${PROJECT_NAME}
 	${DIR}/exceptions/BaseException.cpp
 )
 
+set_target_cpp_standard(${PROJECT_NAME} 23)
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE
+            /W4
+            /permissive-
+            /Zc:__cplusplus
+            /Zc:preprocessor
+            /EHsc
+            /diagnostics:caret
+
+            # Extra warnings
+            /w14242
+            /w14254
+            /w14263
+            /w14265
+            /w14287
+            /w14296
+
+            # Disable noisy warnings
+            /wd4100
+            /wd4201
+            /wd4324
+            /wd4251
+            /wd4275
+
+            # Warnings as errors (Debug only)
+            $<$<CONFIG:Debug>:/WX>
+    )
+endif()
+if (UNIX)
+    enable_target_warnings(${PROJECT_NAME})
+endif (UNIX)
+
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+        $<$<CONFIG:Debug>:ANGINA_DEBUG>
+)
+
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_CURRENT_SOURCE_DIR}/resources
 	$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 
-set_target_cpp_standard(${PROJECT_NAME} 23)
-
-if (UNIX)
-enable_target_warnings(${PROJECT_NAME})
-endif (UNIX)
-
-
-find_package(SDL2 REQUIRED)
-
-if (WIN32)
-	find_package(SDL2_IMAGE REQUIRED)
-endif (WIN32)
-
-if (UNIX)
-	find_package(SDL2_image REQUIRED)
-endif (UNIX)
-
-if (UNIX)
-	find_package(SDL2_ttf REQUIRED)
-endif (UNIX)
-
-if (WIN32)
-	find_package(SDL2_TTF REQUIRED)
-endif (WIN32)
-
-if (WIN32)
-	find_package(SDL2_MIXER REQUIRED)
-endif (WIN32)
-
-if (UNIX)
-	find_package(SDL2_mixer REQUIRED)
-endif (UNIX)
-
-target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIR} ${SDL2_MIXER_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR} ${INTERFACE_INCLUDE_DIRECTORIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
-	${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY}
 	platform
+	backend
 	platform_options
 )
