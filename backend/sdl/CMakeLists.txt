@@ -3,8 +3,10 @@ add_library(sdl OBJECT)
 target_sources(sdl
 	PRIVATE
 		input/SDLInputEventManager.cpp
+		init/SDLVideoLifecycleManager.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
+		init/SDLVideoLifecycleManager.h
 )
 
 target_include_directories(sdl
@@ -51,4 +53,5 @@ target_link_libraries(sdl
 		input
 		error
 		project_options
+		init
 )

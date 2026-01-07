@@ -4,6 +4,7 @@ add_subdirectory(logging)
 add_subdirectory(error)
 add_subdirectory(input)
 add_subdirectory(time)
+add_subdirectory(init)
 
 target_link_libraries(platform
 	INTERFACE
@@ -11,6 +12,7 @@ target_link_libraries(platform
 		error
 		input
 		time
+		init
 )
 
 target_include_directories(platform
