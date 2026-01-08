@@ -6,7 +6,7 @@ import errors;
 
 #include <memory>
 
-#include "BaseInputEventManager.h"
+#include "platform/input/BaseInputEventManager.h"
 
 union SDL_Event;
 

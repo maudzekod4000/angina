@@ -20,6 +20,7 @@ struct InputSnapshot {
 /// I think we need a method to update the snapshot by polling and the double-buffering can stay.
 class IInputEventManager {
 public:
+	virtual ~IInputEventManager() = default;
 	virtual Errors::ErrorCode update() = 0;
 	virtual InputSnapshot getSnapshot() = 0;
 };

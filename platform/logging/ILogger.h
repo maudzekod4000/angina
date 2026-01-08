@@ -13,6 +13,7 @@ enum class Level {
 
 class ILogger {
 public:
+	virtual ~ILogger() = default;
 	virtual void log(Level, std::string_view msg) = 0;
 };
 

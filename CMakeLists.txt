@@ -13,6 +13,8 @@ include(${DIR}/cmake_helpers/ProjectOptions.cmake)
 
 add_subdirectory(platform)
 add_subdirectory(backend)
+add_subdirectory(ui)
+add_subdirectory(core)
 
 file(GLOB_RECURSE ENGINE_SOURCES
 	${DIR}/enginev3/*.cpp
@@ -24,17 +26,6 @@ file(GLOB_RECURSE RENDERER_SOURCES
 	${DIR}/renderer/*.h
 )
 
-file(GLOB_RECURSE CORE_SOURCES
-	#${DIR}/core/*.cpp
-	#${DIR}/core/*.h
-	${DIR}/core/units/Units.ixx
-)
-
-file(GLOB_RECURSE UI_SOURCES
-	${DIR}/ui/*.cpp
-	${DIR}/ui/*.h
-)
-
 file(GLOB_RECURSE CHESS_SOURCES
 	${DIR}/examples/chess/*.cpp
 	${DIR}/examples/chess/*.h
@@ -43,8 +34,6 @@ file(GLOB_RECURSE CHESS_SOURCES
 add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
 	${ENGINE_SOURCES}
-	${CORE_SOURCES}
-	${UI_SOURCES}
 	${DIR}/exceptions/BaseException.cpp
 )
 
@@ -98,5 +87,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 	platform
 	backend
-	platform_options
+    ui
+    core
 )

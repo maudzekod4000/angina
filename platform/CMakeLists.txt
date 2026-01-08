@@ -17,6 +17,6 @@ target_link_libraries(platform
 
 target_include_directories(platform
 	INTERFACE
-		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 

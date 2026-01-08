@@ -7,7 +7,7 @@ using namespace Angina::Errors;
 using namespace Angina::Units;
 
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
-	BaseWindow(c), window(w) {}
+	IWindow(c), window(w) {}
 
 std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 {

@@ -5,11 +5,11 @@
 #include <utility>
 
 #include "enginev3/Engine.h"
-#include "enginev3/init/SDLVideoLifecycleManager.h"
+#include "backend/sdl/init/SDLVideoLifecycleManager.h"
 #include "platform/logging/ConsoleLogger.h"
-#include "ui/window/SDLWindow.h"
+#include "backend/sdl/ui/SDLWindow.h"
 #include "backend/sdl/input/SDLInputEventManager.h"
-#include "core/units/Units.ixx"
+#include "core/units/Units.hpp"
 
 using namespace Angina::Input;
 

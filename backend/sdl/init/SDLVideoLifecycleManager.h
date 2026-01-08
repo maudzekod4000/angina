@@ -1,7 +1,7 @@
 #ifndef INIT_SDL_INITIALIZER_H
 #define INIT_SDL_INITIALIZER_H
 
-#include "ISubsystemLifecycleManager.h"
+#include "platform/init/ISubsystemLifecycleManager.h"
 
 namespace Angina::Init {
 class SDLVideoLifecycleManager final : public ISubsystemLifecycleManager {

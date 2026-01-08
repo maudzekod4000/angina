@@ -4,14 +4,16 @@ target_sources(sdl
 	PRIVATE
 		input/SDLInputEventManager.cpp
 		init/SDLVideoLifecycleManager.cpp
+		ui/SDLWindow.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
 		init/SDLVideoLifecycleManager.h
+		ui/SDLWindow.h
 )
 
 target_include_directories(sdl
 	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 find_package(SDL2 REQUIRED)
@@ -54,4 +56,5 @@ target_link_libraries(sdl
 		error
 		project_options
 		init
+		ui
 )

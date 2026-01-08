@@ -5,18 +5,18 @@ import errors;
 
 #include <memory>
 
-#include "ui/window/WindowConfig.h"
-#include "core/units/Units.ixx"
+#include "WindowConfig.h"
+#include "core/units/Units.hpp"
 
 namespace Angina::UI {
 
-class BaseWindow {
+class IWindow {
 public:
-	explicit BaseWindow(const WindowConfig& c): config(c) {}
-	virtual ~BaseWindow() = default;
+	explicit IWindow(const WindowConfig& c): config(c) {}
+	virtual ~IWindow() = default;
 
-	BaseWindow(const BaseWindow&) = delete;
-	BaseWindow& operator=(const BaseWindow&) = delete;
+	IWindow(const IWindow&) = delete;
+	IWindow& operator=(const IWindow&) = delete;
 
 	// Should we be able to std::move the Window?
 	// I think it is a good idea because we can configure it from the outside and pass it into the engine
@@ -26,7 +26,7 @@ protected:
 	const WindowConfig config;
 };
 
-using WindowPtr = std::unique_ptr<BaseWindow>;
+using WindowPtr = std::unique_ptr<IWindow>;
 
 }
 

@@ -10,7 +10,7 @@ target_sources(logging
 
 target_include_directories(logging
 	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 target_link_libraries(logging

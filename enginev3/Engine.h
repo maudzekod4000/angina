@@ -2,11 +2,11 @@
 #define V3_ENGINE_H
 
 #include "enginev3/EngineState.h"
-#include "enginev3/init/SubsystemLifecycleManagers.h"
-#include "ui/window/BaseWindow.h"
+#include "platform/init/SubsystemLifecycleManagers.h"
+#include "ui/window/IWindow.h"
 #include "platform/logging/ILogger.h"
 #include "platform/input/IInputEventManager.h"
-#include "core/units/Units.ixx"
+#include "core/units/Units.hpp"
 
 namespace Angina::EngineV3 {
 
