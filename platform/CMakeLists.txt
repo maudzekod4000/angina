@@ -11,6 +11,7 @@ target_link_libraries(platform
 		input
 		time
 		init
+		project_options
 )
 
 target_include_directories(platform

@@ -11,30 +11,14 @@ project(angina LANGUAGES CXX)
 
 include(${DIR}/cmake_helpers/ProjectOptions.cmake)
 
+add_subdirectory(core)
 add_subdirectory(platform)
 add_subdirectory(backend)
+add_subdirectory(engine)
 add_subdirectory(ui)
-add_subdirectory(core)
-
-file(GLOB_RECURSE ENGINE_SOURCES
-	${DIR}/enginev3/*.cpp
-	${DIR}/enginev3/*.h
-)
-
-file(GLOB_RECURSE RENDERER_SOURCES
-	${DIR}/renderer/*.cpp
-	${DIR}/renderer/*.h
-)
-
-file(GLOB_RECURSE CHESS_SOURCES
-	${DIR}/examples/chess/*.cpp
-	${DIR}/examples/chess/*.h
-)
 
 add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
-	${ENGINE_SOURCES}
-	${DIR}/exceptions/BaseException.cpp
 )
 
 set_target_cpp_standard(${PROJECT_NAME} 23)
@@ -85,8 +69,9 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 target_include_directories(${PROJECT_NAME} PRIVATE ${DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
+    core
 	platform
 	backend
     ui
-    core
+    engine
 )

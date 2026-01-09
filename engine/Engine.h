@@ -1,88 +1,67 @@
-#ifndef SDL_GRAPHICS_ENGINE_H_
-#define SDL_GRAPHICS_ENGINE_H_
+#ifndef V3_ENGINE_H
+#define V3_ENGINE_H
 
-#include <vector>
-#include <cstdint>
-#include <string>
-#include <unordered_map>
-#include <memory>
+#include "EngineState.h"
+#include "platform/init/SubsystemLifecycleManagers.h"
+#include "ui/window/IWindow.h"
+#include "platform/logging/ILogger.h"
+#include "platform/input/IInputEventManager.h"
+#include "core/units/Units.hpp"
 
-#include "SDL_events.h"
-#include "SDL_ttf.h"
-
-#include "platform/sdl/events/InputEvent.h"
-#include "platform/sdl/primitives/Font.h"
-#include "platform/sdl/components/Window.h"
-
-#include "renderer/primitives/Dimensions.h"
-#include "renderer/primitives/Point.h"
-#include "renderer/Renderer.h"
-
-#include "engine/factory/GraphicsFactory.h"
-#include "engine/behaviour/Behaviour.h"
-#include "engine/movement/LinearFixedMovementManager.h"
-//#include "managers/EventManager.h"
-//#include "managers/EventManager.h"
-#include "platform/sdl/repositories/TextureRepository.h"
-#include "platform/sdl/repositories/SurfaceRepository.h"
-
-struct Texture;
-struct Rect;
-struct Object;
-struct Screen;
-struct Line;
-struct Grid;
-struct RectTextButton;
-struct FolderGallery;
+namespace Angina::EngineV3 {
 
 class Engine {
 public:
-	Engine(std::string appTitle, Dimensions screenSize);
-	virtual ~Engine();
 
-	void start();
-private:
-	Window window;
-	SDL_Event e;
-	Renderer renderer;
-	SurfaceRepository surfaceRepo;
-	TextureRepository textureRepo;
-	GraphicsFactory factory;
-	Screen* rootScreen;
-	LinearFixedMovementManager movementManager;
-	bool quit = false;
-	std::vector<Behaviour<Object>*> behaviours;
+	// Note: Hm....It might be better to have the logger, window and input manager as unique pointers and 
+	// create them outside but transfer ownership to the engine...
+	// The other option is to have a wrapper around the engine which will configure the engine-related stuff.
+	// It will take care of the ownership and will pass just references to the engine.
+	// something like a DI container.
+	// Ok, I suppose i will create the dependencies outside and transfer ownership to the Engine class via move.
+	// OKKKKK so make sure that you create the dependencies outside and then pass them to the ENGINE KHUAK KHUAAAK
+	explicit Engine(
+		Init::SubsystemLifecycleManagersPtr,
+		Logging::LoggerPtr,
+		UI::WindowPtr,
+		Input::InputEventManagerPtr inputMgr,
+		Units::RatePerSecond desiredFPS // Haha I added 'desired' before the FPS ;) wink wink, all bets are off!
+	);
 
-	void limitFPS(int64_t microseconds);
-	void draw();
-	void draw(Screen&);
-	void handleEvent();
-	void triggerObjectStart();
-	void triggerObjectUpdate();
+	virtual ~Engine() = default;
+
+	/// Initializes subsystems and, if successful, starts the main loop.
+	/// @return Non-zero if there was an error.
+	int start();
 protected:
-	InputEvent event;
+	/// Run after the subsystems are initialized, but before the main loop has started.
+	/// @return Non-zero if there was an error.
+	virtual int beforeStart() = 0;
 
-	virtual void init() = 0;
-	virtual void update() = 0;
-	virtual void handleLeftMouseClick(Point) = 0;
-	virtual void handleBtnClick(int32_t idx) = 0;
+	/// Run before update of the subsystems, i.e. physics, animation.
+	/// @return Non-zero if there was an error.
+	virtual int beforeUpdate() = 0;
 
-	void resizeWindow(Dimensions dim);
+	/// Run after update of the subsystems, i.e. physics, animation.
+	/// @return Non-zero if there was an error.
+	virtual int afterUpdate() = 0;
 
-	void initialiseScreen();
-	void addComponent(Object&);
-	void addComponent(Line&);
-	void addComponent(Grid&);
-	void addComponent(RectTextButton&);
-	void addComponent(FolderGallery&);
-	void cleanScreen();
+	/// Run after the main loop has exited.
+	/// @return Non-zero if there was an error.
+	virtual int beforeEnd() = 0;
+private:
+	EngineState state;
+	Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
+	Logging::LoggerPtr logger;
+	UI::WindowPtr window;
+	Input::InputEventManagerPtr inputEventMgr;
+	Units::RatePerSecond desiredFPS;
 
-	void initMapBuilder();
-
-	void addBehaviour(Behaviour<Object>&);
-	void addMovement(Object& obj);
-
-	GraphicsFactory& getFactory();
+	/// Returns true when a quit event has been detected.
+	bool processInput();
 };
 
-#endif /* SDL_GRAPHICS_ENGINE_H_ */
+}
+
+#endif
+

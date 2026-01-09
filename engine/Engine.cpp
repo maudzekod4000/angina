@@ -1,204 +1,90 @@
 #include "Engine.h"
 
-#include <vector>
-#include <string>
-#include <iostream>
+#include <cassert>
 
-#include "platform/sdl/primitives/Texture.h"
-#include "platform/sdl/primitives/Surface.h"
-#include "platform/sdl/resource-loader/ResourceLoader.h"
-#include "platform/thread/ThreadUtils.h"
-#include "platform/time/Time.h"
+#include "platform/time/WaitableTimer.h"
+#include "platform/logging/ILogger.h"
 
-#include "resources/Resources.h"
+using namespace Angina::EngineV3;
+using namespace Angina::Init;
+using namespace Angina::Logging;
+using namespace Angina::UI;
+using namespace Angina::Input;
+using namespace Angina::Units;
 
-#include "renderer/primitives/Color.h"
-#include "renderer/shapes/Rect.h"
-#include "renderer/primitives/Object.h"
-#include "renderer/primitives/Button.h"
-#include "renderer/primitives/Point.h"
-#include "renderer/primitives/Dimensions.h"
-#include "renderer/primitives/Line.h"
-#include "renderer/primitives/Grid.h"
-
-#include "engine/config/EngineConfig.h"
-#include "engine/screen/Screen.h"
-#include "engine/components/buttons/RectTextButton.h"
-#include "engine/components/foldergallery/FolderGallery.h"
-
-Engine::Engine(std::string appTitle, Dimensions screenSize) :
-		window(Window(
-		        appTitle,
-		        { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED },
-		        { screenSize.w, screenSize.h },
-				SDL_WINDOW_SHOWN
-			  )),
-        renderer(Renderer(window)),
-        surfaceRepo(SurfaceRepository()),
-        textureRepo(TextureRepository(surfaceRepo, renderer)),
-        factory(GraphicsFactory(renderer, textureRepo)),
-        rootScreen(nullptr) {
-
-	event.init();
-	initialiseScreen();
+Engine::Engine(
+    SubsystemLifecycleManagersPtr slms,
+    LoggerPtr logger,
+    WindowPtr window,
+    InputEventManagerPtr inputMgr,
+    RatePerSecond desiredFPS
+):
+    subsystemLifecycleManagers(std::move(slms)),
+    logger(std::move(logger)),
+    window(std::move(window)),
+    inputEventMgr(std::move(inputMgr)),
+    desiredFPS(desiredFPS)
+{
+    assert(this->logger);
+    assert(this->window);
+    assert(this->inputEventMgr);
 }
 
-void Engine::start() {
-	init();
-	triggerObjectStart();
-	Time globalTime;
-	Time movementUpdateTime;
+int Engine::start()
+{
+    if (const auto err = subsystemLifecycleManagers->init(0); err) {
+        logger->log(Level::ERROR, err);
+        return -1; // Error codes enum would be useful but this far into the development its hard to say.
+    }
 
+    beforeStart();
 
-	while (!quit) {
-		globalTime.getElapsed();
+    // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
+    state.set(EngineState::State::RUNNING);
 
-		renderer.clear();
+    while (state.isRunning()) {
+        // Yeah...this wont be like that .........frickin hell, but now i just want to handle the quit event and do something so give me a break.
+        if (const bool quit = processInput(); quit) {
+            break;
+        }
 
-		while (event.poll()) {
-			if (event.hasExitEvent()) {
-				quit = true;
-				break;
-			}
+        beforeUpdate();
 
-			handleEvent();
-		}
+        // update the physics, etc.
 
-		update();
-		triggerObjectUpdate();
-		int64_t movementUpdateTimePassed = movementUpdateTime.getElapsed().toMicroseconds();
-		movementManager.processFrame(movementUpdateTimePassed);
-		movementUpdateTime.getElapsed();
+        afterUpdate();
 
-		draw();
+        Platform::WaitableTimer::wait(desiredFPS.toNano().count());
+    }
 
-		renderer.update();
+    beforeEnd();
 
-		int64_t timePassed = globalTime.getElapsed().toMicroseconds();
+    // TODO: I think the start method of the engine should return either expected or just a ErrorCode
+    // And then the caller should log on critical stuff. 
+    // The engine will also log but just as to say what is going on.
 
-		limitFPS(timePassed);
-	}
+    if (const auto err = subsystemLifecycleManagers->destroy(); err) {
+        logger->log(Level::ERROR, err);
+        return -1;
+    }
+    return 0;
 }
 
-void Engine::draw() {
-	if (rootScreen != nullptr) {
-		draw(*rootScreen);
-	}
-}
+bool Engine::processInput()
+{
+    // Poll events
+    if (const auto err = inputEventMgr->update(); err) {
+        return false;
+    }
 
-void Engine::draw(Screen &widget) {
-	for (auto const &drawable : widget.getDrawables()) {
-		drawable->draw(renderer);
-	}
-}
+    // Read and process the input.
+    // Now.........this might not happen like that later, I want to have a multithreaded engine, but the frickin` SDL is so goddamn BAD....
+    // I should not be too harsh tho because miss OPERATING SYSTEM has too much capriche...................................................
+    const InputSnapshot input = inputEventMgr->getSnapshot();
 
-void Engine::limitFPS(int64_t elapsedTime) {
-	const int64_t maxFrames = EngineConfig::FRAME_RATE;
-	const int64_t timeForFrameMicro = 1000000 / maxFrames;
-	const int64_t sleepTime = timeForFrameMicro - elapsedTime;
+    if (input.quit) {
+        return true;
+    }
 
-	if (sleepTime <= 0) {
-		return;
-	}
-
-	ThreadUtils::sleepFor(sleepTime);
-}
-
-void Engine::handleEvent() {
-	//btnManager.invokeCallback(event);
-}
-
-void Engine::triggerObjectStart() {
-	for (Behaviour<Object>* behaviour : behaviours) {
-		behaviour->start();
-	}
-}
-
-void Engine::triggerObjectUpdate() {
-	for (Behaviour<Object>* behaviour : behaviours) {
-		behaviour->update();
-	}
-}
-
-GraphicsFactory& Engine::getFactory() {
-	return factory;
-}
-
-void Engine::initialiseScreen() {
-	cleanScreen();
-
-	rootScreen = new Screen();
-}
-
-void Engine::addComponent(Object& obj) {
-	 rootScreen->put(dynamic_cast<Drawable&>(obj));
-}
-
-void Engine::addComponent(Line& line) {
-	rootScreen->put(dynamic_cast<Drawable&>(line));
-}
-
-void Engine::addComponent(RectTextButton& btn) {
-	//btnManager.registerButton(btn);
-	rootScreen->put(dynamic_cast<Drawable&>(btn));
-}
-
-void Engine::addComponent(Grid& grid) {
-	rootScreen->put(dynamic_cast<Drawable&>(grid));
-}
-
-void Engine::addComponent(FolderGallery& gallery) {
-	rootScreen->put(dynamic_cast<Drawable&>(gallery));
-}
-
-void Engine::addBehaviour(Behaviour<Object>& behaviour) {
-	behaviour.setEngine(*this);
-	behaviours.push_back(&behaviour);
-}
-
-void Engine::addMovement(Object& obj) {
-    movementManager.addMoveable(obj);
-}
-
-void Engine::cleanScreen() {
-	if (rootScreen != nullptr) {
-		delete rootScreen;
-		rootScreen = nullptr;
-	}
-}
-
-void Engine::initMapBuilder() {
-	initialiseScreen();
-	resizeWindow(EngineConfig::MB_DIM);
-
-	Object& bg = getFactory().createObject(Resources::MapBuilder::background, Point::ZERO, EngineConfig::MB_DIM);
-	addComponent(bg);
-
-	Grid& textureGrid = *new Grid(Point::ZERO, EngineConfig::TILE_DIM, 800, 640);
-	addComponent(textureGrid);
-
-	// Move this as parameter to the method and get it from the game.
-	std::vector<std::string> textureList = {Resources::TD::grass};
-
-	FolderGallery& gallery = *new FolderGallery(
-			Point {801, 0},
-			getFactory(),
-			textureList,
-			1,
-			1,
-			EngineConfig::TILE_DIM
-	);
-
-	addComponent(gallery);
-}
-
-void Engine::resizeWindow(Dimensions dim) {
-	window.resize(dim);
-}
-
-Engine::~Engine() {
-	cleanScreen();
-	event.deinit();
-
-	std::cout << "Engine destroyed" << std::endl;
+    return false;
 }
