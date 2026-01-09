@@ -25,6 +25,7 @@ Engine::Engine(
     inputEventMgr(std::move(inputMgr)),
     desiredFPS(desiredFPS)
 {
+    assert(this->subsystemLifecycleManagers);
     assert(this->logger);
     assert(this->window);
     assert(this->inputEventMgr);

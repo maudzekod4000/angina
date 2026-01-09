@@ -10,7 +10,7 @@ namespace WaitableTimer {
 	/// Sleep/Wait for the specified number of nanoseconds
 	/// @param nanoseconds The duration to sleep in nanoseconds
 	/// @return true if successful, false otherwise
-	bool wait(int64_t nanoseconds);
+	bool wait(uint64_t nanoseconds);
 }
 
 }

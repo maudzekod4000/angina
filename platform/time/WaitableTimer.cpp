@@ -7,12 +7,14 @@
 #endif
 
 #include <chrono>
+#include <cassert>
 
 using namespace Angina::Platform;
 
 namespace {
 
 void timerSleep(double seconds, bool spin) {
+assert(seconds >= 0.0);
 
 #ifndef _WIN32
 #	error TODO maybe implement with usleep/nanosleep?
@@ -83,11 +85,7 @@ void timerSleep(double seconds, bool spin) {
 }
 }
 
-bool WaitableTimer::wait(int64_t nanoseconds) {
-	if (nanoseconds <= 0) {
-		return true;
-	}
-
+bool WaitableTimer::wait(uint64_t nanoseconds) {
 #ifdef _WIN32
 	timerSleep(nanoseconds / 1e9, true);
 	return true;

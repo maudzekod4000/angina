@@ -3,8 +3,12 @@ add_library(time OBJECT)
 target_sources(time
 	PRIVATE
 		WaitableTimer.cpp
+		Stopwatch.cpp
+		Time.cpp
 	PUBLIC
 		WaitableTimer.h
+		Stopwatch.h
+		Time.h
 )
 
 target_include_directories(time
@@ -16,4 +20,3 @@ target_link_libraries(time
 	PRIVATE
 		project_options
 )
-
