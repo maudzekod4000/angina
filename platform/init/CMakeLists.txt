@@ -16,6 +16,6 @@ target_include_directories(init
 target_link_libraries(init
 	PRIVATE
 		project_options
-		error
+		core
 )
 

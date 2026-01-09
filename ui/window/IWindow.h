@@ -1,12 +1,11 @@
 #ifndef UI_BASE_WINDOW_H
 #define UI_BASE_WINDOW_H
 
-import errors;
-
 #include <memory>
 
 #include "WindowConfig.h"
 #include "core/units/Units.hpp"
+#include "core/error/Errors.h"
 
 namespace Angina::UI {
 

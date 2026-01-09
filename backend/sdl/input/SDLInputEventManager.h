@@ -1,12 +1,10 @@
 #ifndef PLATFORM_INPUT_EVENT_MANAGER_H
 #define PLATFORM_INPUT_EVENT_MANAGER_H
 
-import errors;
-//import units;
-
 #include <memory>
 
 #include "platform/input/BaseInputEventManager.h"
+#include "core/error/Errors.h"
 
 union SDL_Event;
 

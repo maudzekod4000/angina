@@ -1,10 +1,12 @@
-add_library(core OBJECT)
+add_library(core STATIC)
 
 target_sources(core
 	PUBLIC
 		units/Units.hpp
+		error/Errors.h
     PRIVATE
         units/Units.cpp
+		error/Errors.cpp
 )
 
 target_include_directories(core

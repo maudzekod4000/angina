@@ -1,13 +1,12 @@
 #ifndef UI_SDL_WINDOW_H
 #define UI_SDL_WINDOW_H
 
-import errors;
-
 #include <memory>
 
 #include "ui/window/IWindow.h"
 #include "ui/window/WindowConfig.h"
 #include "core/units/Units.hpp"
+#include "core/error/Errors.h"
 
 struct SDL_Window;
 

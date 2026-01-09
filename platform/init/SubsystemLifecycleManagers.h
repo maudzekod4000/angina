@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "ISubsystemLifecycleManager.h"
+#include "core/error/Errors.h"
 
 namespace Angina::Init {
 class SubsystemLifecycleManagers final : public ISubsystemLifecycleManager {

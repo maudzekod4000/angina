@@ -1,22 +1,19 @@
-add_library(platform INTERFACE)
+add_library(platform STATIC)
 
 add_subdirectory(logging)
-add_subdirectory(error)
 add_subdirectory(input)
 add_subdirectory(time)
 add_subdirectory(init)
 
 target_link_libraries(platform
-	INTERFACE
+	PRIVATE
 		logging
-		error
 		input
 		time
 		init
 )
 
 target_include_directories(platform
-	INTERFACE
+	PUBLIC
 		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
-

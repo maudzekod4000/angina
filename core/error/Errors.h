@@ -1,13 +1,12 @@
-module;
+#ifndef PLATFORM_ERROR_H
+#define PLATFORM_ERROR_H
 
 #include <string>
 #include <string_view>
 
-export module errors;
-
 namespace Angina::Errors {
 
-export class ErrorCode {
+class ErrorCode {
 public:
     ErrorCode() noexcept: code(0), msg("") {}
     explicit ErrorCode(int code, const std::string& msg) noexcept: code(code), msg(msg) {}
@@ -26,3 +25,5 @@ private:
 };
 
 }
+
+#endif // !PLATFORM_ERROR_H

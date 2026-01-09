@@ -1,9 +1,9 @@
 #ifndef PLATFORM_IINPUT_EVENT_MANAGER_H
 #define PLATFORM_IINPUT_EVENT_MANAGER_H
 
-import errors;
-
 #include <memory>
+
+#include "core/error/Errors.h"
 
 namespace Angina::Input {
 

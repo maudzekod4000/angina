@@ -53,7 +53,7 @@ target_link_libraries(sdl
 	PRIVATE
 		${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY}
 		input
-		error
+		core
 		project_options
 		init
 		ui

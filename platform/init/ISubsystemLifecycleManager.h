@@ -1,9 +1,9 @@
 #ifndef INIT_SUBSYSTEM_INITIALIZER_H
 #define INIT_SUBSYSTEM_INITIALIZER_H
 
-import errors;
-
 #include <cstdint>
+
+#include "core/error/Errors.h"
 
 namespace Angina::Init {
 /// Sometimes, subsystems need initialization/deinitialization. For example, SDL's graphics and audio systems need to be started, before doing anything useful with them.
