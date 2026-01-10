@@ -1,22 +1,19 @@
-add_library(time OBJECT)
+add_library(platform_time OBJECT)
 
-target_sources(time
+target_sources(platform_time
 	PRIVATE
-		WaitableTimer.cpp
-		Stopwatch.cpp
-		Time.cpp
+		FramePacer.cpp
 	PUBLIC
-		WaitableTimer.h
-		Stopwatch.h
-		Time.h
+		FramePacer.h
 )
 
-target_include_directories(time
+target_include_directories(platform_time
 	PUBLIC
 		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-target_link_libraries(time
+target_link_libraries(platform_time
 	PRIVATE
 		project_options
+		core
 )

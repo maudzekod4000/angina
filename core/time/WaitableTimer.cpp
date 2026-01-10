@@ -9,7 +9,7 @@
 #include <chrono>
 #include <cassert>
 
-using namespace Angina::Platform;
+using namespace Core::Time;
 
 namespace {
 

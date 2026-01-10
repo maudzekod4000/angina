@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "platform/time/WaitableTimer.h"
 #include "platform/logging/ILogger.h"
 
 using namespace Angina::EngineV3;
@@ -54,8 +53,6 @@ int Engine::start()
         // update the physics, etc.
 
         afterUpdate();
-
-        Platform::WaitableTimer::wait(desiredFPS.toNano().count());
     }
 
     beforeEnd();

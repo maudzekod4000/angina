@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace Angina::Platform {
+namespace Core::Time {
 
 /// Precise timer. Can be used for efficiently putting the execution thread to sleep.
 namespace WaitableTimer {

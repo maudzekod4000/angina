@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+using namespace Core::Time;
+
 void Stopwatch::reset()
 {
     start = std::chrono::steady_clock::now();

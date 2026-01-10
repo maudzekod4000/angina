@@ -5,6 +5,7 @@
 
 #include <chrono>
 
+namespace Core::Time {
 /// Measures the duration between two points in time/code.
 /// Not thread-safe - call reset and elapsed from the same thread.
 /// Note: If there are multithreaded cases of measuring time, extend/compose this class.
@@ -22,5 +23,6 @@ public:
 private:
 	std::chrono::steady_clock::time_point start; ///< Time point of the last reset call. Initially, this is epoch time.
 };
+}
 
 #endif // !TIME_STOPWATCH_H
