@@ -9,7 +9,7 @@ using namespace Angina::Init;
 using namespace Angina::Logging;
 using namespace Angina::UI;
 using namespace Angina::Input;
-using namespace Angina::Units;
+using namespace Core::Units;
 
 Engine::Engine(
     SubsystemLifecycleManagersPtr slms,
@@ -22,7 +22,9 @@ Engine::Engine(
     logger(std::move(logger)),
     window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
-    desiredFPS(desiredFPS)
+    desiredFPS(desiredFPS),
+    globalClock({}),
+    framePacer(desiredFPS, globalClock)
 {
     assert(this->subsystemLifecycleManagers);
     assert(this->logger);
@@ -41,8 +43,10 @@ int Engine::start()
 
     // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
     state.set(EngineState::State::RUNNING);
+    globalClock.reset(); // One and only call to 'reset'
 
     while (state.isRunning()) {
+        framePacer.startFrame();
         // Yeah...this wont be like that .........frickin hell, but now i just want to handle the quit event and do something so give me a break.
         if (const bool quit = processInput(); quit) {
             break;
@@ -53,6 +57,7 @@ int Engine::start()
         // update the physics, etc.
 
         afterUpdate();
+        framePacer.endFrame();
     }
 
     beforeEnd();

@@ -13,7 +13,7 @@ using namespace Core::Time;
 
 namespace {
 
-void timerSleep(double seconds, bool spin) {
+void timerSleep(double seconds, bool spin) noexcept {
 assert(seconds >= 0.0);
 
 #ifndef _WIN32
@@ -85,13 +85,13 @@ assert(seconds >= 0.0);
 }
 }
 
-bool WaitableTimer::wait(uint64_t nanoseconds) {
+bool WaitableTimer::wait(std::chrono::nanoseconds duration) noexcept {
 #ifdef _WIN32
-	timerSleep(nanoseconds / 1e9, true);
+	timerSleep(duration.count() / 1e9, true);
 	return true;
 #else
 	// On non-Windows, use standard library
-	std::this_thread::sleep_for(std::chrono::nanoseconds(nanoseconds));
+	std::this_thread::sleep_for(duration);
 	return true;
 #endif
 }

@@ -17,7 +17,7 @@ class SDLWindow : public IWindow {
 public:
 	static std::unique_ptr<SDLWindow> make(const WindowConfig&);
 
-	Errors::ErrorCode resize(Units::Width w, Units::Height h) override;
+	Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
 private:
 	SDL_Window* window;
 };

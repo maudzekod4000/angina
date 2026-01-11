@@ -2,10 +2,15 @@
 #define V3_ENGINE_H
 
 #include "EngineState.h"
-#include "platform/init/SubsystemLifecycleManagers.h"
+
 #include "ui/window/IWindow.h"
+
+#include "platform/init/SubsystemLifecycleManagers.h"
 #include "platform/logging/ILogger.h"
 #include "platform/input/IInputEventManager.h"
+#include "platform/time/FramePacer.h"
+
+#include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
 
 namespace Angina::EngineV3 {
@@ -13,19 +18,12 @@ namespace Angina::EngineV3 {
 class Engine {
 public:
 
-	// Note: Hm....It might be better to have the logger, window and input manager as unique pointers and 
-	// create them outside but transfer ownership to the engine...
-	// The other option is to have a wrapper around the engine which will configure the engine-related stuff.
-	// It will take care of the ownership and will pass just references to the engine.
-	// something like a DI container.
-	// Ok, I suppose i will create the dependencies outside and transfer ownership to the Engine class via move.
-	// OKKKKK so make sure that you create the dependencies outside and then pass them to the ENGINE KHUAK KHUAAAK
 	explicit Engine(
 		Init::SubsystemLifecycleManagersPtr,
 		Logging::LoggerPtr,
 		UI::WindowPtr,
 		Input::InputEventManagerPtr inputMgr,
-		Units::RatePerSecond desiredFPS // Haha I added 'desired' before the FPS ;) wink wink, all bets are off!
+		Core::Units::RatePerSecond desiredFPS
 	);
 
 	virtual ~Engine() = default;
@@ -55,7 +53,9 @@ private:
 	Logging::LoggerPtr logger;
 	UI::WindowPtr window;
 	Input::InputEventManagerPtr inputEventMgr;
-	Units::RatePerSecond desiredFPS;
+	Core::Units::RatePerSecond desiredFPS;
+	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
+	Platform::Time::FramePacer framePacer; ///< Measures and stalls the main loop in order to provide a stable frame rate, i.e. each frame should take the same time.
 
 	/// Returns true when a quit event has been detected.
 	bool processInput();

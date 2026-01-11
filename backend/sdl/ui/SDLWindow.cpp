@@ -4,7 +4,7 @@
 
 using namespace Angina::UI;
 using namespace Angina::Errors;
-using namespace Angina::Units;
+using namespace Core::Units;
 
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
 	IWindow(c), window(w) {}

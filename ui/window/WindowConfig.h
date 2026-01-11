@@ -8,14 +8,19 @@
 namespace Angina::UI {
 
 struct WindowConfig {
-	explicit constexpr WindowConfig(const std::string& title, Units::AbsX x, Units::AbsY y, Units::Width width, Units::Height height) :
+	explicit constexpr WindowConfig(
+		const std::string& title,
+		Core::Units::AbsX x,
+		Core::Units::AbsY y,
+		Core::Units::Width width,
+		Core::Units::Height height) :
 		title(title), xPos(x), yPos(y), width(width), height(height) {}
 
 	const std::string title;
-	const Units::AbsX xPos;
-	const Units::AbsY yPos;
-	const Units::Width width;
-	const Units::Height height;
+	const Core::Units::AbsX xPos;
+	const Core::Units::AbsY yPos;
+	const Core::Units::Width width;
+	const Core::Units::Height height;
 };
 
 }

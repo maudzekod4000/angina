@@ -21,7 +21,7 @@ public:
 		Angina::UI::WindowPtr window,
 		InputEventManagerPtr eventMgr
 	):
-		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Angina::Units::RatePerSecond(60)) {}
+		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60)) {}
 protected:
 	int beforeStart() override { return 0; }
 	int beforeUpdate() override { return 0; }
@@ -37,7 +37,7 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	std::vector<std::shared_ptr<Angina::Init::ISubsystemLifecycleManager>> slmsVec;
 	slmsVec.push_back(std::make_shared<Angina::Init::SDLVideoLifecycleManager>());
 	auto slms = std::make_unique<Angina::Init::SubsystemLifecycleManagers>(slmsVec);
-	Angina::UI::WindowConfig winConfig("Hi!", Angina::Units::AbsX(100), Angina::Units::AbsY(100), Angina::Units::Width(640), Angina::Units::Height(480));
+	Angina::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
 	Angina::UI::WindowPtr window = Angina::UI::SDLWindow::make(winConfig);
 	InputEventManagerPtr evMgr = SDLInputEventManager::make();
 	

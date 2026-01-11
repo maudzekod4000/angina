@@ -20,7 +20,7 @@ public:
 	// Should we be able to std::move the Window?
 	// I think it is a good idea because we can configure it from the outside and pass it into the engine
 
-	virtual Errors::ErrorCode resize(Units::Width w, Units::Height h) = 0;
+	virtual Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) = 0;
 protected:
 	const WindowConfig config;
 };

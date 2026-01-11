@@ -5,7 +5,7 @@
 #include <cassert>
 #include <chrono>
 
-namespace Angina::Units {
+namespace Core::Units {
 
 // Notes: I am a bit unsure of the implementation of these classes and the use of asserts.
 // I think, as long as the class is instantiated dynamically by the gameplay logic, it is fine to 
@@ -67,6 +67,7 @@ struct RatePerSecond {
 
 using AbsX = AbsPosition;
 using AbsY = AbsPosition;
+using FPS = RatePerSecond;
 
 }
 #endif
