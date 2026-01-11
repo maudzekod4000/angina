@@ -81,22 +81,3 @@ int Engine::start()
     }
     return 0;
 }
-
-bool Engine::processInput()
-{
-    // Poll events
-    if (const auto err = inputEventMgr->update(); err) {
-        return false;
-    }
-
-    // Read and process the input.
-    // Now.........this might not happen like that later, I want to have a multithreaded engine, but the frickin` SDL is so goddamn BAD....
-    // I should not be too harsh tho because miss OPERATING SYSTEM has too much capriche...................................................
-    const InputSnapshot input = inputEventMgr->getSnapshot();
-
-    if (input.quit) {
-        return true;
-    }
-
-    return false;
-}
