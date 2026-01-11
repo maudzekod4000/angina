@@ -5,6 +5,7 @@ add_subdirectory(input)
 add_subdirectory(init)
 add_subdirectory(time)
 add_subdirectory(ui)
+add_subdirectory(system)
 
 target_link_libraries(platform
 	PRIVATE
@@ -13,6 +14,7 @@ target_link_libraries(platform
 		init
 		platform_time
 		ui
+		system
 		project_options
 )
 

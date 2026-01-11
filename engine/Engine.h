@@ -59,6 +59,7 @@ private:
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
 	Platform::Time::FramePacer framePacer; ///< Measures and stalls the main loop in order to provide a stable frame rate, i.e. each frame should take the same time.
+	std::vector<Platform::System::Updateable*> systems;
 
 	/// Returns true when a quit event has been detected.
 	bool processInput();

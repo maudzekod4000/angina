@@ -30,6 +30,8 @@ Engine::Engine(
     assert(this->logger);
     assert(this->window);
     assert(this->inputEventMgr);
+
+    systems.push_back(this->inputEventMgr.get());
 }
 
 int Engine::start()
@@ -47,16 +49,23 @@ int Engine::start()
 
     while (state.isRunning()) {
         framePacer.startFrame();
-        // Yeah...this wont be like that .........frickin hell, but now i just want to handle the quit event and do something so give me a break.
-        if (const bool quit = processInput(); quit) {
-            break;
-        }
 
         beforeUpdate();
 
         // update the physics, etc.
+        for (auto system : systems) {
+            system->update(); // TODO: add the Phase parameter to the updateable interface...and maybe the name of the interface should be PhaseUpdateable
+        }
+        // TODO: There might be benefit in using a callback for the user events.
+        // Then we can offload code from here and order the listeners
+        // But lets see how it looks here first.
 
         afterUpdate();
+
+        // This code might be in a callback if we use the observable pattern.
+        if (inputEventMgr->getSnapshot().quit) {
+            state.set(EngineState::State::STOPPING);
+        }
         framePacer.endFrame();
     }
 

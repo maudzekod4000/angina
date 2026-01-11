@@ -10,7 +10,9 @@ public:
 	enum class State {
 		UNINITIALIZED,
 		INITIALIZING,
-		RUNNING
+		RUNNING,
+		STOPPING,
+		STOPPED
 	};
 
 	EngineState();

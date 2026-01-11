@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "core/error/Errors.h"
+#include "platform/system/Updateable.h"
 
 namespace Platform::Input {
 
@@ -18,10 +19,9 @@ struct InputSnapshot {
 /// TODO: Jesus....it didn't occur to me that the events should be received on the main thread.
 /// So this class can be assumed to be used from the same thread. Although, getSnapshot should be synchronized.
 /// I think we need a method to update the snapshot by polling and the double-buffering can stay.
-class IInputEventManager {
+class IInputEventManager : public Platform::System::Updateable {
 public:
 	virtual ~IInputEventManager() = default;
-	virtual Core::Errors::ErrorCode update() = 0;
 	virtual InputSnapshot getSnapshot() = 0;
 };
 
