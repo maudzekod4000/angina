@@ -13,6 +13,9 @@
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
 
+/// There is an idea for 'update phases', so that the system updates are structured via an ordered enum.
+/// TODO: There is runtime costs for this, but it can serialize complex pipelines.
+
 namespace Angina::EngineV3 {
 
 class Engine {
