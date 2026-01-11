@@ -3,7 +3,7 @@
 
 #include "ILogger.h"
 
-namespace Angina::Logging {
+namespace Platform::Logging {
 
 class ConsoleLogger : public ILogger {
 public:

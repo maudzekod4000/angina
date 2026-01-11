@@ -29,7 +29,7 @@ public:
 private:
 	const Core::Time::Stopwatch& globalClock; ///< Clock providing a steady tick.
 	std::chrono::nanoseconds start; ///< Nanoseconds since start of the global clock. Marks the start of a frame.
-	const Core::Units::FPS desiredFPS;
+	const Core::Units::FPS desiredFPS; ///< If the work on the frame has finished earlier than the time budget we have, the pacer will stall the thread for the remaining time.
 };
 
 }

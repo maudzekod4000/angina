@@ -3,11 +3,11 @@
 
 #include "platform/init/ISubsystemLifecycleManager.h"
 
-namespace Angina::Init {
-class SDLVideoLifecycleManager final : public ISubsystemLifecycleManager {
+namespace Backend::SDL::Init {
+class SDLVideoLifecycleManager final : public Platform::Init::ISubsystemLifecycleManager {
 public:
-	Errors::ErrorCode init(uint64_t flags) override;
-	Errors::ErrorCode destroy() override;
+	Core::Errors::ErrorCode init(uint64_t flags) override;
+	Core::Errors::ErrorCode destroy() override;
 	bool isCriticalSubsystem() override;
 };
 }

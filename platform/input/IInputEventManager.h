@@ -5,7 +5,7 @@
 
 #include "core/error/Errors.h"
 
-namespace Angina::Input {
+namespace Platform::Input {
 
 /// Accumulated state (snapshot) of the user input events.
 /// As the engine does not need every individual event, the incoming events are reduced to their latest values.
@@ -21,7 +21,7 @@ struct InputSnapshot {
 class IInputEventManager {
 public:
 	virtual ~IInputEventManager() = default;
-	virtual Errors::ErrorCode update() = 0;
+	virtual Core::Errors::ErrorCode update() = 0;
 	virtual InputSnapshot getSnapshot() = 0;
 };
 

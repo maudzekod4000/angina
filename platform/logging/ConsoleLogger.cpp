@@ -4,7 +4,7 @@
 #include <iostream>
 #include <format>
 
-using namespace Angina::Logging;
+using namespace Platform::Logging;
 
 void ConsoleLogger::log(Level lvl, std::string_view msg)
 {

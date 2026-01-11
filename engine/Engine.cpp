@@ -5,10 +5,10 @@
 #include "platform/logging/ILogger.h"
 
 using namespace Angina::EngineV3;
-using namespace Angina::Init;
-using namespace Angina::Logging;
-using namespace Angina::UI;
-using namespace Angina::Input;
+using namespace Platform::Init;
+using namespace Platform::Logging;
+using namespace Platform::UI;
+using namespace Platform::Input;
 using namespace Core::Units;
 
 Engine::Engine(

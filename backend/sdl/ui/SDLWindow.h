@@ -3,21 +3,21 @@
 
 #include <memory>
 
-#include "ui/window/IWindow.h"
-#include "ui/window/WindowConfig.h"
+#include "platform/ui/window/IWindow.h"
+#include "platform/ui/window/WindowConfig.h"
 #include "core/units/Units.hpp"
 #include "core/error/Errors.h"
 
 struct SDL_Window;
 
-namespace Angina::UI {
+namespace Backend::SDL::UI {
 
-class SDLWindow : public IWindow {
-	SDLWindow(SDL_Window*, const WindowConfig&);
+class SDLWindow : public Platform::UI::IWindow {
+	SDLWindow(SDL_Window*, const Platform::UI::WindowConfig&);
 public:
-	static std::unique_ptr<SDLWindow> make(const WindowConfig&);
+	static std::unique_ptr<SDLWindow> make(const Platform::UI::WindowConfig&);
 
-	Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
+	Core::Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
 private:
 	SDL_Window* window;
 };

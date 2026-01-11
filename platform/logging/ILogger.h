@@ -4,7 +4,7 @@
 #include <string_view>
 #include <memory>
 
-namespace Angina::Logging {
+namespace Platform::Logging {
 
 enum class Level {
 	INFO,

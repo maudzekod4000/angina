@@ -2,8 +2,8 @@
 
 #include <ranges>
 
-using namespace Angina::Init;
-using namespace Angina::Errors;
+using namespace Core::Errors;
+using namespace Platform::Init;
 
 SubsystemLifecycleManagers::SubsystemLifecycleManagers(const std::vector<std::shared_ptr<ISubsystemLifecycleManager>>& slms): lifecycleManagers(slms) {}
 
@@ -31,7 +31,7 @@ ErrorCode SubsystemLifecycleManagers::destroy()
 	return {};
 }
 
-bool Angina::Init::SubsystemLifecycleManagers::isCriticalSubsystem()
+bool SubsystemLifecycleManagers::isCriticalSubsystem()
 {
 	return true;
 }

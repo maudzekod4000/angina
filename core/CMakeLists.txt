@@ -1,17 +1,8 @@
 add_library(core STATIC)
 
 add_subdirectory(time)
-
-# TODO: Add units and errors into their own object libs
-
-target_sources(core
-	PUBLIC
-		units/Units.hpp
-		error/Errors.h
-    PRIVATE
-        units/Units.cpp
-		error/Errors.cpp
-)
+add_subdirectory(error)
+add_subdirectory(units)
 
 target_include_directories(core
 	PUBLIC
@@ -22,4 +13,6 @@ target_link_libraries(core
 	PRIVATE
 		project_options
 		time
+		error
+		units
 )

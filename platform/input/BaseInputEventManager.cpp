@@ -1,7 +1,7 @@
 #include "BaseInputEventManager.h"
 
-using namespace Angina::Input;
-using namespace Angina::Errors;
+using namespace Platform::Input;
+using namespace Core::Errors;
 
 BaseInputEventManager::BaseInputEventManager() {
 	publishedSnapshot = &snapshots[1 - writeIdx];

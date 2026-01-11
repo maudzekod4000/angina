@@ -11,15 +11,13 @@
 #include "backend/sdl/input/SDLInputEventManager.h"
 #include "core/units/Units.hpp"
 
-using namespace Angina::Input;
-
 class MyTestEngine : public Angina::EngineV3::Engine {
 public:
 	explicit MyTestEngine(
-		Angina::Init::SubsystemLifecycleManagersPtr slms,
-		Angina::Logging::LoggerPtr logger,
-		Angina::UI::WindowPtr window,
-		InputEventManagerPtr eventMgr
+		Platform::Init::SubsystemLifecycleManagersPtr slms,
+		Platform::Logging::LoggerPtr logger,
+		Platform::UI::WindowPtr window,
+		Platform::Input::InputEventManagerPtr eventMgr
 	):
 		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60)) {}
 protected:
@@ -32,14 +30,14 @@ protected:
 #undef main
 
 int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
-	Angina::Logging::LoggerPtr log = std::make_unique<Angina::Logging::ConsoleLogger>();
+	Platform::Logging::LoggerPtr log = std::make_unique<Platform::Logging::ConsoleLogger>();
 	
-	std::vector<std::shared_ptr<Angina::Init::ISubsystemLifecycleManager>> slmsVec;
-	slmsVec.push_back(std::make_shared<Angina::Init::SDLVideoLifecycleManager>());
-	auto slms = std::make_unique<Angina::Init::SubsystemLifecycleManagers>(slmsVec);
-	Angina::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
-	Angina::UI::WindowPtr window = Angina::UI::SDLWindow::make(winConfig);
-	InputEventManagerPtr evMgr = SDLInputEventManager::make();
+	std::vector<std::shared_ptr<Platform::Init::ISubsystemLifecycleManager>> slmsVec;
+	slmsVec.push_back(std::make_shared<Backend::SDL::Init::SDLVideoLifecycleManager>());
+	auto slms = std::make_unique<Platform::Init::SubsystemLifecycleManagers>(slmsVec);
+	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
+	Platform::UI::WindowPtr window = Backend::SDL::UI::SDLWindow::make(winConfig);
+	Platform::Input::InputEventManagerPtr evMgr = Backend::SDL::Input::SDLInputEventManager::make();
 	
 	MyTestEngine eng(std::move(slms), std::move(log), std::move(window), std::move(evMgr));
 	eng.start();

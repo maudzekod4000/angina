@@ -3,7 +3,7 @@
 
 #include "EngineState.h"
 
-#include "ui/window/IWindow.h"
+#include "platform/ui/window/IWindow.h"
 
 #include "platform/init/SubsystemLifecycleManagers.h"
 #include "platform/logging/ILogger.h"
@@ -19,10 +19,10 @@ class Engine {
 public:
 
 	explicit Engine(
-		Init::SubsystemLifecycleManagersPtr,
-		Logging::LoggerPtr,
-		UI::WindowPtr,
-		Input::InputEventManagerPtr inputMgr,
+		Platform::Init::SubsystemLifecycleManagersPtr,
+		Platform::Logging::LoggerPtr,
+		Platform::UI::WindowPtr,
+		Platform::Input::InputEventManagerPtr inputMgr,
 		Core::Units::RatePerSecond desiredFPS
 	);
 
@@ -49,10 +49,10 @@ protected:
 	virtual int beforeEnd() = 0;
 private:
 	EngineState state;
-	Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
-	Logging::LoggerPtr logger;
-	UI::WindowPtr window;
-	Input::InputEventManagerPtr inputEventMgr;
+	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
+	Platform::Logging::LoggerPtr logger;
+	Platform::UI::WindowPtr window;
+	Platform::Input::InputEventManagerPtr inputEventMgr;
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
 	Platform::Time::FramePacer framePacer; ///< Measures and stalls the main loop in order to provide a stable frame rate, i.e. each frame should take the same time.

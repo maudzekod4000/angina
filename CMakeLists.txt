@@ -15,7 +15,6 @@ add_subdirectory(core)
 add_subdirectory(platform)
 add_subdirectory(backend)
 add_subdirectory(engine)
-add_subdirectory(ui)
 
 add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
@@ -72,6 +71,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     core
 	platform
 	backend
-    ui
     engine
 )

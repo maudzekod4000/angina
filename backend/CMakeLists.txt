@@ -7,6 +7,7 @@ add_subdirectory(sdl)
 target_link_libraries(backend
 	PRIVATE
 		sdl
+		platform
 		project_options
 )
 

@@ -2,9 +2,10 @@
 
 #include "SDL.h"
 
-using namespace Angina::UI;
-using namespace Angina::Errors;
+using namespace Core::Errors;
 using namespace Core::Units;
+using namespace Platform::UI;
+using namespace Backend::SDL::UI;
 
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
 	IWindow(c), window(w) {}

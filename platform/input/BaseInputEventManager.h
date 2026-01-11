@@ -5,7 +5,7 @@
 
 #include "IInputEventManager.h"
 
-namespace Angina::Input {
+namespace Platform::Input {
 
 // Constrained type wont allow too small or too big refresh rate.
 // Having a high refresh rate would provide the freshest input data, but for some applications

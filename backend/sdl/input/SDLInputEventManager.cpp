@@ -1,7 +1,8 @@
 #include "SDLInputEventManager.h"
 
-using namespace Angina::Errors;
-using namespace Angina::Input;
+using namespace Core::Errors;
+using namespace Platform::Input;
+using namespace Backend::SDL::Input;
 
 #include "SDL_events.h"
 

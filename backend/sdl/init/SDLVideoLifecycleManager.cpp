@@ -2,8 +2,8 @@
 
 #include <SDL.h>
 
-using namespace Angina::Init;
-using namespace Angina::Errors;
+using namespace Core::Errors;
+using namespace Backend::SDL::Init;
 
 ErrorCode SDLVideoLifecycleManager::init(uint64_t flags)
 {

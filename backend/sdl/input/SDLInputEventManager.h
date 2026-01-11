@@ -8,19 +8,19 @@
 
 union SDL_Event;
 
-namespace Angina::Input {
+namespace Backend::SDL::Input {
 
-class SDLInputEventManager : public BaseInputEventManager {
+class SDLInputEventManager : public Platform::Input::BaseInputEventManager {
 public:
 	static std::unique_ptr<SDLInputEventManager> make();
 
 	/// Call from the main thread!
-	Errors::ErrorCode update() override;
+	Core::Errors::ErrorCode update() override;
 private:
 	explicit SDLInputEventManager();
 
 	/// Maps an SDL_Event to own event object.
-	InputSnapshot mapEvent(SDL_Event);
+	Platform::Input::InputSnapshot mapEvent(SDL_Event);
 };
 
 }

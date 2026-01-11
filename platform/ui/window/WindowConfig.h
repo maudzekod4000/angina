@@ -5,7 +5,7 @@
 
 #include "core/units/Units.hpp"
 
-namespace Angina::UI {
+namespace Platform::UI {
 
 struct WindowConfig {
 	explicit constexpr WindowConfig(
