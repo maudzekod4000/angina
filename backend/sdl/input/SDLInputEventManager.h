@@ -15,12 +15,9 @@ public:
 	static std::unique_ptr<SDLInputEventManager> make();
 
 	/// Call from the main thread!
-	Core::Errors::ErrorCode update() override;
+	Core::Errors::ErrorCode update(Platform::System::Phase) override;
 private:
 	explicit SDLInputEventManager();
-
-	/// Maps an SDL_Event to own event object.
-	Platform::Input::InputSnapshot mapEvent(SDL_Event);
 };
 
 }

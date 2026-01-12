@@ -9,6 +9,7 @@ using namespace Platform::Init;
 using namespace Platform::Logging;
 using namespace Platform::UI;
 using namespace Platform::Input;
+using namespace Platform::System;
 using namespace Core::Units;
 
 Engine::Engine(
@@ -52,13 +53,11 @@ int Engine::start()
 
         beforeUpdate();
 
-        // update the physics, etc.
-        for (auto system : systems) {
-            system->update(); // TODO: add the Phase parameter to the updateable interface...and maybe the name of the interface should be PhaseUpdateable
+        for (int i = 0; i < int(Phase::Count); i++) {
+            for (auto system : systems) {
+                system->update(static_cast<Phase>(i));
+            }
         }
-        // TODO: There might be benefit in using a callback for the user events.
-        // Then we can offload code from here and order the listeners
-        // But lets see how it looks here first.
 
         afterUpdate();
 
