@@ -5,6 +5,7 @@ target_sources(resources
 		BaseResourceManager.cpp
 	PUBLIC
 		IResourceManager.h
+		IResourceLoader.h
 )
 
 target_include_directories(resources

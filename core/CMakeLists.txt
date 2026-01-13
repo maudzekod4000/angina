@@ -3,6 +3,7 @@ add_library(core STATIC)
 add_subdirectory(time)
 add_subdirectory(error)
 add_subdirectory(units)
+add_subdirectory(identity)
 
 target_include_directories(core
 	PUBLIC
@@ -15,4 +16,5 @@ target_link_libraries(core
 		time
 		error
 		units
+		identity
 )
