@@ -16,4 +16,5 @@ target_include_directories(resources
 target_link_libraries(resources
 	PRIVATE
 		project_options
+		core
 )
