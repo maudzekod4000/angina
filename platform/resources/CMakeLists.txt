@@ -6,6 +6,7 @@ target_sources(resources
 	PUBLIC
 		IResourceManager.h
 		IResourceLoader.h
+		ResourceHandle.h
 )
 
 target_include_directories(resources
