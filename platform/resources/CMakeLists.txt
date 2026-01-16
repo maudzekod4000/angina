@@ -6,7 +6,9 @@ target_sources(resources
 	PUBLIC
 		IResourceManager.h
 		IResourceLoader.h
-		ResourceHandle.h
+		IResource.h
+		ITexture.h
+		TextureHandle.h
 )
 
 target_include_directories(resources
