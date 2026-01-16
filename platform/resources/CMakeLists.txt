@@ -8,7 +8,7 @@ target_sources(resources
 		IResourceLoader.h
 		IResource.h
 		ITexture.h
-		TextureHandle.h
+		CPUTextureHandle.h
 )
 
 target_include_directories(resources
