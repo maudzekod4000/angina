@@ -3,8 +3,8 @@
 
 namespace Platform::Resources {
 
-/// Common logic for texture implementations (SDL, OpenGL, DirectX 12).
-class ITexture {
+/// Common logic for CPU texture in-memory representation.
+class CPUTexture {
 public:
 
 };

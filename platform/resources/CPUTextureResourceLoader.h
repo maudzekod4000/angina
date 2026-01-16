@@ -4,11 +4,12 @@
 #include <filesystem>
 
 #include "core/identity/Id.h"
+#include "CPUTextureHandle.h"
 #include "core/error/Errors.h"
 
-namespace Platform::Resource {
+namespace Platform::Resources {
 /// Interface for loading and releasing resources. Lifetime interface.
-class IResourceLoader {
+class CPUTextureResourceLoader {
 public:
 	/// Loads a resource from disk into memory.
 	/// @param resourceFile File path to the resource.
@@ -20,7 +21,12 @@ public:
 	/// @return Non-empty error object if there was an error during release of resource.
 	virtual Core::Errors::ErrorCode release(Core::Identity::Id id) = 0;
 
-	virtual ~IResourceLoader() = default;
+	/// Looks for a texture with the provided id and returns a handle to it, if it exists.
+	/// @param id The id of the required texture.
+	/// @return Returns a handle to the texture.
+	virtual CPUTextureHandle resolve(Core::Identity::Id id) = 0;
+
+	virtual ~CPUTextureResourceLoader() = default;
 };
 }
 

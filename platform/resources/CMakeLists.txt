@@ -5,9 +5,9 @@ target_sources(resources
 		BaseResourceManager.cpp
 	PUBLIC
 		IResourceManager.h
-		IResourceLoader.h
+		CPUTextureResourceLoader.h
 		IResource.h
-		ITexture.h
+		CPUTexture.h
 		CPUTextureHandle.h
 )
 
