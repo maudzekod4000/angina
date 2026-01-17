@@ -6,7 +6,7 @@ namespace Platform::Resources {
 /// Common logic for CPU texture in-memory representation.
 class CPUTexture {
 public:
-
+	virtual ~CPUTexture() = default;
 };
 
 }

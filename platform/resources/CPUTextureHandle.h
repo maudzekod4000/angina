@@ -10,7 +10,7 @@ namespace Platform::Resources {
 // Or better yet, another class which will take care of the storage of the textures will upload them to GPU.
 
 // Object handle. Value type and is safe and cheap to copy.
-class CPUTextureHandle {
+struct CPUTextureHandle {
 	CPUTexture* ptr = nullptr; ///< Pointer to the resource. Read-only, do not delete.
 	bool isReady = false; ///< Is the resource loaded.
 	// TODO: There is a concept of 'generations' but i am still not familiar with it.

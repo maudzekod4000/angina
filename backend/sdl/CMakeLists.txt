@@ -5,10 +5,13 @@ target_sources(sdl
 		input/SDLInputEventManager.cpp
 		init/SDLVideoLifecycleManager.cpp
 		ui/SDLWindow.cpp
+		resources/SDLCPUTextureResourceLoader.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
 		init/SDLVideoLifecycleManager.h
 		ui/SDLWindow.h
+		resources/SDLCPUTexture.h
+		resources/SDLCPUTextureResourceLoader.h
 )
 
 target_include_directories(sdl
