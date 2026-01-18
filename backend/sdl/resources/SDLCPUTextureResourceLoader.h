@@ -15,7 +15,11 @@ namespace Backend::SDL::Resources {
 
 class SDLCPUTextureResourceLoader : public Platform::Resources::CPUTextureResourceLoader {
 public:
-	Platform::Resources::IdOrError load(const std::filesystem::path& resourceFile);
+	Platform::Resources::IdOrError load(const std::filesystem::path& resourceFile) override;
+
+	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
+
+	Platform::Resources::CPUTextureHandle resolve(Core::Identity::Id id) override;
 private:
 	Core::Identity::IdGenerator idGenerator; ///< Used for generating ids for resources.
 	std::unordered_map<Core::Identity::Id, Platform::Resources::CPUTextureHandle> textureHandlesIndex; ///< Keeps a mapping between an id and the corresponding texture.

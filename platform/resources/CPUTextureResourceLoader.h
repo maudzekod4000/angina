@@ -20,15 +20,20 @@ public:
 	/// @return The id of the resource. Can be used to get a handle to the resource.
 	virtual IdOrError load(const std::filesystem::path& resourceFile) = 0;
 
-	/// Frees the memory allocated for the resource.
+	/// Frees the memory allocated for the resource. Check with isValid before calling this.
 	/// @param id Same id that was returned from 'load' when the resource was allocated.
 	/// @return Non-empty error object if there was an error during release of resource.
 	virtual Core::Errors::ErrorCode release(Core::Identity::Id id) = 0;
 
-	/// Looks for a texture with the provided id and returns a handle to it, if it exists.
+	/// Looks for a texture with the provided id and returns a handle to it. Check with isValid before calling this.
 	/// @param id The id of the required texture.
 	/// @return Returns a handle to the texture.
 	virtual CPUTextureHandle resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
+
+	/// Checks if the resource is valid, i.e. is ready, loaded and not deleted.
+	/// @param id Id of the resource.
+	/// @return True if the resource is valid, false otherwise.
+	virtual bool isValid(Core::Identity::Id id) = 0;
 
 	virtual ~CPUTextureResourceLoader() = default;
 };

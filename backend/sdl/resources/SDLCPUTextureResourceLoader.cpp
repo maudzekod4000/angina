@@ -20,13 +20,23 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 		return std::unexpected(ErrorCode(-1, "Failed to load surface."));
 	}
 
-	SDLCPUTexture* loadedCpuTex = new SDLCPUTexture(loadedSurface); // This class could clear the surface.
+	auto loadedCpuTex = new SDLCPUTexture(loadedSurface);
 	CPUTextureHandle loadedTexHandle{};
-	loadedTexHandle.ptr = loadedCpuTex; // This could be a unique_ptr
-	loadedTexHandle.isReady = true;
+	loadedTexHandle.ptr = loadedCpuTex;
+	loadedTexHandle.isReady = true; // Loading surfaces sync right now.
 
 	const Id texId = idGenerator.next();
 	textureHandlesIndex[texId] = loadedTexHandle;
 
 	return texId;
+}
+
+ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
+{
+	return ErrorCode();
+}
+
+CPUTextureHandle SDLCPUTextureResourceLoader::resolve(Core::Identity::Id id)
+{
+	return CPUTextureHandle();
 }
