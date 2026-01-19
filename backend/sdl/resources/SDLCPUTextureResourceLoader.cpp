@@ -33,10 +33,19 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 
 ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
 {
+	CPUTextureHandle handle = textureHandlesIndex[id];
+	textureHandlesIndex.erase(id);
+	delete handle.ptr;
+
 	return ErrorCode();
 }
 
 CPUTextureHandle SDLCPUTextureResourceLoader::resolve(Core::Identity::Id id)
 {
-	return CPUTextureHandle();
+	return textureHandlesIndex[id];
+}
+
+bool SDLCPUTextureResourceLoader::isValid(Core::Identity::Id id)
+{
+	return textureHandlesIndex.find(id) != textureHandlesIndex.end();
 }
