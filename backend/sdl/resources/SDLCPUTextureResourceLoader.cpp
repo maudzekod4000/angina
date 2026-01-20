@@ -20,13 +20,20 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 		return std::unexpected(ErrorCode(-1, "Failed to load surface."));
 	}
 
-	auto loadedCpuTex = new SDLCPUTexture(loadedSurface);
 	CPUTextureHandle loadedTexHandle{};
-	loadedTexHandle.ptr = loadedCpuTex;
+	loadedTexHandle.ptr = new SDLCPUTexture(loadedSurface);
 	loadedTexHandle.isReady = true; // Loading surfaces sync right now.
 
 	const Id texId = idGenerator.next();
-	textureHandlesIndex[texId] = loadedTexHandle;
+	
+	//1. Do we have a free index in the freeList?
+
+	//1.1 If there is a free index, use it to insert the new element in that slot
+
+	//1.2 When there is no free index push to the end of the storage
+
+	//2. After we have inserted that element in the storage use the index to add to the mapping.
+
 
 	return texId;
 }
