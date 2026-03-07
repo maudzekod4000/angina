@@ -26,23 +26,45 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 
 	const Id texId = idGenerator.next();
 	
-	//1. Do we have a free index in the freeList?
-
-	//1.1 If there is a free index, use it to insert the new element in that slot
-
-	//1.2 When there is no free index push to the end of the storage
-
-	//2. After we have inserted that element in the storage use the index to add to the mapping.
-
+	if (freeList.size() > 0) {
+		const size_t idx = freeList.top();
+		freeList.pop();
+		assert(idx >= 0 && idx < storage.size()); // This should not happen, its an invariant for the class.
+		storage[idx] = loadedTexHandle;
+		idToIndexInStorage[texId] = idx;
+	}
+	else {
+		storage.push_back(loadedTexHandle);
+		idToIndexInStorage[texId] = storage.size() - 1;
+	}
 
 	return texId;
 }
 
 ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
 {
-	CPUTextureHandle handle = textureHandlesIndex[id];
-	textureHandlesIndex.erase(id);
-	delete handle.ptr;
+	// First, lets find the index of this resource by the id
+	auto it = idToIndexInStorage.find(id);
+
+	if (it == idToIndexInStorage.end()) {
+		return ErrorCode(-1, "Not found");
+	}
+
+	// lets release the resource, mostly the pointer, the structure is already in memory of the vector
+	const size_t idx = it->second;
+
+	assert(idx >= 0 && idx < storage.size());
+
+	CPUTextureHandle handle = storage[idx];
+
+	// TODO: Hmm this whole freelist thing can be extracted to its own Data structure.
+	if (handle.ptr) {
+		delete handle.ptr;
+	}
+
+	// add the index to the freelist. Hmmm a stack will make the last released index hot...
+	// In case that we have reserve and release one after the other.
+	freeList.push(idx);
 
 	return ErrorCode();
 }
