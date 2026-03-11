@@ -29,7 +29,7 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 	if (freeList.size() > 0) {
 		const size_t idx = freeList.top();
 		freeList.pop();
-		assert(idx >= 0 && idx < storage.size()); // This should not happen, its an invariant for the class.
+		assert(idx < storage.size()); // This should not happen, its an invariant for the class.
 		storage[idx] = loadedTexHandle;
 		idToIndexInStorage[texId] = idx;
 	}
@@ -46,14 +46,12 @@ ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
 	// First, lets find the index of this resource by the id
 	auto it = idToIndexInStorage.find(id);
 
-	if (it == idToIndexInStorage.end()) {
-		return ErrorCode(-1, "Not found");
-	}
+	assert(it != idToIndexInStorage.end());
 
 	// lets release the resource, mostly the pointer, the structure is already in memory of the vector
 	const size_t idx = it->second;
 
-	assert(idx >= 0 && idx < storage.size());
+	assert(idx < storage.size());
 
 	CPUTextureHandle handle = storage[idx];
 
@@ -71,10 +69,18 @@ ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
 
 CPUTextureHandle SDLCPUTextureResourceLoader::resolve(Core::Identity::Id id)
 {
-	return textureHandlesIndex[id];
+	const auto it = idToIndexInStorage.find(id);
+
+	assert(it != idToIndexInStorage.end());
+
+	const size_t idx = it->second;
+
+	assert(idx < storage.size());
+
+	return storage[idx];
 }
 
 bool SDLCPUTextureResourceLoader::isValid(Core::Identity::Id id)
 {
-	return textureHandlesIndex.find(id) != textureHandlesIndex.end();
+	return idToIndexInStorage.find(id) != idToIndexInStorage.end();
 }
