@@ -9,6 +9,8 @@ set(CMAKE_MODULE_PATH
 
 project(angina LANGUAGES CXX)
 
+option(TEST_BUILD "Test build" ON)
+
 include(${DIR}/cmake_helpers/ProjectOptions.cmake)
 
 add_subdirectory(core)
@@ -73,3 +75,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	backend
     engine
 )
+
+if(TEST_BUILD)
+    enable_testing()
+    add_subdirectory(third_party/googletest)
+    add_subdirectory(tests)
+endif()

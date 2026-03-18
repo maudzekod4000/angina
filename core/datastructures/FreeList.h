@@ -4,38 +4,70 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
+#include <concepts>
+#include <assert.h>
 
 #include "identity/Id.h"
 
 namespace Core::DataStructures {
 
-// Vector with reusable indexes. Instead of growing with use, slots which are considered free
-// are reused. Hm....this list will be kinda tied to the Id but thats not so bad, an id is just a number.
-// We want the T type to be a value type....it should be safe and cheap to copy.
 template <typename T>
+concept HasFreeMem = requires(T t) {
+	{ t.freeMem() };
+};
+// Vector with reusable indexes. Instead of growing with use, slots which are freed are reused.
+// @tparam T Type of the value in storage. It is adviceable this type to be cheap for copy.
+// The type should have a freeMem method if there is memory that needs to be freed when the item is erased from the freelist.
+template <HasFreeMem T>
 class FreeList {
 public:
-	// find(Id) -> how to create a custom iterator....that would allow us to have one method for both 'exist' and 'get'
-	// free(Id)
-	// add(T) -> decided whether to use the freelist or add at the end.
-	// Hmmm or maybe have two methods -> find and get...because idk how to create a custom iterator.
-	
 	/// Checks whether a item identified with this Id is in the list.
 	/// @param id The id we want to query.
 	/// @return True if the item exists in the list.
-	bool has(Core::Identity::Id id) const;
+	bool has(Core::Identity::Id id) const {
+		return idToIndexInStorage.find(id) != idToIndexInStorage.cend();
+	}
 
 	/// Finds and returns a copy of the item from storage.
 	/// Always call 'has' first to check if the item exists, otherwise an empty object will be returned.
 	/// @param id The id of the item we want to get.
 	/// @return Returns the item from storage or an empty, default-constructed object if the item does not exist.
-	T get(Core::Identity::Id id) const;
+	T get(Core::Identity::Id id) const {
+		assert(has(id));
+		const size_t idx = idToIndexInStorage[id];
+		return storage[idx];
+	}
 
-	// TODO: Maybe a move semantic to avoid a copy? Usually we wont need the temporary value that
-	// has been passed.
-	Core::Identity::Id add(T item);
+	Core::Identity::Id add(T item) {
+		const Id texId = idGenerator.next();
+	
+		if (freeList.size() > 0) {
+			const size_t idx = freeList.top();
+			freeList.pop();
+			storage[idx] = std::move(item);
+			idToIndexInStorage[texId] = idx;
+		}
+		else {
+			storage.push_back(std::move(item));
+			idToIndexInStorage[texId] = storage.size() - 1;
+		}
 
-	bool remove(Core::Identity::Id id);
+		return texId;
+	}
+
+	/// Calls the freeMem method on the value associated with this id and free the index in storage so it can be reused.
+	/// Make sure to call 'has(id)' before calling this method.
+	/// @param id The id of the item we want to delete.
+	void remove(Core::Identity::Id id) {
+		assert(has(id));
+
+		const size_t idx = idToIndexInStorage[id];
+		T item = storage[idx];
+
+		item.freeMem();
+
+		freeList.push(idx);
+	}
 private:
 	std::vector<T> storage; ///< Actual storage of where the objects 'live'.
 	std::unordered_map<Core::Identity::Id, size_t> idToIndexInStorage; ///< A mapping between an Id and an index in storage.
