@@ -7,7 +7,8 @@
 #include <concepts>
 #include <assert.h>
 
-#include "identity/Id.h"
+#include "core/identity/Id.h"
+#include "core/identity/IdGenerator.h"
 
 namespace Core::DataStructures {
 
@@ -39,7 +40,7 @@ public:
 	}
 
 	Core::Identity::Id add(T item) {
-		const Id texId = idGenerator.next();
+		const Core::Identity::Id texId = idGenerator.next();
 	
 		if (freeList.size() > 0) {
 			const size_t idx = freeList.top();
@@ -68,10 +69,16 @@ public:
 
 		freeList.push(idx);
 	}
+
+	/// Returns the number of addressable/active/not-deleted elements in storage.
+	size_t size() const {
+		return idToIndexInStorage.size();
+	}
 private:
 	std::vector<T> storage; ///< Actual storage of where the objects 'live'.
 	std::unordered_map<Core::Identity::Id, size_t> idToIndexInStorage; ///< A mapping between an Id and an index in storage.
 	std::stack<size_t> freeList; ///< A list of free indexes into the storage that can be reused. If it is empty, push to the end of storage, if not, use the first free index.
+	Core::Identity::IdGenerator idGenerator; ///< Used for generating ids for resources.
 };
 
 }
