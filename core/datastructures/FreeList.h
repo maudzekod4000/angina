@@ -35,7 +35,8 @@ public:
 	/// @return Returns the item from storage or an empty, default-constructed object if the item does not exist.
 	T get(Core::Identity::Id id) const {
 		assert(has(id));
-		const size_t idx = idToIndexInStorage[id];
+		auto it = idToIndexInStorage.find(id);
+		const size_t idx = it->second;
 		return storage[idx];
 	}
 
@@ -62,10 +63,13 @@ public:
 	void remove(Core::Identity::Id id) {
 		assert(has(id));
 
-		const size_t idx = idToIndexInStorage[id];
+		auto it = idToIndexInStorage.find(id);
+		const size_t idx = it->second;
 		T item = storage[idx];
 
 		item.freeMem();
+
+		idToIndexInStorage.erase(it);
 
 		freeList.push(idx);
 	}
@@ -73,6 +77,17 @@ public:
 	/// Returns the number of addressable/active/not-deleted elements in storage.
 	size_t size() const {
 		return idToIndexInStorage.size();
+	}
+
+	/// Returns the current storage size.
+	/// Due to reuse mechanism, the size should remain somewhat flat when we have
+	/// alternating add and remove operations.
+	size_t storageSize() const {
+		return storage.size();
+	}
+
+	size_t freeListSize() const {
+		return freeList.size();
 	}
 private:
 	std::vector<T> storage; ///< Actual storage of where the objects 'live'.
