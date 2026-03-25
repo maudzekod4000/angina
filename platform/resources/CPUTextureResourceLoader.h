@@ -1,6 +1,7 @@
 #ifndef RESOURCES_IRESOURCE_LOADER_H
 #define RESOURCES_IRESOURCE_LOADER_H
 
+#include <vector>
 #include <expected>
 #include <filesystem>
 
@@ -19,6 +20,12 @@ public:
 	/// @param resourceFile File path to the resource.
 	/// @return The id of the resource. Can be used to get a handle to the resource.
 	virtual IdOrError load(const std::filesystem::path& resourceFile) = 0;
+
+	/// Loads multiple resources from disk to memory.
+	/// @param resourceFiles A vector of file paths.
+	/// @return A vector that has the same length as resourceFiles.If the resource is loaded, the corresponding index will contain the Id of the resource, otherwise an error.
+	/// The mapping of indexes between resourceFiles vector and the return vector is direct, i.e. 0 -> 0, 1 -> 1, etc.
+	virtual std::vector<IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) = 0;
 
 	/// Frees the memory allocated for the resource. Check with isValid before calling this.
 	/// @param id Same id that was returned from 'load' when the resource was allocated.

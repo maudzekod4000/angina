@@ -45,6 +45,18 @@ IdOrError SDLCPUTextureResourceLoader::load(const std::filesystem::path& resourc
 	return texId;
 }
 
+std::vector<IdOrError> SDLCPUTextureResourceLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
+{
+	std::vector<IdOrError> results;
+	results.reserve(resourceFiles.size());
+
+	for (const auto& resPath : resourceFiles) {
+		results.push_back(load(resPath));
+	}
+
+	return results;
+}
+
 ErrorCode SDLCPUTextureResourceLoader::release(Core::Identity::Id id)
 {	
 	texHandleFreeList.remove(id);

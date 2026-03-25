@@ -1,8 +1,6 @@
 #ifndef BACKEND_SDL_SDL_CPU_TEXTURE_RESOURCE_LOADER_H
 #define BACKEND_SDL_SDL_CPU_TEXTURE_RESOURCE_LOADER_H
 
-#include <expected>
-
 #include "core/error/Errors.h"
 #include "core/datastructures/FreeList.h"
 
@@ -10,9 +8,16 @@
 
 namespace Backend::SDL::Resources {
 
+/// Simple, sequential resource loader.
 class SDLCPUTextureResourceLoader : public Platform::Resources::CPUTextureResourceLoader {
 public:
+
+	/// Does a synchronous, blocking load of a texture resource.
 	Platform::Resources::IdOrError load(const std::filesystem::path& resourceFile) override;
+
+	/// Does a synchronous, blocking load of one or many texture resources, one after the other,
+	/// starting from the first in the list of paths.
+	std::vector<Platform::Resources::IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) override;
 
 	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
