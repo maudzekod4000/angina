@@ -1,14 +1,20 @@
 add_executable(tests
     test_something.cpp
     test_FreeList.cpp
+    resources/test_SDLCPUTextureResourceLoader.cpp
 )
 
 target_link_libraries(tests
     PRIVATE
         project_options
         core
+        sdl
         gtest_main
 )
 
 include(GoogleTest)
 gtest_discover_tests(tests)
+
+target_compile_definitions(tests
+    PRIVATE
+        TEST_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/testfiles")

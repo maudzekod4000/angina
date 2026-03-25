@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "SDLCPUTexture.h"
+
 #include "SDL_image.h"
 
 using namespace Backend::SDL::Resources;

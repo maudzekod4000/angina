@@ -5,6 +5,7 @@ target_sources(sdl
 		input/SDLInputEventManager.cpp
 		init/SDLVideoLifecycleManager.cpp
 		ui/SDLWindow.cpp
+		resources/SDLCPUTexture.cpp
 		resources/SDLCPUTextureResourceLoader.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
@@ -12,11 +13,6 @@ target_sources(sdl
 		ui/SDLWindow.h
 		resources/SDLCPUTexture.h
 		resources/SDLCPUTextureResourceLoader.h
-)
-
-target_include_directories(sdl
-	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 find_package(SDL2 REQUIRED)
@@ -49,7 +45,7 @@ target_include_directories(sdl
 	PRIVATE 
 		${SDL2_INCLUDE_DIR} ${SDL2_MIXER_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIR} ${INTERFACE_INCLUDE_DIRECTORIES}
 	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 target_link_libraries(sdl

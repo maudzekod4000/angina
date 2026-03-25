@@ -1,10 +1,9 @@
 #ifndef SDL_RESOURCES_SDLCPUTEXTURE_H
 #define SDL_RESOURCES_SDLCPUTEXTURE_H
 
-#include <cassert>
-
 #include "platform/resources/CPUTexture.h"
-#include "SDL_surface.h"
+
+struct SDL_Surface;
 
 namespace Backend::SDL::Resources {
 
@@ -14,17 +13,11 @@ class SDLCPUTexture : public Platform::Resources::CPUTexture {
 public:
 
 	/// @param s Non-null. Check for null before passing, the class relies on non-null pointer. Takes ownership of the memory.
-	explicit SDLCPUTexture(SDL_Surface* s) noexcept: texture(s) {
-		assert(s);
-	}
+	explicit SDLCPUTexture(SDL_Surface* s) noexcept;
 
-	~SDLCPUTexture() noexcept {
-		SDL_FreeSurface(texture);
-	}
+	~SDLCPUTexture() noexcept;
 
-	const SDL_Surface* const get() const noexcept {
-		return texture;
-	}
+	const SDL_Surface* const get() const noexcept;
 private:
 	SDL_Surface* texture; ///< Read-only pointer to the CPU texture. Do not delete.
 };

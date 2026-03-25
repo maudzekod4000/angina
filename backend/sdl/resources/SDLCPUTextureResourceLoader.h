@@ -8,8 +8,6 @@
 
 #include "platform/resources/CPUTextureResourceLoader.h"
 
-#include "SDLCPUTexture.h"
-
 namespace Backend::SDL::Resources {
 
 class SDLCPUTextureResourceLoader : public Platform::Resources::CPUTextureResourceLoader {
