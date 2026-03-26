@@ -104,3 +104,5 @@ TEST(FreeList, FreeListSize)
     EXPECT_EQ(2, list.freeListSize());
     EXPECT_EQ(2, list.storageSize());
 }
+
+// TODO: Add tests for the case in which the client generates an ID

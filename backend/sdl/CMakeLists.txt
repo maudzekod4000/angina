@@ -8,6 +8,7 @@ target_sources(sdl
 		resources/SDLCPUTexture.cpp
 		resources/SDLCPUTextureResourceLoader.cpp
 		resources/SDLCPUTextureResourceLoaderAsync.cpp
+		resources/SDLCPUTextureResourceLoaderHyperAsync.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
 		init/SDLVideoLifecycleManager.h
@@ -15,6 +16,7 @@ target_sources(sdl
 		resources/SDLCPUTexture.h
 		resources/SDLCPUTextureResourceLoader.h
 		resources/SDLCPUTextureResourceLoaderAsync.h
+		resources/SDLCPUTextureResourceLoaderHyperAsync.h
 )
 
 find_package(SDL2 REQUIRED)

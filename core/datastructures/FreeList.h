@@ -40,9 +40,7 @@ public:
 		return storage[idx];
 	}
 
-	Core::Identity::Id add(T item) {
-		const Core::Identity::Id texId = idGenerator.next();
-	
+	Core::Identity::Id add(Core::Identity::Id texId, T item) {
 		if (freeList.size() > 0) {
 			const size_t idx = freeList.top();
 			freeList.pop();
@@ -55,6 +53,11 @@ public:
 		}
 
 		return texId;
+	}
+
+	Core::Identity::Id add(T item) {
+		const Core::Identity::Id texId = idGenerator.next();
+		return add(texId, item);
 	}
 
 	/// Calls the freeMem method on the value associated with this id and free the index in storage so it can be reused.

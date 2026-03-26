@@ -36,7 +36,7 @@ std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::fil
 		if (surface) {
 			CPUTextureHandle loadedTexHandle{};
 			loadedTexHandle.ptr = new SDLCPUTexture(surface);
-			loadedTexHandle.isReady = true; // Hm...this field might not be needed.
+			loadedTexHandle.isReady = true;
 
 			const Id texId = texHandleFreeList.add(loadedTexHandle);
 

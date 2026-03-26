@@ -1,5 +1,5 @@
-#ifndef SDL_CPU_TEXTURE_LOADER_ASYNC_H
-#define SDL_CPU_TEXTURE_LOADER_ASYNC_H
+#ifndef SDL_CPU_TEXTURE_LOADER_HYPER_ASYNC
+#define SDL_CPU_TEXTURE_LOADER_HYPER_ASYNC
 
 #include "platform/resources/CPUTextureResourceLoader.h"
 
@@ -7,13 +7,16 @@
 
 namespace Backend::SDL::Resources {
 
-/// Loads resources in parallel, but the load time will depend on the slowest texture
-/// load, because we are blocking and waiting for all textures to be loaded,
-/// before adding the textures to the freelist storage.
-class SDLCPUTextureLoaderAsync : public Platform::Resources::CPUTextureResourceLoader {
+/// Loads resources in parallel and returns control immediately.
+/// Textures will become available at their own time, whenever they are loaded.
+/// Use isValid to check if the texture has been loaded and resolve to get a handle to it.
+class SDLCPUTextureLoaderHyperAsync : public Platform::Resources::CPUTextureResourceLoader {
 public:
 
-	/// Empty implementation. Use SDLCPUTextureLoader::load method instead.
+	/// Hmmmm this is interesting...So we have to return the Id before we added it to the 
+	/// Freelist...that means that we must expand the freelist so that it can accept an Id
+	/// We generate the Id and return it and then we use that same Id when we add to the
+	/// freelist...
 	Platform::Resources::IdOrError load(const std::filesystem::path& resourceFile) override;
 
 	/// Thread-safe method for loading one or more resources in parallel. 
@@ -30,4 +33,4 @@ private:
 
 }
 
-#endif // !SDL_CPU_TEXTURE_LOADER_ASYNC_H
+#endif // !SDL_CPU_TEXTURE_LOADER_HYPER_ASYNC
