@@ -21,14 +21,16 @@ IdOrError SDLCPUTextureLoaderAsync::load(const std::filesystem::path& resourceFi
 std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
 	std::vector<std::future<SDL_Surface*>> surfacesFut;
+	surfacesFut.reserve(resourceFiles.size());
 
 	for (const auto& file : resourceFiles) {
-		surfacesFut.push_back(std::async(std::launch::async, [&file]() -> SDL_Surface* {
+		surfacesFut.push_back(std::async(std::launch::async, [file]() -> SDL_Surface* {
 			return IMG_Load((const char*)(file.u8string().c_str()));
 		}));
 	}
 
 	std::vector<IdOrError> result;
+	result.reserve(resourceFiles.size());
 
 	for (auto& fut : surfacesFut) {
 		SDL_Surface* surface = fut.get();

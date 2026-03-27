@@ -3,6 +3,7 @@ add_executable(tests
     test_FreeList.cpp
     resources/test_SDLCPUTextureResourceLoader.cpp
     resources/test_SDLCPUTextureResourceLoaderAsync.cpp
+    resources/test_SDLCPUTextureResourceLoaderHyperAsync.cpp
 )
 
 target_link_libraries(tests

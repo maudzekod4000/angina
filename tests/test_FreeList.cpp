@@ -8,7 +8,10 @@ struct SampleStruct {
     int a = 0;
     float b = 0.0f;
 
-    void freeMem() {}
+    void freeMem() {
+        a = 0;
+        b = 0.0f;
+    }
 };
 
 TEST(FreeList, Initialization)
@@ -105,4 +108,14 @@ TEST(FreeList, FreeListSize)
     EXPECT_EQ(2, list.storageSize());
 }
 
-// TODO: Add tests for the case in which the client generates an ID
+TEST(FreeList, ExternId)
+{
+    FreeList<SampleStruct> list;
+    SampleStruct testStruct{};
+    auto id = Core::Identity::Id(101);
+
+    auto resId = list.add(id, testStruct);
+
+    EXPECT_EQ(id, resId);
+    EXPECT_TRUE(list.has(id));
+}

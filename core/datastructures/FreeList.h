@@ -19,6 +19,7 @@ concept HasFreeMem = requires(T t) {
 // Vector with reusable indexes. Instead of growing with use, slots which are freed are reused.
 // @tparam T Type of the value in storage. It is adviceable this type to be cheap for copy.
 // The type should have a freeMem method if there is memory that needs to be freed when the item is erased from the freelist.
+// Not thread-safe.
 template <HasFreeMem T>
 class FreeList {
 public:
@@ -40,6 +41,8 @@ public:
 		return storage[idx];
 	}
 
+	/// Adds an item to the free list and associates it with the provided texId.
+	/// Make sure the id is not taken, i.e. isValid(id) == false.
 	Core::Identity::Id add(Core::Identity::Id texId, T item) {
 		if (freeList.size() > 0) {
 			const size_t idx = freeList.top();
@@ -68,9 +71,7 @@ public:
 
 		auto it = idToIndexInStorage.find(id);
 		const size_t idx = it->second;
-		T item = storage[idx];
-
-		item.freeMem();
+		storage[idx].freeMem();
 
 		idToIndexInStorage.erase(it);
 
@@ -91,6 +92,12 @@ public:
 
 	size_t freeListSize() const {
 		return freeList.size();
+	}
+
+	~FreeList() {
+		for (auto& item : storage) {
+			item.freeMem();
+		}
 	}
 private:
 	std::vector<T> storage; ///< Actual storage of where the objects 'live'.
