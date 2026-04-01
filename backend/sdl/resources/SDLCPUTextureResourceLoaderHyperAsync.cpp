@@ -17,6 +17,8 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 
     auto id = idGenerator.next();
 
+    // A thread per texture is not ideal. Threads are expensive and image loading is mostly I/O.
+    // Meaning that the CPU is not utilized. But there is a lot of context switching.
     std::thread([id, resourceFile, this]() {
         SDL_Surface* surface = IMG_Load((const char*)(resourceFile.u8string().c_str()));
 
@@ -31,27 +33,66 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 		        texHandleFreeList.add(id, loadedTexHandle);
             }
         }
-    }).detach();
+    }).detach(); // By changing this to join, the code works...so its a concurrency issue with FreeList.
+    // Which is super weird because i have a lock....
+    // By the way, I think it would be sufficient if we just spawn a single 
+    // thread for loading textures...Or maybe a configurable number of workers to 
+    // load textures, maybe sometimes we can have two workers.
+    // Ok, back to the issue...we definitely get some kinda concurrency in the FreeList
+    // and its state becomes balls....
+    // Can't we just use the synchronous class which loads textures and use it in a thread.
+    // Or call the load method in a separate thread.
+    // Option 1:
+    // Have a synchronous class and do something like.
+    // MyLoaderClass loader;
+    // std::thread([]() { loader.load(....) });
+    // But....thats not good because the client has to use synchronization,
+    // if the class itself doesnt....
+    // Option 2:
+    // Have a class that spins a configurable number of workers that 
+    // can load textures...
+    // MyLoaderClass loader(2);
+    // loader.load(...)
+    // We do that at the initialization of the game
+    // Later we have a bit of waiting for the resource, which should be zero
+    // most of the time.
+    // Option 3:
+    // we can have a class with just one worker for loading textures and also
+    // some mechanism for waiting on a texture (spinning a bit).
+    // Yeah, I suppose one thread is enough because there will be a lot more things going on...
+    // Ok, sooo I will do a single threaded version a bit later....
+    // It is useful to add another method to the API which will be like waitIsValid(id)...
 
     return id;
 }
 
-std::vector<Platform::Resources::IdOrError> Backend::SDL::Resources::SDLCPUTextureLoaderHyperAsync::load(const std::vector<std::filesystem::path>& resourceFiles)
+std::vector<IdOrError> SDLCPUTextureLoaderHyperAsync::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
-    return std::vector<Platform::Resources::IdOrError>();
+    // There won't be errors, for now.
+    std::vector<IdOrError> result;
+
+    for (const auto& path : resourceFiles) {
+        result.push_back(load(path));
+    }
+
+    return result;
 }
 
-Core::Errors::ErrorCode Backend::SDL::Resources::SDLCPUTextureLoaderHyperAsync::release(Core::Identity::Id id)
+ErrorCode SDLCPUTextureLoaderHyperAsync::release(Id id)
 {
-    return Core::Errors::ErrorCode();
+    std::unique_lock lock(freeListMutex);
+    texHandleFreeList.remove(id);
+    return ErrorCode();
 }
 
-Platform::Resources::CPUTextureHandle Backend::SDL::Resources::SDLCPUTextureLoaderHyperAsync::resolve(Core::Identity::Id id)
+CPUTextureHandle SDLCPUTextureLoaderHyperAsync::resolve(Id id)
 {
-    return Platform::Resources::CPUTextureHandle();
+    std::shared_lock lock(freeListMutex);
+    return texHandleFreeList.get(id);
 }
 
-bool Backend::SDL::Resources::SDLCPUTextureLoaderHyperAsync::isValid(Core::Identity::Id id)
+bool SDLCPUTextureLoaderHyperAsync::isValid(Id id)
 {
-    return false;
+    std::shared_lock lock(freeListMutex);
+    return texHandleFreeList.has(id);
 }

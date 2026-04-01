@@ -9,7 +9,7 @@ namespace Platform::Resources {
 // pump the textures to GPU
 // Or better yet, another class which will take care of the storage of the textures will upload them to GPU.
 
-// Object handle. Value type and is safe and cheap to copy.
+// Object handle. Value type that is safe and cheap to copy.
 struct CPUTextureHandle {
 	CPUTexture* ptr = nullptr; ///< Pointer to the resource. Read-only, do not delete. Always check if it is a live resource before using.
 	bool isReady = false; ///< Is the resource loaded.
