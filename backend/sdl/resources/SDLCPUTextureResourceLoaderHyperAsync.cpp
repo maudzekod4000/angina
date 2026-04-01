@@ -19,7 +19,7 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 
     // A thread per texture is not ideal. Threads are expensive and image loading is mostly I/O.
     // Meaning that the CPU is not utilized. But there is a lot of context switching.
-    std::thread([id, resourceFile, this]() {
+    workerHandles.push_back(std::jthread([id, resourceFile, this]() {
         SDL_Surface* surface = IMG_Load((const char*)(resourceFile.u8string().c_str()));
 
         if (surface) {
@@ -33,7 +33,7 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 		        texHandleFreeList.add(id, loadedTexHandle);
             }
         }
-    }).detach(); // By changing this to join, the code works...so its a concurrency issue with FreeList.
+    })); // By changing this to join, the code works...so its a concurrency issue with FreeList.
     // Which is super weird because i have a lock....
     // By the way, I think it would be sufficient if we just spawn a single 
     // thread for loading textures...Or maybe a configurable number of workers to 

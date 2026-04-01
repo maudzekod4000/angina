@@ -36,6 +36,7 @@ private:
 	Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	Core::Identity::IdGenerator idGenerator;
 	std::shared_mutex freeListMutex;
+	std::vector<std::jthread> workerHandles;
 };
 
 }

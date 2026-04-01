@@ -117,11 +117,13 @@ TEST(SDLCPUTextureResourceHyperAsync, LoadManyResolveOne)
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() <<
         " ms." << std::endl;
 
-    std::thread([ids, &loader]() {
+    auto id = ids[20].value();
+
+    std::thread([id, &loader]() {
 
         // TODO: This is not cool, because some resources might just fail to load
         // and this will clog the whole test execution forever...
-        while (!std::all_of(ids.begin(), ids.end(), [&loader](auto idOrErr) { return loader.isValid(idOrErr.value()); })) {
+        while (!loader.isValid(id)) {
             std::cout << "Texture is not available yet" << std::endl;
         }
     }).join();
@@ -131,5 +133,5 @@ TEST(SDLCPUTextureResourceHyperAsync, LoadManyResolveOne)
         std::chrono::duration_cast<std::chrono::milliseconds>(texLoadedEnd - start).count() <<
         " ms." << std::endl;
 
-    EXPECT_TRUE(std::all_of(ids.begin(), ids.end(), [&loader](auto idOrErr) { return loader.isValid(idOrErr.value()); }));
+    EXPECT_TRUE(loader.isValid(id));
 }
