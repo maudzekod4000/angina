@@ -24,12 +24,12 @@ CPUTextureLoadWorker::CPUTextureLoadWorker()
 	});
 }
 
-IdOrError Platform::Resources::CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
+IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
 {
-	TexLoadJob job{ .texPath = texturePath, .allocatedId = idGen.next() };
+	const auto id = idGen.next();
 	{
-		std::unique_lock lock(jobQueueMutex);
-		jobQueue.push(job);
+		const std::unique_lock lock(jobQueueMutex);
+		jobQueue.emplace(texturePath, id);
 	}
-	return job.allocatedId;
+	return id;
 }

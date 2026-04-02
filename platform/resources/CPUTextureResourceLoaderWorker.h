@@ -36,9 +36,16 @@ public:
 	IdOrError load(const std::filesystem::path& texturePath) override;
 
 private:
-	struct TexLoadJob {
-		std::filesystem::path texPath; ///< Path to the texture, requested for loading.
-		Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
+	class TexLoadJob {
+	public:
+		explicit TexLoadJob(std::filesystem::path texPath, Core::Identity::Id id) noexcept:
+			texPath(std::move(texPath)), allocatedId(id) {}
+
+		const std::filesystem::path& getPath() const noexcept { return texPath; }
+		Core::Identity::Id getId() const noexcept { return allocatedId; }
+	private:
+		const std::filesystem::path texPath; ///< Path to the texture, requested for loading.
+		const Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
 	};
 
 	Core::Identity::IdGenerator idGen; ///< Instance that can generate ids for the textures. Should be called from a single-threaded context.
