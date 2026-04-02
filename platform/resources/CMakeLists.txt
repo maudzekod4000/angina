@@ -3,12 +3,14 @@ add_library(resources OBJECT)
 target_sources(resources
 	PRIVATE
 		BaseResourceManager.cpp
+		CPUTextureResourceLoaderWorker.cpp
 	PUBLIC
 		IResourceManager.h
 		CPUTextureResourceLoader.h
 		IResource.h
 		CPUTexture.h
 		CPUTextureHandle.h
+		CPUTextureResourceLoaderWorker.h
 )
 
 target_include_directories(resources

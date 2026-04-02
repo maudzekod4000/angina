@@ -20,6 +20,10 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
     // A thread per texture is not ideal. Threads are expensive and image loading is mostly I/O.
     // Meaning that the CPU is not utilized. But there is a lot of context switching.
     workerHandles.push_back(std::jthread([id, resourceFile, this]() {
+        // Hahhahah sooo why does this class have to be called SDLSomethingSomething?
+        // Just a small snippet is SDL related,
+        // we can accept a callback (strategy) which will return a CPUTextureHandle...
+        // Anyway I won't refactor the existing methods as they are not optimal anyway.
         SDL_Surface* surface = IMG_Load((const char*)(resourceFile.u8string().c_str()));
 
         if (surface) {
@@ -33,35 +37,7 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 		        texHandleFreeList.add(id, loadedTexHandle);
             }
         }
-    })); // By changing this to join, the code works...so its a concurrency issue with FreeList.
-    // Which is super weird because i have a lock....
-    // By the way, I think it would be sufficient if we just spawn a single 
-    // thread for loading textures...Or maybe a configurable number of workers to 
-    // load textures, maybe sometimes we can have two workers.
-    // Ok, back to the issue...we definitely get some kinda concurrency in the FreeList
-    // and its state becomes balls....
-    // Can't we just use the synchronous class which loads textures and use it in a thread.
-    // Or call the load method in a separate thread.
-    // Option 1:
-    // Have a synchronous class and do something like.
-    // MyLoaderClass loader;
-    // std::thread([]() { loader.load(....) });
-    // But....thats not good because the client has to use synchronization,
-    // if the class itself doesnt....
-    // Option 2:
-    // Have a class that spins a configurable number of workers that 
-    // can load textures...
-    // MyLoaderClass loader(2);
-    // loader.load(...)
-    // We do that at the initialization of the game
-    // Later we have a bit of waiting for the resource, which should be zero
-    // most of the time.
-    // Option 3:
-    // we can have a class with just one worker for loading textures and also
-    // some mechanism for waiting on a texture (spinning a bit).
-    // Yeah, I suppose one thread is enough because there will be a lot more things going on...
-    // Ok, sooo I will do a single threaded version a bit later....
-    // It is useful to add another method to the API which will be like waitIsValid(id)...
+    }));
 
     return id;
 }
