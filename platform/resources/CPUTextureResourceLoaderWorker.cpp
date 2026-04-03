@@ -5,7 +5,7 @@ using namespace Core::Errors;
 
 CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 {
-	working = true;
+	looping = true;
 	workerThread = std::jthread([loadTextureFunc, this]() {
 		// What is the jist of the worker thread?
 		// 1. we need some synchronization (read-write?) because 
@@ -13,14 +13,22 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 		// This code is not designed to be executed in several threads
 		// the idea is that we want a single thread to load all texture resources.
 		// I haven't checked if its okay to run this in a loop for example.
-		while (working) {
+		while (looping) {
 			TexLoadJob job;
 			{
+				std::unique_lock waitOnWorkLock(waitOnWorkMutex);
+				waitOnWorkSignal.wait(waitOnWorkLock, [this]() {
+					return waiting == false;
+				});
+				waitOnWorkLock.unlock();
+
 				const std::shared_lock readLock(jobQueueMutex);
+
 				if (jobQueue.empty()) {
-					// A better pattern would be to use a std::condition_variable.
-					// This spins and locks/unlocks the read lock too often.
-					continue;
+					// When the thread is stopped, there won't be any
+					// work but it is also not waiting anymore
+					// so we might get to this point
+					break;
 				}
 				job = jobQueue.front();
 			}
@@ -28,6 +36,9 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			{
 				const std::unique_lock writeLock(jobQueueMutex);
 				jobQueue.pop();
+
+				std::lock_guard updateWaitingLock(waitOnWorkMutex);
+				waiting = jobQueue.empty();
 			}
 			// 2. We do the actual loading - this is specific to the implementation
 			// so maybe we need an interface or a strategy pattern for the loading method
@@ -51,7 +62,12 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 
 CPUTextureLoadWorker::~CPUTextureLoadWorker()
 {
-	working = false;
+	{
+		const std::lock_guard lock(waitOnWorkMutex);
+		waiting = false;
+	}
+	waitOnWorkSignal.notify_one();
+	looping = false;
 }
 
 IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
@@ -61,6 +77,11 @@ IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
 		const std::unique_lock lock(jobQueueMutex);
 		jobQueue.emplace(texturePath, id);
 	}
+	{
+		const std::lock_guard lock(waitOnWorkMutex);
+		waiting = false;
+	}
+	waitOnWorkSignal.notify_one();
 	return id;
 }
 
@@ -74,7 +95,11 @@ std::vector<IdOrError> CPUTextureLoadWorker::load(const std::vector<std::filesys
 		ids.push_back(id);
 		jobQueue.emplace(path, id);
 	}
-	
+	{
+		const std::lock_guard waitLock(waitOnWorkMutex);
+		waiting = false;
+	}
+	waitOnWorkSignal.notify_one();
 	return ids;
 }
 
@@ -91,7 +116,7 @@ CPUTextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
 	return texHandleFreeList.get(id);
 }
 
-bool Platform::Resources::CPUTextureLoadWorker::isValid(Core::Identity::Id id)
+bool CPUTextureLoadWorker::isValid(Core::Identity::Id id)
 {
 	const std::shared_lock lock(freeListMutex);
 	return texHandleFreeList.has(id);
