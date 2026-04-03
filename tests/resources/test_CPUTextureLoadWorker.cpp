@@ -130,3 +130,26 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 
     EXPECT_TRUE(loader.isValid(id));
 }
+
+TEST(CPUTextureLoadWorker, ThreadRelaxation)
+{
+    CPUTextureLoadWorker loader(workload);
+    const std::filesystem::path path1 = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
+    const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
+    
+    const auto id1 = loader.load(path1);
+
+    // Wait for the texture to load
+    while (!loader.isValid(id1.value())) {}
+
+    // Observe that the loader is waiting via debugging.
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    const auto id2 = loader.load(path2);
+
+    // The loader should be back into working mode
+    while (!loader.isValid(id2.value())) {}
+
+    // Observe that the loader is waiting via debugging.
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}

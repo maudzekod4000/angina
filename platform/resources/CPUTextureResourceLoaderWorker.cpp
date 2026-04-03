@@ -1,5 +1,8 @@
 #include "CPUTextureResourceLoaderWorker.h"
 
+#include <iostream>
+#include <ctime>
+
 using namespace Platform::Resources;
 using namespace Core::Errors;
 
@@ -14,6 +17,7 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 		// the idea is that we want a single thread to load all texture resources.
 		// I haven't checked if its okay to run this in a loop for example.
 		while (looping) {
+			auto cpuStartTime = std::clock();
 			TexLoadJob job;
 			{
 				std::unique_lock waitOnWorkLock(waitOnWorkMutex);
@@ -49,6 +53,11 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			// for example "resolve", "remove" methods, etc.
 			const std::unique_lock freeListLock(freeListMutex);
 			texHandleFreeList.add(job.getId(), tex);
+			auto cpuEndTime = std::clock();
+
+			std::cout << "CPU time per iteration: " <<
+				double(cpuEndTime - cpuStartTime) / CLOCKS_PER_SEC <<
+				std::endl;
 		}
 		
 		// Note: We don't want the thread to be spinning forever...
@@ -57,6 +66,7 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 		// It will not spin or consume resources, the scheduler will park it.
 		// Later when we want to load resources again we say, resume() and we can ask for resources
 		// again.
+		
 	});
 }
 
