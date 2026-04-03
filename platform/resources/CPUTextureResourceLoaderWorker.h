@@ -5,6 +5,8 @@
 #include <thread>
 #include <shared_mutex>
 #include <filesystem>
+#include <functional>
+#include <atomic>
 
 #include "core/datastructures/FreeList.h"
 #include "core/identity/Id.h"
@@ -15,6 +17,8 @@
 
 namespace Platform::Resources {
 
+using LoadTextureFunc = std::function<CPUTextureHandle(const std::filesystem::path&)>;
+
 /// Ok, soo the idea here is that we have a single thread that loads textures.
 /// This means that we need some kind of job queue in order to keep track of 
 /// which job has been completed.
@@ -24,30 +28,46 @@ namespace Platform::Resources {
 class CPUTextureLoadWorker : public CPUTextureResourceLoader {
 public:
 	/// Starts the worker thread.
-	CPUTextureLoadWorker();
-
+	CPUTextureLoadWorker(LoadTextureFunc);
+	
+	~CPUTextureLoadWorker();
+	
 	// Note: It would be cool to have the loader have a way to reference
 	// textures via path too...sometimes we want to resolve by Id, but sometimes
 	// we know which texture we want and we know the file name...
 	// Or what if we can hash the file name into a Id and use this Id.....
 	// That would be ballsack-cool, but i think we are getting ahead of ourselves.
-	// This method is not thread-safe, call it consequtively.
-	// Its very fast and cheap so no need to call it from multiple threads.
 	IdOrError load(const std::filesystem::path& texturePath) override;
 
+	std::vector<IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) override;
+
+	// Maybe haivng a synchronizad FreeList is going to be useful...
+	// We are going to use it for loading audio too...
+	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
+
+	CPUTextureHandle resolve(Core::Identity::Id id) override;
+
+	bool isValid(Core::Identity::Id id) override;
 private:
 	class TexLoadJob {
 	public:
 		explicit TexLoadJob(std::filesystem::path texPath, Core::Identity::Id id) noexcept:
 			texPath(std::move(texPath)), allocatedId(id) {}
 
+		/// Constructs an empty job.
+		explicit TexLoadJob() noexcept :
+			TexLoadJob(std::filesystem::path{}, 0) {}
+
 		const std::filesystem::path& getPath() const noexcept { return texPath; }
 		Core::Identity::Id getId() const noexcept { return allocatedId; }
 	private:
-		const std::filesystem::path texPath; ///< Path to the texture, requested for loading.
-		const Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
+		std::filesystem::path texPath; ///< Path to the texture, requested for loading.
+		Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
 	};
 
+	// TODO: Instead of this flag, use a condition_variable, that will give us control to pause
+	// and resume threads.
+	std::atomic_bool working = false; ///< Used as a condition flag for the worker loop.
 	Core::Identity::IdGenerator idGen; ///< Instance that can generate ids for the textures. Should be called from a single-threaded context.
 	std::queue<TexLoadJob> jobQueue; ///< Buffers incoming load commands, so they can be executed later, when the thread is available.
 	std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.

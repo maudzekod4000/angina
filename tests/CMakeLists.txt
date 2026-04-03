@@ -4,6 +4,7 @@ add_executable(tests
     resources/test_SDLCPUTextureResourceLoader.cpp
     resources/test_SDLCPUTextureResourceLoaderAsync.cpp
     resources/test_SDLCPUTextureResourceLoaderHyperAsync.cpp
+    resources/test_CPUTextureLoadWorker.cpp
 )
 
 target_link_libraries(tests
