@@ -47,6 +47,10 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			// 2. We do the actual loading - this is specific to the implementation
 			// so maybe we need an interface or a strategy pattern for the loading method
 			// It will accept a path and it will return a CPUTextureHandle, which is pretty generic.
+			// TODO: Here we should return std::expected and either have error or success
+			// Now we assume that all loads are successful and maybe rely on pointer check
+			// But you can't say for sure if a pointer is valid....
+			// Let's fix this.
 			const CPUTextureHandle tex = loadTextureFunc(job.getPath());
 			// 3. At the end we need to add to the freeList BUT we need synchronization again
 			// because this thread will write into the freeList and other threads will read/write

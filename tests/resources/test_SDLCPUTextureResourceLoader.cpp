@@ -44,6 +44,8 @@ TEST(SDLCPUTextureResource, Load)
 
     const auto idOrErr = texLoader.load(path);
 
+    texLoader.wait();
+
     EXPECT_TRUE(idOrErr.has_value());
     EXPECT_TRUE(texLoader.isValid(idOrErr.value()));
     auto handle = texLoader.resolve(idOrErr.value());
@@ -59,6 +61,8 @@ TEST(SDLCPUTextureResource, Release)
 
     const auto idOrErr = texLoader.load(path);
     const auto id = idOrErr.value();
+
+    texLoader.wait();
 
     EXPECT_TRUE(texLoader.isValid(id));
     
@@ -76,8 +80,9 @@ TEST(SDLCPUTextureResource, LoadNonExist)
     const std::string path = std::string(TEST_RESOURCE_DIR) + "/not-really-there.png";
 
     const auto idOrErr = texLoader.load(path);
+    texLoader.wait();
 
-    EXPECT_FALSE(idOrErr.has_value());
+    EXPECT_FALSE(texLoader.isValid(idOrErr.value()));
 }
 
 TEST(SDLCPUTextureResource, Load10)
@@ -91,6 +96,7 @@ TEST(SDLCPUTextureResource, Load10)
 
     auto start = std::chrono::steady_clock::now();
     auto idsOrErrors = texLoader.load(texFilePaths);
+    texLoader.wait();
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "Loading textures took: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() <<
@@ -123,6 +129,7 @@ TEST(SDLCPUTextureResource, Load50)
 
     auto start = std::chrono::steady_clock::now();
     auto idsOrErrors = texLoader.load(texFilePaths50);
+    texLoader.wait();
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "Loading textures took: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() <<
