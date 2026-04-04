@@ -163,7 +163,8 @@ TEST(CPUTextureLoadWorker, TypicalEngineUsage)
     const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
     
     const auto ids = loader.load(std::vector{ path1, path2 });
-
+    // Usually around this point in code we will have more subsystems loading resources:
+    // Audio, shaders, serialized maps or levels, etc.
     loader.wait();
 
     EXPECT_TRUE(loader.isValid(ids[0].value()));

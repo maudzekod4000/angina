@@ -60,6 +60,10 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			std::cout << "CPU time per iteration: " <<
 				double(cpuEndTime - cpuStartTime) / CLOCKS_PER_SEC <<
 				std::endl;
+
+			std::lock_guard pendingJobsLock(allWorkFinishedMutex);
+			pendingWorkCount--;
+			allWorkFinishedSignal.notify_one();
 		}
 		
 		// Note: We don't want the thread to be spinning forever...
@@ -94,6 +98,9 @@ IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
 		waiting = false;
 	}
 	waitOnWorkSignal.notify_one();
+
+	std::lock_guard pendingJobsLock(allWorkFinishedMutex);
+	pendingWorkCount++;
 	return id;
 }
 
@@ -112,6 +119,10 @@ std::vector<IdOrError> CPUTextureLoadWorker::load(const std::vector<std::filesys
 		waiting = false;
 	}
 	waitOnWorkSignal.notify_one();
+
+	std::lock_guard pendingJobsLock(allWorkFinishedMutex);
+	pendingWorkCount += int(resourceFiles.size());
+
 	return ids;
 }
 
@@ -149,4 +160,8 @@ void CPUTextureLoadWorker::wait()
 	// So we need a way to track not only whether we are waiting or not
 	// or whether the queue has jobs, because then we might return before 
 	// the job is completed (polled from queue, but not completed)
+	std::unique_lock lock(allWorkFinishedMutex);
+	allWorkFinishedSignal.wait(lock, [this]() {
+		return pendingWorkCount == 0;
+	});
 }
