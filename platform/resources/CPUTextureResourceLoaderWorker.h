@@ -9,6 +9,7 @@
 #include <atomic>
 
 #include "core/datastructures/FreeList.h"
+#include "core/datastructures/RWProtected.h"
 #include "core/identity/Id.h"
 #include "core/identity/IdGenerator.h"
 
@@ -30,6 +31,7 @@ public:
 	/// Starts the worker thread.
 	CPUTextureLoadWorker(LoadTextureFunc);
 	
+	/// Sets up the state of the loader so that the worker thread is shutdown gracefully.
 	~CPUTextureLoadWorker();
 	
 	// Note: It would be cool to have the loader have a way to reference
@@ -65,8 +67,6 @@ private:
 		Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
 	};
 
-	// TODO: Instead of this flag, use a condition_variable, that will give us control to pause
-	// and resume threads.
 	std::mutex waitOnWorkMutex; ///< To avoid busy-spinning, use this mutex and a condition variable to implement waiting for work.
 	std::condition_variable waitOnWorkSignal; ///< This is kinda like a signal? It signals that there is work? Well, it's a better name than waitOnWorkCv haha.
 	bool waiting = true; ///< This is used to park the worker thread while there is no work in the queue.
@@ -74,8 +74,7 @@ private:
 	Core::Identity::IdGenerator idGen; ///< Instance that can generate ids for the textures. Should be called from a single-threaded context.
 	std::queue<TexLoadJob> jobQueue; ///< Buffers incoming load commands, so they can be executed later, when the thread is available.
 	std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.
-	Core::DataStructures::FreeList<CPUTextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
-	std::shared_mutex freeListMutex; ///< Guards the freelist from concurrent access. Might be worth implementing this inside a wrapper container so we don't repeat the synchronization logic.
+	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	std::jthread workerThread; ///< This thread polls from the job queue and executes texture loading commands.
 };
 

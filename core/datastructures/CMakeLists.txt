@@ -5,6 +5,8 @@ target_sources(data_structures
 		FreeList.cpp
 	PUBLIC
 		FreeList.h
+		Synchronized.h
+		RWProtected.h
 )
 
 target_include_directories(data_structures

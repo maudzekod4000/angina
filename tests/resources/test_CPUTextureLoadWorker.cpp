@@ -131,6 +131,8 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
     EXPECT_TRUE(loader.isValid(id));
 }
 
+/// This test is meant to be debugged and observed and has little value by
+/// just being run.
 TEST(CPUTextureLoadWorker, ThreadRelaxation)
 {
     CPUTextureLoadWorker loader(workload);

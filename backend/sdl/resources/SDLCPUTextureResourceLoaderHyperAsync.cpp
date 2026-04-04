@@ -31,11 +31,9 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
 		    loadedTexHandle.ptr = new SDLCPUTexture(surface);
 		    loadedTexHandle.isReady = true;
 
-            // sync block
-            {
-                std::unique_lock lock(freeListMutex);
-		        texHandleFreeList.add(id, loadedTexHandle);
-            }
+            texHandleFreeList.write([id, &loadedTexHandle](auto& list) {
+                list.add(id, loadedTexHandle);
+            });
         }
     }));
 
@@ -56,19 +54,22 @@ std::vector<IdOrError> SDLCPUTextureLoaderHyperAsync::load(const std::vector<std
 
 ErrorCode SDLCPUTextureLoaderHyperAsync::release(Id id)
 {
-    std::unique_lock lock(freeListMutex);
-    texHandleFreeList.remove(id);
+    texHandleFreeList.write([id](auto& list) {
+        list.remove(id);
+    });
     return ErrorCode();
 }
 
 CPUTextureHandle SDLCPUTextureLoaderHyperAsync::resolve(Id id)
 {
-    std::shared_lock lock(freeListMutex);
-    return texHandleFreeList.get(id);
+    return texHandleFreeList.read([id](auto& list) {
+        return list.get(id);
+    });
 }
 
 bool SDLCPUTextureLoaderHyperAsync::isValid(Id id)
 {
-    std::shared_lock lock(freeListMutex);
-    return texHandleFreeList.has(id);
+    return texHandleFreeList.read([id](auto& list) {
+        return list.has(id);
+    });
 }

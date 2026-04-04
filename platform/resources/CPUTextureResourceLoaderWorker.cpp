@@ -51,8 +51,10 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			// 3. At the end we need to add to the freeList BUT we need synchronization again
 			// because this thread will write into the freeList and other threads will read/write
 			// for example "resolve", "remove" methods, etc.
-			const std::unique_lock freeListLock(freeListMutex);
-			texHandleFreeList.add(job.getId(), tex);
+			//const std::unique_lock freeListLock(freeListMutex);
+			texHandleFreeList.write([&tex, &job](auto& list) {
+				list.add(job.getId(), tex);
+			});
 			auto cpuEndTime = std::clock();
 
 			std::cout << "CPU time per iteration: " <<
@@ -115,19 +117,22 @@ std::vector<IdOrError> CPUTextureLoadWorker::load(const std::vector<std::filesys
 
 ErrorCode CPUTextureLoadWorker::release(Core::Identity::Id id)
 {
-	const std::unique_lock lock(freeListMutex);
-	texHandleFreeList.remove(id);
+	texHandleFreeList.write([id](auto& list) {
+		list.remove(id);
+	});
 	return ErrorCode();
 }
 
 CPUTextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
 {
-	const std::shared_lock lock(freeListMutex);
-	return texHandleFreeList.get(id);
+	return texHandleFreeList.read([id](auto& list) {
+		return list.get(id);
+	});
 }
 
 bool CPUTextureLoadWorker::isValid(Core::Identity::Id id)
 {
-	const std::shared_lock lock(freeListMutex);
-	return texHandleFreeList.has(id);
+	return texHandleFreeList.read([id](auto& list) {
+		return list.has(id);
+	});
 }

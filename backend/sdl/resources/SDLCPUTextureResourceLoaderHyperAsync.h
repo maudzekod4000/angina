@@ -2,12 +2,12 @@
 #define SDL_CPU_TEXTURE_LOADER_HYPER_ASYNC
 
 #include <thread>
-#include <shared_mutex>
 
 #include "platform/resources/CPUTextureResourceLoader.h"
 
 #include "core/datastructures/FreeList.h"
 #include "core/identity/IdGenerator.h"
+#include "core/datastructures/RWProtected.h"
 #include <platform/resources/CPUTextureHandle.h>
 
 namespace Backend::SDL::Resources {
@@ -33,9 +33,8 @@ public:
 
 	bool isValid(Core::Identity::Id id) override;
 private:
-	Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
+	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	Core::Identity::IdGenerator idGenerator;
-	std::shared_mutex freeListMutex;
 	std::vector<std::jthread> workerHandles;
 };
 
