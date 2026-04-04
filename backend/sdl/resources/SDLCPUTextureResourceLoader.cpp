@@ -8,14 +8,15 @@
 
 using namespace Backend::SDL::Resources;
 using namespace Platform::Resources;
+using namespace Core::Errors;
 
 namespace {
-const auto loadSDLTex = [](const std::filesystem::path& path) -> CPUTextureHandle {
+const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std::expected<CPUTextureHandle, ErrorCode> {
 	CPUTextureHandle loadedTexHandle{};
 
 	SDL_Surface* loadedSurface = IMG_Load((const char*)(path.u8string().c_str()));
 
-	if (!loadedSurface) return loadedTexHandle;
+	if (!loadedSurface) return std::unexpected(ErrorCode(-1, "Failed to load surface."));
 
 	loadedTexHandle.ptr = new SDLCPUTexture(loadedSurface);
 	loadedTexHandle.isReady = true;

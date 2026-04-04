@@ -51,14 +51,19 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			// Now we assume that all loads are successful and maybe rely on pointer check
 			// But you can't say for sure if a pointer is valid....
 			// Let's fix this.
-			const CPUTextureHandle tex = loadTextureFunc(job.getPath());
-			// 3. At the end we need to add to the freeList BUT we need synchronization again
-			// because this thread will write into the freeList and other threads will read/write
-			// for example "resolve", "remove" methods, etc.
-			//const std::unique_lock freeListLock(freeListMutex);
-			texHandleFreeList.write([&tex, &job](auto& list) {
-				list.add(job.getId(), tex);
-			});
+			const std::expected<CPUTextureHandle, ErrorCode> texOrErr = loadTextureFunc(job.getPath());
+
+			if (texOrErr.has_value()) {
+				const auto tex = texOrErr.value();
+				// 3. At the end we need to add to the freeList BUT we need synchronization again
+				// because this thread will write into the freeList and other threads will read/write
+				// for example "resolve", "remove" methods, etc.
+				//const std::unique_lock freeListLock(freeListMutex);
+				texHandleFreeList.write([&tex, &job](auto& list) {
+					list.add(job.getId(), tex);
+				});
+			}
+
 			auto cpuEndTime = std::clock();
 
 			std::cout << "CPU time per iteration: " <<

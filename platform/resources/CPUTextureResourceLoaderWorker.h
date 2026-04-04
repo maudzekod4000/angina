@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <functional>
 #include <atomic>
+#include <expected>
 
 #include "core/datastructures/FreeList.h"
 #include "core/datastructures/RWProtected.h"
@@ -18,7 +19,7 @@
 
 namespace Platform::Resources {
 
-using LoadTextureFunc = std::function<CPUTextureHandle(const std::filesystem::path&)>;
+using LoadTextureFunc = std::function<std::expected<CPUTextureHandle, Core::Errors::ErrorCode>(const std::filesystem::path&)>;
 
 /// Ok, soo the idea here is that we have a single thread that loads textures.
 /// This means that we need some kind of job queue in order to keep track of 
