@@ -73,3 +73,12 @@ bool SDLCPUTextureResourceLoader::isValid(Core::Identity::Id id)
 {
 	return texHandleFreeList.has(id);
 }
+
+bool SDLCPUTextureResourceLoader::isDone() const
+{
+	return true;
+}
+
+void SDLCPUTextureResourceLoader::wait()
+{
+}

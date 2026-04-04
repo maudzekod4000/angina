@@ -42,6 +42,16 @@ public:
 	/// @return True if the resource is valid, false otherwise.
 	virtual bool isValid(Core::Identity::Id id) = 0;
 
+	/// Returns true, if all the requested loads are done, either successfully or not.
+	/// We can't rely on isValid, because some of the ids might not load at all 
+	/// thus the isValid state will always be false for the set of resources being loaded.
+	/// The name means 'is the loader done with load requests that it received to this point in time'
+	virtual bool isDone() const = 0;
+
+	/// Returns when all the requested resource loading work is done.
+	/// Waiting could be implemented via busy-looping or condition variable, wait on object, etc.
+	virtual void wait() = 0;
+
 	virtual ~CPUTextureResourceLoader() = default;
 };
 }

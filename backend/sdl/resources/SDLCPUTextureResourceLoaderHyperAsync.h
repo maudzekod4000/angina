@@ -32,6 +32,12 @@ public:
 	Platform::Resources::CPUTextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
+
+	/// This is not implemented. I think this class is wasting threads and
+	/// I will probably not use it, so I don't think I will implement this method.
+	bool isDone() const override;
+
+	void wait() override;
 private:
 	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	Core::Identity::IdGenerator idGenerator;

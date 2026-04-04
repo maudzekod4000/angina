@@ -24,6 +24,15 @@ public:
 	Platform::Resources::CPUTextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
+
+	/// I don't plan to use this class...
+	/// But let us think. So this class is expected to be used from a single thread,
+	/// Usually the main thread. So if you call load() and then isDone() the answer should
+	/// always be isDone == true, because the load() method waits on all loads to complete
+	/// before returning.
+	bool isDone() const override;
+
+	void wait() override;
 private:
 	Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 };

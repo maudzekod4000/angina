@@ -73,3 +73,12 @@ bool SDLCPUTextureLoaderHyperAsync::isValid(Id id)
         return list.has(id);
     });
 }
+
+bool SDLCPUTextureLoaderHyperAsync::isDone() const
+{
+    return true;
+}
+
+void SDLCPUTextureLoaderHyperAsync::wait()
+{
+}

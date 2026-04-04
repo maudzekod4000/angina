@@ -50,6 +50,10 @@ public:
 	CPUTextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
+
+	bool isDone() const override;
+
+	void wait() override;
 private:
 	class TexLoadJob {
 	public:
@@ -67,13 +71,20 @@ private:
 		Core::Identity::Id allocatedId; ///< The id with which the texture will be stored in the free list. This id is pre-generated so we can return it immediately to the caller.
 	};
 
+	std::mutex allWorkFinishedMutex; ///< This will be used along with a condition variable to track whether all pending work is finished.
+	std::condition_variable allWorkFinishedSignal; ///< This will be signalled when all submitted work is finished.
+	// This is very interesting...I think that we should do a notify_one only when we decrement?
+	// Also add some asserts that this counter should be >= 0. Otherwise there is some programming error.
+	int pendingWorkCount = 0; ///< This will be incremented/decremented when work is added/finished.
+	
 	std::mutex waitOnWorkMutex; ///< To avoid busy-spinning, use this mutex and a condition variable to implement waiting for work.
 	std::condition_variable waitOnWorkSignal; ///< This is kinda like a signal? It signals that there is work? Well, it's a better name than waitOnWorkCv haha.
 	bool waiting = true; ///< This is used to park the worker thread while there is no work in the queue.
+	
 	std::atomic_bool looping = false; ///< Used as a condition flag for the worker loop.
 	Core::Identity::IdGenerator idGen; ///< Instance that can generate ids for the textures. Should be called from a single-threaded context.
 	std::queue<TexLoadJob> jobQueue; ///< Buffers incoming load commands, so they can be executed later, when the thread is available.
-	std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.
+	mutable std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.
 	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	std::jthread workerThread; ///< This thread polls from the job queue and executes texture loading commands.
 };

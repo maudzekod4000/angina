@@ -155,3 +155,17 @@ TEST(CPUTextureLoadWorker, ThreadRelaxation)
     // Observe that the loader is waiting via debugging.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
+
+TEST(CPUTextureLoadWorker, TypicalEngineUsage)
+{
+    CPUTextureLoadWorker loader(workload);
+    const std::filesystem::path path1 = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
+    const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
+    
+    const auto ids = loader.load(std::vector{ path1, path2 });
+
+    loader.wait();
+
+    EXPECT_TRUE(loader.isValid(ids[0].value()));
+    EXPECT_TRUE(loader.isValid(ids[1].value()));
+}

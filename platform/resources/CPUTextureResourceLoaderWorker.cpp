@@ -136,3 +136,17 @@ bool CPUTextureLoadWorker::isValid(Core::Identity::Id id)
 		return list.has(id);
 	});
 }
+
+bool CPUTextureLoadWorker::isDone() const
+{
+	std::shared_lock lock(jobQueueMutex);
+	return jobQueue.empty();
+}
+
+void CPUTextureLoadWorker::wait()
+{
+	// Hmmmmm....
+	// So we need a way to track not only whether we are waiting or not
+	// or whether the queue has jobs, because then we might return before 
+	// the job is completed (polled from queue, but not completed)
+}
