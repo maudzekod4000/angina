@@ -169,4 +169,17 @@ TEST(CPUTextureLoadWorker, TypicalEngineUsage)
 
     EXPECT_TRUE(loader.isValid(ids[0].value()));
     EXPECT_TRUE(loader.isValid(ids[1].value()));
+
+    // Attepmting to load a second batch. The state of the class should be ready.
+    const std::filesystem::path path3 = std::string(TEST_RESOURCE_DIR) + "/Queen_B.png";
+    const std::filesystem::path path4 = std::string(TEST_RESOURCE_DIR) + "/Queen_W.png";
+    const std::filesystem::path path5 = std::string(TEST_RESOURCE_DIR) + "/Rook_B.png";
+
+    const auto ids2 = loader.load(std::vector{ path3, path4, path5 });
+
+    loader.wait();
+
+    EXPECT_TRUE(loader.isValid(ids2[0].value()));
+    EXPECT_TRUE(loader.isValid(ids2[1].value()));
+    EXPECT_TRUE(loader.isValid(ids2[2].value()));
 }
