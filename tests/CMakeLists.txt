@@ -5,6 +5,14 @@ add_executable(tests
     resources/test_SDLCPUTextureResourceLoaderAsync.cpp
     resources/test_SDLCPUTextureResourceLoaderHyperAsync.cpp
     resources/test_CPUTextureLoadWorker.cpp
+
+    helpers/file.h
+    helpers/file.cpp
+)
+
+target_include_directories(tests
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(tests

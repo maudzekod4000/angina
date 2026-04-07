@@ -44,21 +44,12 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 				std::lock_guard updateWaitingLock(waitOnWorkMutex);
 				waiting = jobQueue.empty();
 			}
-			// 2. We do the actual loading - this is specific to the implementation
-			// so maybe we need an interface or a strategy pattern for the loading method
-			// It will accept a path and it will return a CPUTextureHandle, which is pretty generic.
-			// TODO: Here we should return std::expected and either have error or success
-			// Now we assume that all loads are successful and maybe rely on pointer check
-			// But you can't say for sure if a pointer is valid....
-			// Let's fix this.
+
 			const std::expected<CPUTextureHandle, ErrorCode> texOrErr = loadTextureFunc(job.getPath());
 
 			if (texOrErr.has_value()) {
 				const auto tex = texOrErr.value();
-				// 3. At the end we need to add to the freeList BUT we need synchronization again
-				// because this thread will write into the freeList and other threads will read/write
-				// for example "resolve", "remove" methods, etc.
-				//const std::unique_lock freeListLock(freeListMutex);
+
 				texHandleFreeList.write([&tex, &job](auto& list) {
 					list.add(job.getId(), tex);
 				});
@@ -74,14 +65,6 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 			pendingWorkCount--;
 			allWorkFinishedSignal.notify_one();
 		}
-		
-		// Note: We don't want the thread to be spinning forever...
-		// Lets think of a way to make it pausable...
-		// For example, we load the textures we want and then we put the thread on pause mode.
-		// It will not spin or consume resources, the scheduler will park it.
-		// Later when we want to load resources again we say, resume() and we can ask for resources
-		// again.
-		
 	});
 }
 
