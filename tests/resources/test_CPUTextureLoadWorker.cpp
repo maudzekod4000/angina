@@ -5,24 +5,10 @@
 #include "platform/resources/CPUTextureResourceLoaderWorker.h"
 #include "platform/resources/CPUTextureHandle.h"
 
+#include "helpers/file.h"
+
 using namespace Platform::Resources;
-
-static std::vector<std::filesystem::path> loadFileNames(const std::filesystem::path& dir)
-{
-    std::vector<std::filesystem::path> res;
-
-    if (std::filesystem::is_directory(dir) == false || std::filesystem::exists(dir) == false) {
-        return res;
-    }
-
-    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
-        if (entry.is_regular_file()) {
-            res.push_back(entry.path());
-        }
-    }
-
-    return res;
-}
+using namespace Test::Helpers::File;
 
 static auto workload = [](const std::filesystem::path& path) -> CPUTextureHandle {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
