@@ -12,6 +12,7 @@ namespace Platform::Input {
 /// As the engine does not need every individual event, the incoming events are reduced to their latest values.
 struct InputSnapshot {
 	bool quit = false;
+	int mouseX = 0, mouseY = 0;
 };
 
 /// Interface for a family of classes that accumulate and provide read access to

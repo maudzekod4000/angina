@@ -2,6 +2,7 @@
 #define PLATFORM_BASE_INPUT_EVENT_MANAGER_H
 
 #include <atomic>
+#include <shared_mutex>
 
 #include "IInputEventManager.h"
 
@@ -43,6 +44,14 @@ private:
 	std::atomic<InputSnapshot*> publishedSnapshot = nullptr; ///< Pointer to the snapshot which is completely written and safe to read from another thread.
 	std::atomic_int writeIdx = 0; ///< Index in the snapshots array marking the snapshot which is safe to write to.
 	std::atomic_bool snapshotRequested = false; ///< Client will set this flag via a call to getSnapshot. This will signal the worker thread procedure to swap the buffers.
+
+	// Ughhh....i dont know why but the lock-free thing does not work haha
+	// I will first implement it with plain old mutexes and then i will 
+	// MAYBE think about implementing it with lock free thingymidgings.
+	
+	// This is the new state of the implementation with mutexes.
+	std::shared_mutex snapshotMutex;
+	InputSnapshot snapshot;
 };
 }
 
