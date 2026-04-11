@@ -11,6 +11,7 @@ target_sources(resources
 		CPUTexture.h
 		CPUTextureHandle.h
 		CPUTextureResourceLoaderWorker.h
+		GPUTexture.h
 )
 
 target_include_directories(resources

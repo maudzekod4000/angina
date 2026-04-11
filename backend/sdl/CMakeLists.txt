@@ -6,6 +6,7 @@ target_sources(sdl
 		init/SDLVideoLifecycleManager.cpp
 		ui/SDLWindow.cpp
 		resources/SDLCPUTexture.cpp
+		resources/SDLGPUTexture.cpp
 		resources/SDLCPUTextureResourceLoader.cpp
 		resources/SDLCPUTextureResourceLoaderAsync.cpp
 		resources/SDLCPUTextureResourceLoaderHyperAsync.cpp
@@ -14,6 +15,7 @@ target_sources(sdl
 		init/SDLVideoLifecycleManager.h
 		ui/SDLWindow.h
 		resources/SDLCPUTexture.h
+		resources/SDLGPUTexture.h
 		resources/SDLCPUTextureResourceLoader.h
 		resources/SDLCPUTextureResourceLoaderAsync.h
 		resources/SDLCPUTextureResourceLoaderHyperAsync.h

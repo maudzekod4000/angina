@@ -19,7 +19,7 @@ public:
 
 	const SDL_Surface* const get() const noexcept;
 private:
-	SDL_Surface* texture; ///< Read-only pointer to the CPU texture. Do not delete.
+	SDL_Surface* texture;
 };
 }
 
