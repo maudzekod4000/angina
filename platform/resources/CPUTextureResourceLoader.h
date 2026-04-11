@@ -4,6 +4,7 @@
 #include <vector>
 #include <expected>
 #include <filesystem>
+#include <memory>
 
 #include "core/identity/Id.h"
 #include "CPUTextureHandle.h"
@@ -54,6 +55,8 @@ public:
 
 	virtual ~CPUTextureResourceLoader() = default;
 };
+
+using CPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

@@ -7,6 +7,8 @@ namespace Backend::SDL::Resources {
 
 class SDLCPUTextureResourceLoader : public Platform::Resources::CPUTextureLoadWorker {
 public:
+	static std::unique_ptr<SDLCPUTextureResourceLoader> make();
+
 	SDLCPUTextureResourceLoader();
 };
 

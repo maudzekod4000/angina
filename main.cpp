@@ -9,6 +9,7 @@
 #include "platform/logging/ConsoleLogger.h"
 #include "backend/sdl/ui/SDLWindow.h"
 #include "backend/sdl/input/SDLInputEventManager.h"
+#include "backend/sdl/resources/SDLCPUTextureResourceLoader.h"
 #include "core/units/Units.hpp"
 
 class MyTestEngine : public Angina::EngineV3::Engine {
@@ -17,9 +18,10 @@ public:
 		Platform::Init::SubsystemLifecycleManagersPtr slms,
 		Platform::Logging::LoggerPtr logger,
 		Platform::UI::WindowPtr window,
-		Platform::Input::InputEventManagerPtr eventMgr
+		Platform::Input::InputEventManagerPtr eventMgr,
+		Platform::Resources::CPUTextureResourceLoaderPtr texResLoader
 	):
-		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60)) {}
+		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60), std::move(texResLoader)) {}
 protected:
 	int beforeStart() override { return 0; }
 	int beforeUpdate() override { return 0; }
@@ -38,8 +40,9 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
 	Platform::UI::WindowPtr window = Backend::SDL::UI::SDLWindow::make(winConfig);
 	Platform::Input::InputEventManagerPtr evMgr = Backend::SDL::Input::SDLInputEventManager::make();
+	auto texResLoader = Backend::SDL::Resources::SDLCPUTextureResourceLoader::make();
 	
-	MyTestEngine eng(std::move(slms), std::move(log), std::move(window), std::move(evMgr));
+	MyTestEngine eng(std::move(slms), std::move(log), std::move(window), std::move(evMgr), std::move(texResLoader));
 	eng.start();
 
 	return EXIT_SUCCESS;

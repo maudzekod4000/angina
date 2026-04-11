@@ -52,6 +52,8 @@ private:
 	// This is the new state of the implementation with mutexes.
 	std::shared_mutex snapshotMutex;
 	InputSnapshot snapshot;
+
+	std::atomic_bool writeIndex = false;
 };
 }
 

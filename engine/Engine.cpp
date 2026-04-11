@@ -10,6 +10,7 @@ using namespace Platform::Logging;
 using namespace Platform::UI;
 using namespace Platform::Input;
 using namespace Platform::System;
+using namespace Platform::Resources;
 using namespace Core::Units;
 
 Engine::Engine(
@@ -17,12 +18,14 @@ Engine::Engine(
     LoggerPtr logger,
     WindowPtr window,
     InputEventManagerPtr inputMgr,
-    RatePerSecond desiredFPS
+    RatePerSecond desiredFPS,
+    CPUTextureResourceLoaderPtr texResLoader
 ):
     subsystemLifecycleManagers(std::move(slms)),
     logger(std::move(logger)),
     window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
+    texResLoader(std::move(texResLoader)),
     desiredFPS(desiredFPS),
     globalClock({}),
     framePacer(desiredFPS, globalClock)
@@ -31,6 +34,7 @@ Engine::Engine(
     assert(this->logger);
     assert(this->window);
     assert(this->inputEventMgr);
+    assert(this->texResLoader);
 
     systems.push_back(this->inputEventMgr.get());
 }

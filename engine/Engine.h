@@ -9,6 +9,7 @@
 #include "platform/logging/ILogger.h"
 #include "platform/input/IInputEventManager.h"
 #include "platform/time/FramePacer.h"
+#include "platform/resources/CPUTextureResourceLoader.h"
 
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
@@ -26,7 +27,8 @@ public:
 		Platform::Logging::LoggerPtr,
 		Platform::UI::WindowPtr,
 		Platform::Input::InputEventManagerPtr inputMgr,
-		Core::Units::RatePerSecond desiredFPS
+		Core::Units::RatePerSecond desiredFPS,
+		Platform::Resources::CPUTextureResourceLoaderPtr texLoader
 	);
 
 	virtual ~Engine() = default;
@@ -57,6 +59,7 @@ private:
 	Platform::UI::WindowPtr window;
 	
 	Platform::Input::InputEventManagerPtr inputEventMgr;
+	Platform::Resources::CPUTextureResourceLoaderPtr texResLoader;
 	
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
