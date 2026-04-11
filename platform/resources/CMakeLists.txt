@@ -10,6 +10,7 @@ target_sources(resources
 		IResource.h
 		CPUTexture.h
 		CPUTextureHandle.h
+		GPUTextureHandle.h
 		CPUTextureResourceLoaderWorker.h
 		GPUTexture.h
 )
