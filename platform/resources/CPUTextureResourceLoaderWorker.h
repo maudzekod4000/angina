@@ -27,7 +27,7 @@ using LoadTextureFunc = std::function<std::expected<CPUTextureHandle, Core::Erro
 /// Call this class' methods from the same thread, usually the main thread.
 /// I am not sure whether this will be the case forever....I have to use the class more,
 /// to know for certain.
-class CPUTextureLoadWorker : public CPUTextureResourceLoader {
+class CPUTextureLoadWorker : public CPUTextureResourceLoader<CPUTextureHandle> {
 public:
 	/// Starts the worker thread.
 	CPUTextureLoadWorker(LoadTextureFunc);

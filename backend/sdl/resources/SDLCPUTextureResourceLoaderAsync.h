@@ -10,7 +10,7 @@ namespace Backend::SDL::Resources {
 /// Loads resources in parallel, but the load time will depend on the slowest texture
 /// load, because we are blocking and waiting for all textures to be loaded,
 /// before adding the textures to the freelist storage.
-class SDLCPUTextureLoaderAsync : public Platform::Resources::CPUTextureResourceLoader {
+class SDLCPUTextureLoaderAsync : public Platform::Resources::CPUTextureResourceLoader<CPUTextureHandle> {
 public:
 
 	/// Empty implementation. Use SDLCPUTextureLoader::load method instead.

@@ -14,6 +14,6 @@ SDLCPUTexture::~SDLCPUTexture() noexcept {
 	SDL_FreeSurface(texture);
 }
 
-const SDL_Surface* const SDLCPUTexture::get() const noexcept {
+SDL_Surface* SDLCPUTexture::get() const noexcept {
 	return texture;
 }

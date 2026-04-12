@@ -16,7 +16,7 @@ SDLGPUTexture::~SDLGPUTexture() noexcept
 	SDL_DestroyTexture(texture);
 }
 
-const SDL_Texture* const SDLGPUTexture::get() const noexcept
+SDL_Texture* SDLGPUTexture::get() const noexcept
 {
 	return texture;
 }

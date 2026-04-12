@@ -17,7 +17,7 @@ public:
 
 	~SDLCPUTexture() noexcept;
 
-	const SDL_Surface* const get() const noexcept;
+	SDL_Surface* get() const noexcept;
 private:
 	SDL_Surface* texture;
 };

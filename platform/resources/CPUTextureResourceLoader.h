@@ -15,6 +15,7 @@ namespace Platform::Resources {
 using IdOrError = std::expected<Core::Identity::Id, Core::Errors::ErrorCode>;
 
 /// Interface for loading and releasing resources.
+template <typename TextureHandleType>
 class CPUTextureResourceLoader {
 public:
 	/// Loads a resource from disk into memory.
@@ -36,7 +37,7 @@ public:
 	/// Looks for a texture with the provided id and returns a handle to it. Check with isValid before calling this.
 	/// @param id The id of the required texture.
 	/// @return Returns a handle to the texture.
-	virtual CPUTextureHandle resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
+	virtual TextureHandleType resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
 
 	/// Checks if the resource is valid, i.e. is ready, loaded and not deleted.
 	/// @param id Id of the resource.

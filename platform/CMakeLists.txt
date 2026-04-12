@@ -7,6 +7,7 @@ add_subdirectory(time)
 add_subdirectory(ui)
 add_subdirectory(system)
 add_subdirectory(resources)
+add_subdirectory(rendering)
 
 target_link_libraries(platform
 	PRIVATE
@@ -17,6 +18,7 @@ target_link_libraries(platform
 		ui
 		system
 		resources
+		rendering
 		project_options
 )
 
