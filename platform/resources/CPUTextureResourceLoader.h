@@ -9,6 +9,8 @@
 #include "core/identity/Id.h"
 #include "CPUTextureHandle.h"
 #include "core/error/Errors.h"
+#include "platform/resources/CPUTextureHandle.h"
+#include "platform/resources/GPUTextureHandle.h"
 
 namespace Platform::Resources {
 
@@ -57,7 +59,11 @@ public:
 	virtual ~CPUTextureResourceLoader() = default;
 };
 
-using CPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader>;
+// Hmmmm we want the engine to accept a generic CPUTextureResourceLoader....
+// but it is templated....
+// Don't know what to do...
+using CPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader<CPUTextureHandle>>;
+using GPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader<GPUTextureHandle>>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

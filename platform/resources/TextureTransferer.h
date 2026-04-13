@@ -2,6 +2,7 @@
 #define PLATFORM_RESOURCES_TEXTURE_TRANSFERER_H
 
 #include <expected>
+#include <memory>
 
 #include "core/error/Errors.h"
 
@@ -14,6 +15,8 @@ class TextureTransferer {
 public:
 	virtual std::expected<GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(CPUTextureHandle) = 0;
 };
+
+using TextureTransfererPtr = std::unique_ptr<TextureTransferer>;
 }
 
 #endif // !PLATFORM_RESOURCES_TEXTURE_TRANSFERER_H

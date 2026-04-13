@@ -4,6 +4,7 @@ target_sources(resources
 	PRIVATE
 		BaseResourceManager.cpp
 		CPUTextureResourceLoaderWorker.cpp
+		GPUTextureLoader.cpp
 	PUBLIC
 		IResourceManager.h
 		CPUTextureResourceLoader.h
