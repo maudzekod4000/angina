@@ -5,6 +5,7 @@ add_executable(tests
     resources/test_SDLCPUTextureResourceLoaderAsync.cpp
     resources/test_SDLCPUTextureResourceLoaderHyperAsync.cpp
     resources/test_CPUTextureLoadWorker.cpp
+    resources/test_GPUTextureLoader.cpp
     platform/test_BaseInputEventManager.cpp
 
     helpers/file.h

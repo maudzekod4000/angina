@@ -15,7 +15,7 @@ namespace Backend::SDL::Resources {
 /// Loads resources in parallel and returns control immediately.
 /// Textures will become available at their own time, whenever they are loaded.
 /// Use isValid to check if the texture has been loaded and resolve to get a handle to it.
-class SDLCPUTextureLoaderHyperAsync : public Platform::Resources::CPUTextureResourceLoader<CPUTextureHandle> {
+class SDLCPUTextureLoaderHyperAsync : public Platform::Resources::CPUTextureResourceLoader<Platform::Resources::CPUTextureHandle> {
 public:
 
 	/// Hmmmm this is interesting...So we have to return the Id before we added it to the 

@@ -1,5 +1,4 @@
 #include "GPUTextureLoader.h"
-#include "GPUTextureLoader.h"
 
 using namespace Platform::Resources;
 
