@@ -4,12 +4,9 @@
 #include <vector>
 #include <filesystem>
 
-#include "helpers/file.h"
-
 #include "platform/resources/GPUTextureLoader.h"
 
 using namespace Platform::Resources;
-using namespace Test::Helpers::File;
 using namespace Core::Errors;
 
 class MockTextureTransferer : public TextureTransferer {

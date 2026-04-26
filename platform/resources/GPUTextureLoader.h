@@ -1,45 +1,44 @@
 #ifndef PLATFORM_RESOURCES_GPU_TEXTURE_LOADER_H
 #define PLATFORM_RESOURCES_GPU_TEXTURE_LOADER_H
 
+#include <memory>
+
 #include "platform/resources/TextureResourceLoader.h"
 #include "platform/resources/GPUTextureHandle.h"
 #include "platform/resources/TextureTransferer.h"
 #include "core/datastructures/FreeList.h"
 
 namespace Platform::Resources {
+
+/// Loads resources first to main memory and then to the GPU.
+/// Depending on the transferer and the graphics API, this class might need to
+/// be called from the main thread.
 class GPUTextureLoader : public TextureResourceLoader<GPUTextureHandle> {
 public:
-	explicit GPUTextureLoader(TextureTransferer* texTransferer, TextureResourceLoader<CPUTextureHandle>*);
+	explicit GPUTextureLoader(std::shared_ptr<TextureTransferer>, std::unique_ptr<TextureResourceLoader<CPUTextureHandle>>);
 
-	IdOrError load(const std::filesystem::path& resourceFile) override {
-		return {};
-	}
+	IdOrError load(const std::filesystem::path& resourceFile) override;
 
 	std::vector<IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) override;
 
-	Core::Errors::ErrorCode release(Core::Identity::Id id) override {
-		return Core::Errors::ErrorCode();
-	}
+	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
-	GPUTextureHandle resolve(Core::Identity::Id id) override {
-		return gpuTexturesFreeList.get(id);
-	}
+	GPUTextureHandle resolve(Core::Identity::Id id) override;
 
-	bool isValid(Core::Identity::Id id) override {
-		return gpuTexturesFreeList.has(id);
-	}
+	bool isValid(Core::Identity::Id id) override;
 
-	bool isDone() const override {
-		return false;
-	}
+	bool isDone() const override;
 
-	void wait() override {}
+	void wait() override;
 
 private:
-	TextureResourceLoader<CPUTextureHandle>* cpuTexLoaderPtr = nullptr; ///< Do not delete from this class' destructor.
-	TextureTransferer* texTransferer = nullptr;
+	std::unique_ptr<TextureResourceLoader<CPUTextureHandle>> cpuTexLoaderPtr;
+	std::shared_ptr<TextureTransferer> texTransfererPtr;
 	Core::DataStructures::FreeList<GPUTextureHandle> gpuTexturesFreeList;
 };
+
+using GPUTextureLoaderPtr = std::unique_ptr<GPUTextureLoader>;
+
 }
 
 #endif // !PLATFORM_RESOURCES_GPU_TEXTURE_LOADER_H

@@ -1,4 +1,5 @@
 #include "SDLWindow.h"
+#include "SDLWindow.h"
 
 #include "SDL.h"
 
@@ -31,4 +32,15 @@ ErrorCode SDLWindow::resize(Width w, Height h)
 {
 	SDL_SetWindowSize(window, w.value, h.value);
 	return ErrorCode();
+}
+
+std::expected<SDL_Renderer*, Core::Errors::ErrorCode> SDLWindow::makeRenderer()
+{
+	auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+	if (!renderer) {
+		return std::unexpected(ErrorCode(-1, "Failed to create renderer"));
+	}
+
+	return renderer;
 }

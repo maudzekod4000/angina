@@ -3,9 +3,10 @@
 #include <memory>
 
 using namespace Platform::Resources;
+using namespace Core::Errors;
 
-GPUTextureLoader::GPUTextureLoader(TextureTransferer* texTransferer, TextureResourceLoader<CPUTextureHandle>* cpuTexLoader) :
-	texTransferer(texTransferer), cpuTexLoaderPtr(cpuTexLoader) {}
+GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransferer, std::unique_ptr<TextureResourceLoader<CPUTextureHandle>> cpuTexLoader) :
+	texTransfererPtr(std::move(texTransferer)), cpuTexLoaderPtr(std::move(cpuTexLoader)) {}
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
@@ -26,7 +27,7 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 
 			if (cpuTexLoaderPtr->isValid(id)) {
 				CPUTextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
-				auto gpuHandleOrErr = texTransferer->convertCPUToGPUTexture(cpuHandle);
+				auto gpuHandleOrErr = texTransfererPtr->convertCPUToGPUTexture(cpuHandle);
 
 				if (gpuHandleOrErr.has_value()) {
 					auto addId = gpuTexturesFreeList.add(gpuHandleOrErr.value());
@@ -46,4 +47,33 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 	return res; // Actually, we can test this with a test...i dont see a problem.
 }
 
+IdOrError GPUTextureLoader::load(const std::filesystem::path& resourceFile)
+{
+	return {};
+}
 
+ErrorCode GPUTextureLoader::release(Core::Identity::Id id)
+{
+	gpuTexturesFreeList.remove(id);
+	return ErrorCode();
+}
+
+GPUTextureHandle GPUTextureLoader::resolve(Core::Identity::Id id)
+{
+	return gpuTexturesFreeList.get(id);
+}
+
+bool GPUTextureLoader::isValid(Core::Identity::Id id)
+{
+	return gpuTexturesFreeList.has(id);
+}
+
+bool GPUTextureLoader::isDone() const
+{
+	return true;
+}
+
+void GPUTextureLoader::wait()
+{
+	return;
+}

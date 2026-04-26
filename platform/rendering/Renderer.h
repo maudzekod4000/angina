@@ -1,6 +1,8 @@
 #ifndef PLATFORM_RENDERER_H
 #define PLATFORM_RENDERER_H
 
+#include <memory>
+
 #include "platform/resources/GPUTextureHandle.h"
 
 namespace Platform::Rendering {
@@ -11,6 +13,9 @@ class Renderer {
 public:
 	virtual void render(Platform::Resources::GPUTextureHandle) = 0;
 };
+
+using RendererPtr = std::shared_ptr<Platform::Rendering::Renderer>;
+
 }
 
 #endif // !PLATFORM_RENDERER_H

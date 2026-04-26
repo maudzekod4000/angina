@@ -1,4 +1,5 @@
 #include "SDLRenderer.h"
+#include "SDLRenderer.h"
 
 #include <cassert>
 
@@ -13,6 +14,16 @@ using namespace Platform::Resources;
 using namespace Core::Errors;
 
 SDLRenderer::SDLRenderer(SDL_Renderer* r): renderer(r) {}
+
+std::unique_ptr<SDLRenderer> SDLRenderer::make(SDL_Renderer* r)
+{
+	return std::unique_ptr<SDLRenderer>(new SDLRenderer(r));
+}
+
+std::shared_ptr<SDLRenderer> SDLRenderer::makeShared(SDL_Renderer* r)
+{
+	return std::shared_ptr<SDLRenderer>(new SDLRenderer(r));
+}
 
 void SDLRenderer::render(Platform::Resources::GPUTextureHandle tex)
 {

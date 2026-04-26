@@ -14,13 +14,19 @@ struct SDL_Renderer;
 namespace Backend::SDL::Rendering {
 class SDLRenderer : public Platform::Rendering::Renderer, public Platform::Resources::TextureTransferer {
 public:
-	explicit SDLRenderer(SDL_Renderer*);
+	static std::unique_ptr<SDLRenderer> make(SDL_Renderer*);
+
+	static std::shared_ptr<SDLRenderer> makeShared(SDL_Renderer*);
+
 	void render(Platform::Resources::GPUTextureHandle) override;
 
 	std::expected<Platform::Resources::GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::CPUTextureHandle) override;
 private:
+	explicit SDLRenderer(SDL_Renderer*);
+
 	SDL_Renderer* renderer = nullptr; ///< Received from the outside but managed by this class.
 };
+
 }
 
 #endif // !BACKEND_SDL_RENDERER_H

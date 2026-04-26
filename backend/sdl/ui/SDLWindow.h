@@ -2,6 +2,7 @@
 #define UI_SDL_WINDOW_H
 
 #include <memory>
+#include <expected>
 
 #include "platform/ui/window/IWindow.h"
 #include "platform/ui/window/WindowConfig.h"
@@ -9,6 +10,7 @@
 #include "core/error/Errors.h"
 
 struct SDL_Window;
+struct SDL_Renderer;
 
 namespace Backend::SDL::UI {
 
@@ -18,6 +20,8 @@ public:
 	static std::unique_ptr<SDLWindow> make(const Platform::UI::WindowConfig&);
 
 	Core::Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
+
+	std::expected<SDL_Renderer*, Core::Errors::ErrorCode> makeRenderer();
 private:
 	SDL_Window* window;
 };
