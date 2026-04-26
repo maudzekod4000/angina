@@ -1,7 +1,7 @@
 #ifndef SDL_CPU_TEXTURE_LOADER_ASYNC_H
 #define SDL_CPU_TEXTURE_LOADER_ASYNC_H
 
-#include "platform/resources/CPUTextureResourceLoader.h"
+#include "platform/resources/TextureResourceLoader.h"
 
 #include "core/datastructures/FreeList.h"
 
@@ -10,7 +10,7 @@ namespace Backend::SDL::Resources {
 /// Loads resources in parallel, but the load time will depend on the slowest texture
 /// load, because we are blocking and waiting for all textures to be loaded,
 /// before adding the textures to the freelist storage.
-class SDLCPUTextureLoaderAsync : public Platform::Resources::CPUTextureResourceLoader<Platform::Resources::CPUTextureHandle> {
+class SDLCPUTextureLoaderAsync : public Platform::Resources::TextureResourceLoader<Platform::Resources::CPUTextureHandle> {
 public:
 
 	/// Empty implementation. Use SDLCPUTextureLoader::load method instead.

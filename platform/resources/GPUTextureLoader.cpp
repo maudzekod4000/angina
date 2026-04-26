@@ -1,19 +1,21 @@
 #include "GPUTextureLoader.h"
 
+#include <memory>
+
 using namespace Platform::Resources;
 
-GPUTextureLoader::GPUTextureLoader(TextureTransferer* texTransferer) :
-	texTransferer(texTransferer) {}
+GPUTextureLoader::GPUTextureLoader(TextureTransferer* texTransferer, TextureResourceLoader<CPUTextureHandle>* cpuTexLoader) :
+	texTransferer(texTransferer), cpuTexLoaderPtr(cpuTexLoader) {}
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
 	// Ok, so what do we do here...
 	
 	// 1. Use the CPU Loader to load the textures to main memory.
-	auto ids = cpuTexLoader->load(resourceFiles);
+	auto ids = cpuTexLoaderPtr->load(resourceFiles);
 	
 	// 2. Wait for all the textures to load using the wait method
-	cpuTexLoader->wait();
+	cpuTexLoaderPtr->wait();
 
 	std::vector<IdOrError> res;
 
@@ -22,8 +24,8 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 		if (idOrErr.has_value()) {
 			auto id = idOrErr.value();
 
-			if (cpuTexLoader->isValid(id)) {
-				CPUTextureHandle cpuHandle = cpuTexLoader->resolve(id);
+			if (cpuTexLoaderPtr->isValid(id)) {
+				CPUTextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
 				auto gpuHandleOrErr = texTransferer->convertCPUToGPUTexture(cpuHandle);
 
 				if (gpuHandleOrErr.has_value()) {

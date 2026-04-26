@@ -7,7 +7,7 @@ target_sources(resources
 		GPUTextureLoader.cpp
 	PUBLIC
 		IResourceManager.h
-		CPUTextureResourceLoader.h
+		TextureResourceLoader.h
 		IResource.h
 		CPUTexture.h
 		CPUTextureHandle.h

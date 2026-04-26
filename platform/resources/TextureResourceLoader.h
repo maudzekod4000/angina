@@ -18,14 +18,14 @@ using IdOrError = std::expected<Core::Identity::Id, Core::Errors::ErrorCode>;
 
 /// Interface for loading and releasing resources.
 template <typename TextureHandleType>
-class CPUTextureResourceLoader {
+class TextureResourceLoader {
 public:
-	/// Loads a resource from disk into memory.
+	/// Loads a resource.
 	/// @param resourceFile File path to the resource.
 	/// @return The id of the resource. Can be used to get a handle to the resource.
 	virtual IdOrError load(const std::filesystem::path& resourceFile) = 0;
 
-	/// Loads multiple resources from disk to memory.
+	/// Loads multiple resources.
 	/// @param resourceFiles A vector of file paths.
 	/// @return A vector that has the same length as resourceFiles.If the resource is loaded, the corresponding index will contain the Id of the resource, otherwise an error.
 	/// The mapping of indexes between resourceFiles vector and the return vector is direct, i.e. 0 -> 0, 1 -> 1, etc.
@@ -56,15 +56,15 @@ public:
 	/// Waiting could be implemented via busy-looping or condition variable, wait on object, etc.
 	virtual void wait() = 0;
 
-	virtual ~CPUTextureResourceLoader() = default;
+	virtual ~TextureResourceLoader() = default;
 };
 
 // Hmmmm we want the engine to accept a generic CPUTextureResourceLoader....
 // but it is templated....
 // Don't know what to do...
 // Hah.....the engine has to be templated too...templates kinda push everything to the client.
-using CPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader<CPUTextureHandle>>;
-using GPUTextureResourceLoaderPtr = std::unique_ptr<CPUTextureResourceLoader<GPUTextureHandle>>;
+using CPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<CPUTextureHandle>>;
+using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<GPUTextureHandle>>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

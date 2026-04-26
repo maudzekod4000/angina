@@ -1,15 +1,15 @@
 #ifndef PLATFORM_RESOURCES_GPU_TEXTURE_LOADER_H
 #define PLATFORM_RESOURCES_GPU_TEXTURE_LOADER_H
 
-#include "platform/resources/CPUTextureResourceLoader.h"
+#include "platform/resources/TextureResourceLoader.h"
 #include "platform/resources/GPUTextureHandle.h"
 #include "platform/resources/TextureTransferer.h"
 #include "core/datastructures/FreeList.h"
 
 namespace Platform::Resources {
-class GPUTextureLoader : public CPUTextureResourceLoader<GPUTextureHandle> {
+class GPUTextureLoader : public TextureResourceLoader<GPUTextureHandle> {
 public:
-	explicit GPUTextureLoader(TextureTransferer* texTransferer);
+	explicit GPUTextureLoader(TextureTransferer* texTransferer, TextureResourceLoader<CPUTextureHandle>*);
 
 	IdOrError load(const std::filesystem::path& resourceFile) override {
 		return {};
@@ -22,11 +22,11 @@ public:
 	}
 
 	GPUTextureHandle resolve(Core::Identity::Id id) override {
-		return GPUTextureHandle{};
+		return gpuTexturesFreeList.get(id);
 	}
 
 	bool isValid(Core::Identity::Id id) override {
-		return false;
+		return gpuTexturesFreeList.has(id);
 	}
 
 	bool isDone() const override {
@@ -36,7 +36,7 @@ public:
 	void wait() override {}
 
 private:
-	CPUTextureResourceLoaderPtr cpuTexLoader;
+	TextureResourceLoader<CPUTextureHandle>* cpuTexLoaderPtr = nullptr; ///< Do not delete from this class' destructor.
 	TextureTransferer* texTransferer = nullptr;
 	Core::DataStructures::FreeList<GPUTextureHandle> gpuTexturesFreeList;
 };
