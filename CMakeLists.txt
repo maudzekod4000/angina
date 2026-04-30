@@ -17,6 +17,7 @@ add_subdirectory(core)
 add_subdirectory(platform)
 add_subdirectory(backend)
 add_subdirectory(engine)
+add_subdirectory(engine_impl)
 
 add_executable(${PROJECT_NAME}
 	${DIR}/main.cpp
@@ -74,6 +75,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	platform
 	backend
     engine
+    engine_impl
 )
 
 if(TEST_BUILD)
