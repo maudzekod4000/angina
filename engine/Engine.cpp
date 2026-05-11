@@ -20,18 +20,18 @@ Engine::Engine(
     WindowPtr window,
     InputEventManagerPtr inputMgr,
     RatePerSecond desiredFPS,
-    GPUTextureResourceLoaderPtr texResLoader,
-    RendererPtr renderer
+    RendererPtr renderer,
+    GPUTextureResourceLoaderPtr texResLoader
 ):
     subsystemLifecycleManagers(std::move(slms)),
     logger(std::move(logger)),
     window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
+    renderer(std::move(renderer)),
     texResLoader(std::move(texResLoader)),
     desiredFPS(desiredFPS),
     globalClock({}),
-    framePacer(desiredFPS, globalClock),
-    renderer(std::move(renderer))
+    framePacer(desiredFPS, globalClock)
 {
     assert(this->subsystemLifecycleManagers);
     assert(this->logger);

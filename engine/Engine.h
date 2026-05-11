@@ -29,8 +29,8 @@ public:
 		Platform::UI::WindowPtr,
 		Platform::Input::InputEventManagerPtr inputMgr,
 		Core::Units::RatePerSecond desiredFPS,
-		Platform::Resources::GPUTextureResourceLoaderPtr gpuTexLoader,
-		Platform::Rendering::RendererPtr renderer
+		Platform::Rendering::RendererPtr renderer,
+		Platform::Resources::GPUTextureResourceLoaderPtr gpuTexLoader
 	);
 
 	virtual ~Engine() = default;
@@ -61,8 +61,8 @@ private:
 	Platform::UI::WindowPtr window;
 	
 	Platform::Input::InputEventManagerPtr inputEventMgr;
-	Platform::Resources::GPUTextureResourceLoaderPtr texResLoader;
 	Platform::Rendering::RendererPtr renderer;
+	Platform::Resources::GPUTextureResourceLoaderPtr texResLoader;
 
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
