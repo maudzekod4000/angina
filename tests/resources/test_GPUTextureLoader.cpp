@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <memory>
 
 #include "platform/resources/GPUTextureLoader.h"
 
@@ -13,13 +14,13 @@ class MockTextureTransferer : public TextureTransferer {
 public:
     std::expected<GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(CPUTextureHandle cpuHdl) override {
         GPUTextureHandle gpuHdl{};
-        gpuHdl.ptr = tex;
+        gpuHdl.ptr = tex.get();
         gpuHdl.isReady = true;
         return gpuHdl;
     }
 
 private:
-    GPUTexture* tex = new GPUTexture();
+    std::unique_ptr<GPUTexture> tex = std::make_unique<GPUTexture>();
 };
 
 class MockCPULoader : public TextureResourceLoader<CPUTextureHandle> {
@@ -41,7 +42,7 @@ public:
 
     CPUTextureHandle resolve(Core::Identity::Id id) override {
         CPUTextureHandle handle{};
-        handle.ptr = fakeCpuTex;
+        handle.ptr = fakeCpuTex.get();
         handle.isReady = true;
         return handle;
     }
@@ -57,23 +58,23 @@ public:
     void wait() override {}
 
 private:
-    CPUTexture* fakeCpuTex = new CPUTexture();
+    std::unique_ptr<CPUTexture> fakeCpuTex = std::make_unique<CPUTexture>();
 };
 
 TEST(GPUTextureLoader, Init)
 {
-    MockTextureTransferer myTransferer;
-    MockCPULoader loader;
-    GPUTextureLoader texLoader(&myTransferer, &loader);
+    auto transferer = std::make_shared<MockTextureTransferer>();
+    auto loader = std::make_unique<MockCPULoader>();
+    GPUTextureLoader texLoader(std::move(transferer), std::move(loader));
 
     EXPECT_TRUE(&texLoader);
 }
 
 TEST(GPUTextureLoader, Load)
 {
-    MockTextureTransferer myTransferer;
-    MockCPULoader loader;
-    GPUTextureLoader texLoader(&myTransferer, &loader);
+    auto transferer = std::make_shared<MockTextureTransferer>();
+    auto loader = std::make_unique<MockCPULoader>();
+    GPUTextureLoader texLoader(std::move(transferer), std::move(loader));
 
     const std::vector<std::filesystem::path> texFilePaths = {
         "a", "b"

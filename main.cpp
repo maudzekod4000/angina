@@ -24,7 +24,7 @@ public:
 		Platform::Resources::GPUTextureResourceLoaderPtr gpuTexLoader,
 		Platform::Rendering::RendererPtr renderer
 	):
-		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60), std::move(gpuTexLoader), std::move(renderer)) {}
+		Angina::EngineV3::Engine(std::move(slms), std::move(logger), std::move(window), std::move(eventMgr), Core::Units::RatePerSecond(60), std::move(renderer), std::move(gpuTexLoader)) {}
 protected:
 	int beforeStart() override { return 0; }
 	int beforeUpdate() override { return 0; }

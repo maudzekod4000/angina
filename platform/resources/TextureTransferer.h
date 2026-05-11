@@ -14,6 +14,8 @@ namespace Platform::Resources {
 class TextureTransferer {
 public:
 	virtual std::expected<GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(CPUTextureHandle) = 0;
+
+	virtual ~TextureTransferer() = default;
 };
 
 using TextureTransfererPtr = std::unique_ptr<TextureTransferer>;
