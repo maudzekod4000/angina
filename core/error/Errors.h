@@ -4,12 +4,20 @@
 #include <string>
 #include <string_view>
 
+#if defined(_MSC_VER)
+    #define ANGINA_CURRENT_FUNCTION __FUNCSIG__
+#elif defined(__GNUC__) || defined(__clang__)
+    #define ANGINA_CURRENT_FUNCTION __PRETTY_FUNCTION__
+#else
+    #define ANGINA_CURRENT_FUNCTION __func__
+#endif
+
 namespace Core::Errors {
 
 class ErrorCode {
 public:
-    ErrorCode() noexcept: code(0), msg("") {}
-    explicit ErrorCode(int code, const std::string& msg) noexcept: code(code), msg(msg) {}
+    ErrorCode() noexcept;
+    explicit ErrorCode(int code, const std::string& msg, const char* functionName = "") noexcept;
 
     /// True, if there is an error.
     explicit operator bool() const noexcept {
@@ -22,6 +30,7 @@ public:
 private:
     const int code;
     const std::string msg;
+    const char* functionName;
 };
 
 }

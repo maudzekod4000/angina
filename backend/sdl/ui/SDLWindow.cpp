@@ -39,7 +39,7 @@ std::expected<SDL_Renderer*, Core::Errors::ErrorCode> SDLWindow::makeRenderer()
 	auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	if (!renderer) {
-		return std::unexpected(ErrorCode(-1, "Failed to create renderer"));
+		return std::unexpected(ErrorCode(-1, "Failed to create renderer", ANGINA_CURRENT_FUNCTION));
 	}
 
 	return renderer;

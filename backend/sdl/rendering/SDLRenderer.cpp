@@ -27,10 +27,11 @@ std::shared_ptr<SDLRenderer> SDLRenderer::makeShared(SDL_Renderer* r)
 
 void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 {
-	// Ok...so the handle contains a generic pointer to a structure of some sort.
-	// what is the best way to cast it and check whether the cast is success...
-	// As we are certain that the type will be an SDL texture
-	SDLGPUTexture* sdlTexWrapper = static_cast<SDLGPUTexture*>(tex.ptr);
+	SDLGPUTexture* sdlTexWrapper = dynamic_cast<SDLGPUTexture*>(tex.ptr);
+	if (!sdlTexWrapper) {
+		assert(false && "render: expected SDLGPUTexture");
+		return;
+	}
 
 	auto sdlTex = sdlTexWrapper->get();
 
@@ -63,19 +64,22 @@ void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 
 std::expected<TextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(TextureHandle cpuTex)
 {
-	SDLCPUTexture* sdlTexWrapper = static_cast<SDLCPUTexture*>(cpuTex.ptr);
+	SDLCPUTexture* sdlTexWrapper = dynamic_cast<SDLCPUTexture*>(cpuTex.ptr);
+	if (!sdlTexWrapper) {
+		return std::unexpected(ErrorCode(-1, "convertCPUToGPUTexture: expected SDLCPUTexture", ANGINA_CURRENT_FUNCTION));
+	}
+
 	SDL_Surface* sdlSurface = sdlTexWrapper->get();
-	assert(sdlSurface);
 	
 	SDL_Texture* sdlTex = SDL_CreateTextureFromSurface(renderer, sdlSurface);
 
 	if (!sdlTex) {
-		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)"));
+		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)", ANGINA_CURRENT_FUNCTION));
 	}
 
 	TextureHandle handle{};
 	handle.ptr = new SDLGPUTexture(sdlTex);
-	handle.isReady = true;
+
 
 	return handle;
 }

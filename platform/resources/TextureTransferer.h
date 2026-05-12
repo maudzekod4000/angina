@@ -18,6 +18,7 @@ public:
 };
 
 using TextureTransfererPtr = std::unique_ptr<TextureTransferer>;
+
 }
 
 #endif // !PLATFORM_RESOURCES_TEXTURE_TRANSFERER_H

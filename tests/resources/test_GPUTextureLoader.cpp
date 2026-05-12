@@ -16,7 +16,7 @@ public:
     std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle cpuHdl) override {
         TextureHandle gpuHdl{};
         gpuHdl.ptr = tex.get();
-        gpuHdl.isReady = true;
+
         return gpuHdl;
     }
 
@@ -44,7 +44,7 @@ public:
     TextureHandle resolve(Core::Identity::Id id) override {
         TextureHandle handle{};
         handle.ptr = fakeCpuTex.get();
-        handle.isReady = true;
+
         return handle;
     }
 

@@ -38,14 +38,14 @@ std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::fil
 		if (surface) {
 			TextureHandle loadedTexHandle{};
 			loadedTexHandle.ptr = new SDLCPUTexture(surface);
-			loadedTexHandle.isReady = true;
+
 
 			const Id texId = texHandleFreeList.add(loadedTexHandle);
 
 			result.push_back(texId);
 		}
 		else {
-			result.push_back(std::unexpected(ErrorCode(-1, "Failed to load surface.")));
+			result.push_back(std::unexpected(ErrorCode(-1, "Failed to load surface.", ANGINA_CURRENT_FUNCTION)));
 		}
 	}
 

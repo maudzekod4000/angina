@@ -29,7 +29,7 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
         if (surface) {
             TextureHandle loadedTexHandle{};
 		    loadedTexHandle.ptr = new SDLCPUTexture(surface);
-		    loadedTexHandle.isReady = true;
+
 
             texHandleFreeList.write([id, &loadedTexHandle](auto& list) {
                 list.add(id, loadedTexHandle);

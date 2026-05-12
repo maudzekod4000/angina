@@ -7,7 +7,6 @@ namespace Platform::Resources {
 
 struct TextureHandle {
 	Texture* ptr = nullptr; ///< Pointer to the resource. Read-only, do not delete. Always check if it is a live resource before using.
-	bool isReady = false; ///< Is the resource loaded.
 
 	void freeMem() {
 		if (ptr) {

@@ -16,10 +16,10 @@ const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std:
 
 	SDL_Surface* loadedSurface = IMG_Load((const char*)(path.u8string().c_str()));
 
-	if (!loadedSurface) return std::unexpected(ErrorCode(-1, "Failed to load surface."));
+	if (!loadedSurface) return std::unexpected(ErrorCode(-1, "Failed to load surface.", ANGINA_CURRENT_FUNCTION));
 
 	loadedTexHandle.ptr = new SDLCPUTexture(loadedSurface);
-	loadedTexHandle.isReady = true;
+
 
 	return loadedTexHandle;
 };
