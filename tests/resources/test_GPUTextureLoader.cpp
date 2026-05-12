@@ -14,10 +14,7 @@ using namespace Core::Errors;
 class MockTextureTransferer : public TextureTransferer {
 public:
     std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle cpuHdl) override {
-        TextureHandle gpuHdl{};
-        gpuHdl.ptr = tex.get();
-
-        return gpuHdl;
+        return TextureHandle(tex.get());
     }
 
 private:
@@ -42,10 +39,7 @@ public:
     }
 
     TextureHandle resolve(Core::Identity::Id id) override {
-        TextureHandle handle{};
-        handle.ptr = fakeCpuTex.get();
-
-        return handle;
+        return TextureHandle(fakeCpuTex.get());
     }
 
     bool isValid(Core::Identity::Id id) override {

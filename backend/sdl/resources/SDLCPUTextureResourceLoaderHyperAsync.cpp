@@ -27,12 +27,8 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
         SDL_Surface* surface = IMG_Load((const char*)(resourceFile.u8string().c_str()));
 
         if (surface) {
-            TextureHandle loadedTexHandle{};
-		    loadedTexHandle.ptr = new SDLCPUTexture(surface);
-
-
-            texHandleFreeList.write([id, &loadedTexHandle](auto& list) {
-                list.add(id, loadedTexHandle);
+            texHandleFreeList.write([id, surface](auto& list) {
+                list.add(id, TextureHandle(new SDLCPUTexture(surface)));
             });
         }
     }));

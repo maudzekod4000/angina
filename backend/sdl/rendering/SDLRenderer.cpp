@@ -77,9 +77,5 @@ std::expected<TextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(Text
 		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)", ANGINA_CURRENT_FUNCTION));
 	}
 
-	TextureHandle handle{};
-	handle.ptr = new SDLGPUTexture(sdlTex);
-
-
-	return handle;
+	return TextureHandle(new SDLGPUTexture(sdlTex));
 }

@@ -3,6 +3,7 @@ add_library(resources OBJECT)
 target_sources(resources
 	PRIVATE
 		BaseResourceManager.cpp
+		TextureHandle.cpp
 		CPUTextureResourceLoaderWorker.cpp
 		GPUTextureLoader.cpp
 	PUBLIC

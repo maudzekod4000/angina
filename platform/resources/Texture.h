@@ -3,9 +3,8 @@
 
 namespace Platform::Resources {
 
-class Texture {
-public:
-	virtual ~Texture() = default;
+struct Texture {
+	virtual ~Texture() {}
 };
 
 }

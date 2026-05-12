@@ -12,7 +12,7 @@ using namespace Test::Helpers::File;
 
 static auto workload = [](const std::filesystem::path& path) -> TextureHandle {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    return TextureHandle();
+    return TextureHandle(nullptr);
 };
 
 TEST(CPUTextureLoadWorker, Init)
