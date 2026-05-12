@@ -8,14 +8,14 @@
 #include "core/datastructures/FreeList.h"
 #include "core/identity/IdGenerator.h"
 #include "core/datastructures/RWProtected.h"
-#include <platform/resources/CPUTextureHandle.h>
+#include <platform/resources/TextureHandle.h>
 
 namespace Backend::SDL::Resources {
 
 /// Loads resources in parallel and returns control immediately.
 /// Textures will become available at their own time, whenever they are loaded.
 /// Use isValid to check if the texture has been loaded and resolve to get a handle to it.
-class SDLCPUTextureLoaderHyperAsync : public Platform::Resources::TextureResourceLoader<Platform::Resources::CPUTextureHandle> {
+class SDLCPUTextureLoaderHyperAsync : public Platform::Resources::TextureResourceLoader<Platform::Resources::TextureHandle> {
 public:
 
 	/// Hmmmm this is interesting...So we have to return the Id before we added it to the 
@@ -29,7 +29,7 @@ public:
 
 	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
-	Platform::Resources::CPUTextureHandle resolve(Core::Identity::Id id) override;
+	Platform::Resources::TextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
 
@@ -39,7 +39,7 @@ public:
 
 	void wait() override;
 private:
-	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
+	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<Platform::Resources::TextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	Core::Identity::IdGenerator idGenerator;
 	std::vector<std::jthread> workerHandles;
 };

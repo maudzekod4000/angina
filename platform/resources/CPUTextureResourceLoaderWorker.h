@@ -14,12 +14,12 @@
 #include "core/identity/Id.h"
 #include "core/identity/IdGenerator.h"
 
-#include "CPUTextureHandle.h"
+#include "TextureHandle.h"
 #include "TextureResourceLoader.h"
 
 namespace Platform::Resources {
 
-using LoadTextureFunc = std::function<std::expected<CPUTextureHandle, Core::Errors::ErrorCode>(const std::filesystem::path&)>;
+using LoadTextureFunc = std::function<std::expected<TextureHandle, Core::Errors::ErrorCode>(const std::filesystem::path&)>;
 
 /// Ok, soo the idea here is that we have a single thread that loads textures.
 /// This means that we need some kind of job queue in order to keep track of 
@@ -27,7 +27,7 @@ using LoadTextureFunc = std::function<std::expected<CPUTextureHandle, Core::Erro
 /// Call this class' methods from the same thread, usually the main thread.
 /// I am not sure whether this will be the case forever....I have to use the class more,
 /// to know for certain.
-class CPUTextureLoadWorker : public TextureResourceLoader<CPUTextureHandle> {
+class CPUTextureLoadWorker : public TextureResourceLoader<TextureHandle> {
 public:
 	/// Starts the worker thread.
 	CPUTextureLoadWorker(LoadTextureFunc);
@@ -48,7 +48,7 @@ public:
 	// We are going to use it for loading audio too...
 	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
-	CPUTextureHandle resolve(Core::Identity::Id id) override;
+	TextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
 
@@ -86,7 +86,7 @@ private:
 	Core::Identity::IdGenerator idGen; ///< Instance that can generate ids for the textures. Should be called from a single-threaded context.
 	std::queue<TexLoadJob> jobQueue; ///< Buffers incoming load commands, so they can be executed later, when the thread is available.
 	mutable std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.
-	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<CPUTextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
+	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<TextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 	std::jthread workerThread; ///< This thread polls from the job queue and executes texture loading commands.
 };
 

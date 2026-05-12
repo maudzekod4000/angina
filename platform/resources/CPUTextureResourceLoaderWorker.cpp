@@ -45,7 +45,7 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 				waiting = jobQueue.empty();
 			}
 
-			const std::expected<CPUTextureHandle, ErrorCode> texOrErr = loadTextureFunc(job.getPath());
+			const std::expected<TextureHandle, ErrorCode> texOrErr = loadTextureFunc(job.getPath());
 
 			if (texOrErr.has_value()) {
 				const auto tex = texOrErr.value();
@@ -126,7 +126,7 @@ ErrorCode CPUTextureLoadWorker::release(Core::Identity::Id id)
 	return ErrorCode();
 }
 
-CPUTextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
+TextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
 {
 	return texHandleFreeList.read([id](auto& list) {
 		return list.get(id);

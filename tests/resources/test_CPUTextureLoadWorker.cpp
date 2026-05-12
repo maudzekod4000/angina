@@ -3,16 +3,16 @@
 #include <chrono>
 
 #include "platform/resources/CPUTextureResourceLoaderWorker.h"
-#include "platform/resources/CPUTextureHandle.h"
+#include "platform/resources/TextureHandle.h"
 
 #include "helpers/file.h"
 
 using namespace Platform::Resources;
 using namespace Test::Helpers::File;
 
-static auto workload = [](const std::filesystem::path& path) -> CPUTextureHandle {
+static auto workload = [](const std::filesystem::path& path) -> TextureHandle {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    return CPUTextureHandle();
+    return TextureHandle();
 };
 
 TEST(CPUTextureLoadWorker, Init)

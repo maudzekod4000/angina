@@ -1,10 +1,11 @@
 #include <gtest/gtest.h>
 
-#include <string>
 #include <vector>
 #include <filesystem>
 #include <memory>
 
+#include "platform/resources/TextureTransferer.h"
+#include "platform/resources/TextureResourceLoader.h"
 #include "platform/resources/GPUTextureLoader.h"
 
 using namespace Platform::Resources;
@@ -12,18 +13,18 @@ using namespace Core::Errors;
 
 class MockTextureTransferer : public TextureTransferer {
 public:
-    std::expected<GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(CPUTextureHandle cpuHdl) override {
-        GPUTextureHandle gpuHdl{};
+    std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle cpuHdl) override {
+        TextureHandle gpuHdl{};
         gpuHdl.ptr = tex.get();
         gpuHdl.isReady = true;
         return gpuHdl;
     }
 
 private:
-    std::unique_ptr<GPUTexture> tex = std::make_unique<GPUTexture>();
+    std::unique_ptr<Texture> tex = std::make_unique<Texture>();
 };
 
-class MockCPULoader : public TextureResourceLoader<CPUTextureHandle> {
+class MockCPULoader : public TextureResourceLoader<TextureHandle> {
 public:
     IdOrError load(const std::filesystem::path& resourceFile) override {
         return {};
@@ -40,8 +41,8 @@ public:
         return ErrorCode();
     }
 
-    CPUTextureHandle resolve(Core::Identity::Id id) override {
-        CPUTextureHandle handle{};
+    TextureHandle resolve(Core::Identity::Id id) override {
+        TextureHandle handle{};
         handle.ptr = fakeCpuTex.get();
         handle.isReady = true;
         return handle;
@@ -58,7 +59,7 @@ public:
     void wait() override {}
 
 private:
-    std::unique_ptr<CPUTexture> fakeCpuTex = std::make_unique<CPUTexture>();
+    std::unique_ptr<Texture> fakeCpuTex = std::make_unique<Texture>();
 };
 
 TEST(GPUTextureLoader, Init)

@@ -3,15 +3,13 @@
 
 #include <expected>
 
-#include 
-
-#include "GPUTextureHandle.h"
-#include "CPUTextureHandle.h"
+#include "core/error/Errors.h"
+#include "platform/resources/TextureHandle.h"
 
 namespace Platform::Resources {
 class TextureTransferer {
 public:
-	virtual std::expected<Platform::Resources::GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::CPUTextureHandle) = 0;
+	virtual std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::TextureHandle) = 0;
 };
 }
 

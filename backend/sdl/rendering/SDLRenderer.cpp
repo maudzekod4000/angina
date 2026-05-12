@@ -25,7 +25,7 @@ std::shared_ptr<SDLRenderer> SDLRenderer::makeShared(SDL_Renderer* r)
 	return std::shared_ptr<SDLRenderer>(new SDLRenderer(r));
 }
 
-void SDLRenderer::render(Platform::Resources::GPUTextureHandle tex)
+void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 {
 	// Ok...so the handle contains a generic pointer to a structure of some sort.
 	// what is the best way to cast it and check whether the cast is success...
@@ -61,7 +61,7 @@ void SDLRenderer::render(Platform::Resources::GPUTextureHandle tex)
 // It would be good to reuse the Id from the CPU loading.
 // So that could be a class that does all those things.
 
-std::expected<GPUTextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(CPUTextureHandle cpuTex)
+std::expected<TextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(TextureHandle cpuTex)
 {
 	SDLCPUTexture* sdlTexWrapper = static_cast<SDLCPUTexture*>(cpuTex.ptr);
 	SDL_Surface* sdlSurface = sdlTexWrapper->get();
@@ -73,7 +73,7 @@ std::expected<GPUTextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(C
 		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)"));
 	}
 
-	GPUTextureHandle handle{};
+	TextureHandle handle{};
 	handle.ptr = new SDLGPUTexture(sdlTex);
 	handle.isReady = true;
 

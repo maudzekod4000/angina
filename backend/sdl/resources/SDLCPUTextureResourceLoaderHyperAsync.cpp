@@ -22,12 +22,12 @@ IdOrError SDLCPUTextureLoaderHyperAsync::load(const std::filesystem::path& resou
     workerHandles.push_back(std::jthread([id, resourceFile, this]() {
         // Hahhahah sooo why does this class have to be called SDLSomethingSomething?
         // Just a small snippet is SDL related,
-        // we can accept a callback (strategy) which will return a CPUTextureHandle...
+        // we can accept a callback (strategy) which will return a TextureHandle...
         // Anyway I won't refactor the existing methods as they are not optimal anyway.
         SDL_Surface* surface = IMG_Load((const char*)(resourceFile.u8string().c_str()));
 
         if (surface) {
-            CPUTextureHandle loadedTexHandle{};
+            TextureHandle loadedTexHandle{};
 		    loadedTexHandle.ptr = new SDLCPUTexture(surface);
 		    loadedTexHandle.isReady = true;
 
@@ -60,7 +60,7 @@ ErrorCode SDLCPUTextureLoaderHyperAsync::release(Id id)
     return ErrorCode();
 }
 
-CPUTextureHandle SDLCPUTextureLoaderHyperAsync::resolve(Id id)
+TextureHandle SDLCPUTextureLoaderHyperAsync::resolve(Id id)
 {
     return texHandleFreeList.read([id](auto& list) {
         return list.get(id);

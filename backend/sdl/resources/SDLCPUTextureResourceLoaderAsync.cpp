@@ -36,7 +36,7 @@ std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::fil
 		SDL_Surface* surface = fut.get();
 
 		if (surface) {
-			CPUTextureHandle loadedTexHandle{};
+			TextureHandle loadedTexHandle{};
 			loadedTexHandle.ptr = new SDLCPUTexture(surface);
 			loadedTexHandle.isReady = true;
 
@@ -58,7 +58,7 @@ ErrorCode SDLCPUTextureLoaderAsync::release(Core::Identity::Id id)
 	return ErrorCode();
 }
 
-CPUTextureHandle SDLCPUTextureLoaderAsync::resolve(Core::Identity::Id id)
+TextureHandle SDLCPUTextureLoaderAsync::resolve(Core::Identity::Id id)
 {
 	return texHandleFreeList.get(id);
 }

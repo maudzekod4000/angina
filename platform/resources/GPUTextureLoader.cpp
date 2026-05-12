@@ -5,7 +5,7 @@
 using namespace Platform::Resources;
 using namespace Core::Errors;
 
-GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransferer, std::unique_ptr<TextureResourceLoader<CPUTextureHandle>> cpuTexLoader) :
+GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransferer, std::unique_ptr<TextureResourceLoader<TextureHandle>> cpuTexLoader) :
 	texTransfererPtr(std::move(texTransferer)), cpuTexLoaderPtr(std::move(cpuTexLoader)) {}
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
@@ -26,7 +26,7 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 			auto id = idOrErr.value();
 
 			if (cpuTexLoaderPtr->isValid(id)) {
-				CPUTextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
+				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
 				auto gpuHandleOrErr = texTransfererPtr->convertCPUToGPUTexture(cpuHandle);
 
 				if (gpuHandleOrErr.has_value()) {
@@ -58,7 +58,7 @@ ErrorCode GPUTextureLoader::release(Core::Identity::Id id)
 	return ErrorCode();
 }
 
-GPUTextureHandle GPUTextureLoader::resolve(Core::Identity::Id id)
+TextureHandle GPUTextureLoader::resolve(Core::Identity::Id id)
 {
 	return gpuTexturesFreeList.get(id);
 }

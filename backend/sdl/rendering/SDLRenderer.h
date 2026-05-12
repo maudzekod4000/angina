@@ -4,8 +4,7 @@
 #include <expected>
 
 #include "platform/rendering/Renderer.h"
-#include "platform/resources/GPUTextureHandle.h"
-#include "platform/resources/CPUTextureHandle.h"
+#include "platform/resources/TextureHandle.h"
 #include "platform/resources/TextureTransferer.h"
 #include "core/error/Errors.h"
 
@@ -18,9 +17,9 @@ public:
 
 	static std::shared_ptr<SDLRenderer> makeShared(SDL_Renderer*);
 
-	void render(Platform::Resources::GPUTextureHandle) override;
+	void render(Platform::Resources::TextureHandle) override;
 
-	std::expected<Platform::Resources::GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::CPUTextureHandle) override;
+	std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::TextureHandle) override;
 private:
 	explicit SDLRenderer(SDL_Renderer*);
 

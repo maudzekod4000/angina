@@ -14,6 +14,8 @@ public:
 	virtual Core::Errors::ErrorCode init(uint64_t flags) = 0;
 	virtual Core::Errors::ErrorCode destroy() = 0;
 	virtual bool isCriticalSubsystem() = 0;
+
+	virtual ~ISubsystemLifecycleManager() = default; // empty destructor body is equally good.
 };
 }
 

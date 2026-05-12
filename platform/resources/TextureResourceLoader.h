@@ -7,10 +7,8 @@
 #include <memory>
 
 #include "core/identity/Id.h"
-#include "CPUTextureHandle.h"
 #include "core/error/Errors.h"
-#include "platform/resources/CPUTextureHandle.h"
-#include "platform/resources/GPUTextureHandle.h"
+#include "platform/resources/TextureHandle.h"
 
 namespace Platform::Resources {
 
@@ -63,8 +61,8 @@ public:
 // but it is templated....
 // Don't know what to do...
 // Hah.....the engine has to be templated too...templates kinda push everything to the client.
-using CPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<CPUTextureHandle>>;
-using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<GPUTextureHandle>>;
+using CPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<TextureHandle>>;
+using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<TextureHandle>>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

@@ -9,11 +9,9 @@ target_sources(resources
 		IResourceManager.h
 		TextureResourceLoader.h
 		IResource.h
-		CPUTexture.h
-		CPUTextureHandle.h
-		GPUTextureHandle.h
+		Texture.h
+		TextureHandle.h
 		CPUTextureResourceLoaderWorker.h
-		GPUTexture.h
 		TextureTransferer.h
 		GPUTextureLoader.h
 )

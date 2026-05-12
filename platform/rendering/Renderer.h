@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "platform/resources/GPUTextureHandle.h"
+#include "platform/resources/TextureHandle.h"
 
 namespace Platform::Rendering {
 
@@ -11,7 +11,7 @@ namespace Platform::Rendering {
 /// and implement different kinds of render engines like SDL.
 class Renderer {
 public:
-	virtual void render(Platform::Resources::GPUTextureHandle) = 0;
+	virtual void render(Platform::Resources::TextureHandle) = 0;
 };
 
 using RendererPtr = std::shared_ptr<Platform::Rendering::Renderer>;

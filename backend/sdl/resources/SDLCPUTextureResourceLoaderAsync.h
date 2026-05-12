@@ -10,7 +10,7 @@ namespace Backend::SDL::Resources {
 /// Loads resources in parallel, but the load time will depend on the slowest texture
 /// load, because we are blocking and waiting for all textures to be loaded,
 /// before adding the textures to the freelist storage.
-class SDLCPUTextureLoaderAsync : public Platform::Resources::TextureResourceLoader<Platform::Resources::CPUTextureHandle> {
+class SDLCPUTextureLoaderAsync : public Platform::Resources::TextureResourceLoader<Platform::Resources::TextureHandle> {
 public:
 
 	/// Empty implementation. Use SDLCPUTextureLoader::load method instead.
@@ -21,7 +21,7 @@ public:
 
 	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
-	Platform::Resources::CPUTextureHandle resolve(Core::Identity::Id id) override;
+	Platform::Resources::TextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
 
@@ -34,7 +34,7 @@ public:
 
 	void wait() override;
 private:
-	Core::DataStructures::FreeList<Platform::Resources::CPUTextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
+	Core::DataStructures::FreeList<Platform::Resources::TextureHandle> texHandleFreeList; ///< Actual storage of the CPU texture handles.
 };
 
 }

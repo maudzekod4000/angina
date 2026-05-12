@@ -6,14 +6,13 @@
 
 #include "core/error/Errors.h"
 
-#include "GPUTextureHandle.h"
-#include "CPUTextureHandle.h"
+#include "TextureHandle.h"
 
 namespace Platform::Resources {
 /// Interface for converting a CPU to GPU texture.
 class TextureTransferer {
 public:
-	virtual std::expected<GPUTextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(CPUTextureHandle) = 0;
+	virtual std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle) = 0;
 
 	virtual ~TextureTransferer() = default;
 };

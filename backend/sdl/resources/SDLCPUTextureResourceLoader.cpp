@@ -11,8 +11,8 @@ using namespace Platform::Resources;
 using namespace Core::Errors;
 
 namespace {
-const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std::expected<CPUTextureHandle, ErrorCode> {
-	CPUTextureHandle loadedTexHandle{};
+const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std::expected<TextureHandle, ErrorCode> {
+	TextureHandle loadedTexHandle{};
 
 	SDL_Surface* loadedSurface = IMG_Load((const char*)(path.u8string().c_str()));
 

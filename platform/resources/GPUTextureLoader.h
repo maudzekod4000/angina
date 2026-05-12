@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "platform/resources/TextureResourceLoader.h"
-#include "platform/resources/GPUTextureHandle.h"
+#include "platform/resources/TextureHandle.h"
 #include "platform/resources/TextureTransferer.h"
 #include "core/datastructures/FreeList.h"
 
@@ -13,9 +13,9 @@ namespace Platform::Resources {
 /// Loads resources first to main memory and then to the GPU.
 /// Depending on the transferer and the graphics API, this class might need to
 /// be called from the main thread.
-class GPUTextureLoader : public TextureResourceLoader<GPUTextureHandle> {
+class GPUTextureLoader : public TextureResourceLoader<TextureHandle> {
 public:
-	explicit GPUTextureLoader(std::shared_ptr<TextureTransferer>, std::unique_ptr<TextureResourceLoader<CPUTextureHandle>>);
+	explicit GPUTextureLoader(std::shared_ptr<TextureTransferer>, std::unique_ptr<TextureResourceLoader<TextureHandle>>);
 
 	IdOrError load(const std::filesystem::path& resourceFile) override;
 
@@ -23,7 +23,7 @@ public:
 
 	Core::Errors::ErrorCode release(Core::Identity::Id id) override;
 
-	GPUTextureHandle resolve(Core::Identity::Id id) override;
+	TextureHandle resolve(Core::Identity::Id id) override;
 
 	bool isValid(Core::Identity::Id id) override;
 
@@ -32,9 +32,9 @@ public:
 	void wait() override;
 
 private:
-	std::unique_ptr<TextureResourceLoader<CPUTextureHandle>> cpuTexLoaderPtr;
+	std::unique_ptr<TextureResourceLoader<TextureHandle>> cpuTexLoaderPtr;
 	std::shared_ptr<TextureTransferer> texTransfererPtr;
-	Core::DataStructures::FreeList<GPUTextureHandle> gpuTexturesFreeList;
+	Core::DataStructures::FreeList<TextureHandle> gpuTexturesFreeList;
 };
 
 using GPUTextureLoaderPtr = std::unique_ptr<GPUTextureLoader>;
