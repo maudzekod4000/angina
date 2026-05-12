@@ -13,8 +13,6 @@ struct SDL_Renderer;
 namespace Backend::SDL::Rendering {
 class SDLRenderer : public Platform::Rendering::Renderer, public Platform::Resources::TextureTransferer {
 public:
-	static std::unique_ptr<SDLRenderer> make(SDL_Renderer*);
-
 	static std::shared_ptr<SDLRenderer> makeShared(SDL_Renderer*);
 
 	void render(Platform::Resources::TextureHandle) override;

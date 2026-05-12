@@ -14,6 +14,8 @@ namespace Platform::Resources {
 
 using IdOrError = std::expected<Core::Identity::Id, Core::Errors::ErrorCode>;
 
+/// Note: I think that we can remove the template type, but maybe that would mean that 
+/// There will be dynamic casts somewhere along the way...
 /// Interface for loading and releasing resources.
 template <typename TextureHandleType>
 class TextureResourceLoader {

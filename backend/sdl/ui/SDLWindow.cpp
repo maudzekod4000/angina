@@ -1,5 +1,4 @@
 #include "SDLWindow.h"
-#include "SDLWindow.h"
 
 #include "SDL.h"
 
@@ -11,6 +10,8 @@ using namespace Backend::SDL::UI;
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
 	IWindow(c), window(w) {}
 
+/// Note: It would be better if this returns a std::expected with an actual SDL error
+/// and a fully constructed pointer otherwise.
 std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 {
 	SDL_Window* window = SDL_CreateWindow(
