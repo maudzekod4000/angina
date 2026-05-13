@@ -14,10 +14,7 @@ namespace Platform::Resources {
 
 using IdOrError = std::expected<Core::Identity::Id, Core::Errors::ErrorCode>;
 
-/// Note: I think that we can remove the template type, but maybe that would mean that 
-/// There will be dynamic casts somewhere along the way...
 /// Interface for loading and releasing resources.
-template <typename TextureHandleType>
 class TextureResourceLoader {
 public:
 	/// Loads a resource.
@@ -39,7 +36,7 @@ public:
 	/// Looks for a texture with the provided id and returns a handle to it. Check with isValid before calling this.
 	/// @param id The id of the required texture.
 	/// @return Returns a handle to the texture.
-	virtual TextureHandleType resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
+	virtual TextureHandle resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
 
 	/// Checks if the resource is valid, i.e. is ready, loaded and not deleted.
 	/// @param id Id of the resource.
@@ -59,12 +56,7 @@ public:
 	virtual ~TextureResourceLoader() = default;
 };
 
-// Hmmmm we want the engine to accept a generic CPUTextureResourceLoader....
-// but it is templated....
-// Don't know what to do...
-// Hah.....the engine has to be templated too...templates kinda push everything to the client.
-using CPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<TextureHandle>>;
-using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader<TextureHandle>>;
+using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

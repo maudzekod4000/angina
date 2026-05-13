@@ -5,7 +5,7 @@
 using namespace Platform::Resources;
 using namespace Core::Errors;
 
-GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransferer, std::unique_ptr<TextureResourceLoader<TextureHandle>> cpuTexLoader) :
+GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransferer, std::unique_ptr<TextureResourceLoader> cpuTexLoader) :
 	texTransfererPtr(std::move(texTransferer)), cpuTexLoaderPtr(std::move(cpuTexLoader)) {}
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)

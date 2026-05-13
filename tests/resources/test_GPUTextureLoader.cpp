@@ -21,7 +21,7 @@ private:
     std::unique_ptr<Texture> tex = std::make_unique<Texture>();
 };
 
-class MockCPULoader : public TextureResourceLoader<TextureHandle> {
+class MockCPULoader : public TextureResourceLoader {
 public:
     IdOrError load(const std::filesystem::path& resourceFile) override {
         return {};

@@ -13,9 +13,9 @@ namespace Platform::Resources {
 /// Loads resources first to main memory and then to the GPU.
 /// Depending on the transferer and the graphics API, this class might need to
 /// be called from the main thread.
-class GPUTextureLoader : public TextureResourceLoader<TextureHandle> {
+class GPUTextureLoader : public TextureResourceLoader {
 public:
-	explicit GPUTextureLoader(std::shared_ptr<TextureTransferer>, std::unique_ptr<TextureResourceLoader<TextureHandle>>);
+	explicit GPUTextureLoader(std::shared_ptr<TextureTransferer>, std::unique_ptr<TextureResourceLoader>);
 
 	IdOrError load(const std::filesystem::path& resourceFile) override;
 
@@ -32,7 +32,7 @@ public:
 	void wait() override;
 
 private:
-	std::unique_ptr<TextureResourceLoader<TextureHandle>> cpuTexLoaderPtr;
+	std::unique_ptr<TextureResourceLoader> cpuTexLoaderPtr;
 	std::shared_ptr<TextureTransferer> texTransfererPtr;
 	Core::DataStructures::FreeList<TextureHandle> gpuTexturesFreeList;
 };
