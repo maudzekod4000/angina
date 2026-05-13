@@ -27,7 +27,7 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 
 			if (cpuTexLoaderPtr->isValid(id)) {
 				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
-				auto gpuHandleOrErr = texTransfererPtr->convertCPUToGPUTexture(cpuHandle);
+				auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
 
 				if (gpuHandleOrErr.has_value()) {
 					auto addId = gpuTexturesFreeList.add(gpuHandleOrErr.value());

@@ -56,16 +56,14 @@ void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 // It would be good to reuse the Id from the CPU loading.
 // So that could be a class that does all those things.
 
-std::expected<TextureHandle, ErrorCode> SDLRenderer::convertCPUToGPUTexture(TextureHandle cpuTex)
+std::expected<TextureHandle, ErrorCode> SDLRenderer::transferGPU(TextureHandle cpuTex)
 {
 	SDLCPUTexture* sdlTexWrapper = dynamic_cast<SDLCPUTexture*>(cpuTex.ptr);
 	if (!sdlTexWrapper) {
-		return std::unexpected(ErrorCode(-1, "convertCPUToGPUTexture: expected SDLCPUTexture", ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(ErrorCode(-1, "cast failed: expected handle to SDLCPUTexture", ANGINA_CURRENT_FUNCTION));
 	}
 
-	SDL_Surface* sdlSurface = sdlTexWrapper->get();
-	
-	SDL_Texture* sdlTex = SDL_CreateTextureFromSurface(renderer, sdlSurface);
+	SDL_Texture* sdlTex = SDL_CreateTextureFromSurface(renderer, sdlTexWrapper->get());
 
 	if (!sdlTex) {
 		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)", ANGINA_CURRENT_FUNCTION));

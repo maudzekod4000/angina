@@ -17,7 +17,7 @@ namespace Backend::SDL::UI {
 class SDLWindow : public Platform::UI::IWindow {
 	SDLWindow(SDL_Window*, const Platform::UI::WindowConfig&);
 public:
-	static std::unique_ptr<SDLWindow> make(const Platform::UI::WindowConfig&);
+	static std::expected<std::unique_ptr<SDLWindow>, Core::Errors::ErrorCode> make(const Platform::UI::WindowConfig&);
 
 	Core::Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
 

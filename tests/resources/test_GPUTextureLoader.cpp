@@ -13,7 +13,7 @@ using namespace Core::Errors;
 
 class MockTextureTransferer : public TextureTransferer {
 public:
-    std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle cpuHdl) override {
+    std::expected<TextureHandle, Core::Errors::ErrorCode> transferGPU(TextureHandle cpuHdl) override {
         return TextureHandle(tex.get());
     }
 

@@ -10,9 +10,7 @@ using namespace Backend::SDL::UI;
 SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
 	IWindow(c), window(w) {}
 
-/// Note: It would be better if this returns a std::expected with an actual SDL error
-/// and a fully constructed pointer otherwise.
-std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
+std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const WindowConfig& c)
 {
 	SDL_Window* window = SDL_CreateWindow(
 		c.title.c_str(),
@@ -23,7 +21,7 @@ std::unique_ptr<SDLWindow> SDLWindow::make(const WindowConfig& c)
 		SDL_WINDOW_SHOWN
 	);
 	if (!window) {
-		return nullptr;
+		return std::unexpected(ErrorCode(-1, SDL_GetError(), ANGINA_CURRENT_FUNCTION));
 	}
 
 	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));

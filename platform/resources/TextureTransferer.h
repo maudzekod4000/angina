@@ -12,7 +12,7 @@ namespace Platform::Resources {
 /// Interface for converting a CPU to GPU texture.
 class TextureTransferer {
 public:
-	virtual std::expected<TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(TextureHandle) = 0;
+	virtual std::expected<TextureHandle, Core::Errors::ErrorCode> transferGPU(TextureHandle) = 0;
 
 	virtual ~TextureTransferer() = default;
 };

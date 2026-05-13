@@ -1,5 +1,6 @@
 #include "SDLEngine.h"
 
+#include <cstdlib>
 #include <memory>
 #include <vector>
 
@@ -14,6 +15,7 @@
 
 using namespace EngineImpl::SDL;
 using namespace Platform::UI;
+using namespace Platform::Logging;
 
 SDLEngine::Resources SDLEngine::build(const WindowConfig& config) {
 	auto slms = std::make_unique<Platform::Init::SubsystemLifecycleManagers>(
@@ -22,9 +24,22 @@ SDLEngine::Resources SDLEngine::build(const WindowConfig& config) {
 		}
 	);
 	auto logger = std::make_unique<Platform::Logging::ConsoleLogger>();
-	auto window = Backend::SDL::UI::SDLWindow::make(config);
+
+	auto windowOrErr = Backend::SDL::UI::SDLWindow::make(config);
+	if (!windowOrErr) {
+		logger->log(Level::ERROR, windowOrErr.error());
+		std::exit(EXIT_FAILURE);
+	}
+	auto window = std::move(windowOrErr.value());
+
+	auto rendererOrErr = window->makeRenderer();
+	if (!rendererOrErr) {
+		logger->log(Level::ERROR, rendererOrErr.error());
+		std::exit(EXIT_FAILURE);
+	}
+
 	auto inputMgr = Backend::SDL::Input::SDLInputEventManager::make();
-	auto sdlRenderer = Backend::SDL::Rendering::SDLRenderer::makeShared(window->makeRenderer().value());
+	auto sdlRenderer = Backend::SDL::Rendering::SDLRenderer::makeShared(rendererOrErr.value());
 	auto cpuTexLoader = Backend::SDL::Resources::SDLCPUTextureResourceLoader::make();
 	auto gpuTexLoader = std::make_unique<Platform::Resources::GPUTextureLoader>(sdlRenderer, std::move(cpuTexLoader));
 

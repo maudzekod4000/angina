@@ -11,13 +11,13 @@
 struct SDL_Renderer;
 
 namespace Backend::SDL::Rendering {
-class SDLRenderer : public Platform::Rendering::Renderer, public Platform::Resources::TextureTransferer {
+class SDLRenderer final : public Platform::Rendering::Renderer, public Platform::Resources::TextureTransferer {
 public:
 	static std::shared_ptr<SDLRenderer> makeShared(SDL_Renderer*);
 
 	void render(Platform::Resources::TextureHandle) override;
 
-	std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> convertCPUToGPUTexture(Platform::Resources::TextureHandle) override;
+	std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> transferGPU(Platform::Resources::TextureHandle) override;
 private:
 	explicit SDLRenderer(SDL_Renderer*);
 
