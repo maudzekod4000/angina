@@ -1,5 +1,7 @@
 #include "SDLWindow.h"
 
+#include "backend/sdl/error/SDLError.h"
+
 #include "SDL.h"
 
 using namespace Core::Errors;
@@ -21,7 +23,7 @@ std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const Windo
 		SDL_WINDOW_SHOWN
 	);
 	if (!window) {
-		return std::unexpected(ErrorCode(-1, SDL_GetError(), ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(Error::make(ANGINA_CURRENT_FUNCTION));
 	}
 
 	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));
