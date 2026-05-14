@@ -4,6 +4,7 @@
 
 #include "SDL_render.h"
 
+#include "backend/sdl/error/SDLError.h"
 #include "sdl/resources/SDLGPUTexture.h"
 #include "sdl/resources/SDLCPUTexture.h"
 
@@ -66,7 +67,7 @@ std::expected<TextureHandle, ErrorCode> SDLRenderer::transferGPU(TextureHandle c
 	SDL_Texture* sdlTex = SDL_CreateTextureFromSurface(renderer, sdlTexWrapper->get());
 
 	if (!sdlTex) {
-		return std::unexpected(ErrorCode(-1, "Failed to convert CPU to GPU texture (SDL)", ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
 	}
 
 	return TextureHandle(new SDLGPUTexture(sdlTex));

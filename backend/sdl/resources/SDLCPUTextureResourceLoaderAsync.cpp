@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "backend/sdl/resources/SDLCPUTexture.h"
+#include "backend/sdl/error/SDLError.h"
 
 #include "SDL_image.h"
 
@@ -41,7 +42,7 @@ std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::fil
 			result.push_back(texId);
 		}
 		else {
-			result.push_back(std::unexpected(ErrorCode(-1, "Failed to load surface.", ANGINA_CURRENT_FUNCTION)));
+			result.push_back(std::unexpected(Error::make(ANGINA_CURRENT_FUNCTION)));
 		}
 	}
 

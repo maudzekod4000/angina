@@ -5,6 +5,7 @@
 #include "SDLCPUTexture.h"
 
 #include "SDL_image.h"
+#include "backend/sdl/error/SDLError.h"
 
 using namespace Backend::SDL::Resources;
 using namespace Platform::Resources;
@@ -14,7 +15,7 @@ namespace {
 const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std::expected<TextureHandle, ErrorCode> {
 	SDL_Surface* loadedSurface = IMG_Load((const char*)(path.u8string().c_str()));
 
-	if (!loadedSurface) return std::unexpected(ErrorCode(-1, "Failed to load surface.", ANGINA_CURRENT_FUNCTION));
+	if (!loadedSurface) return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
 
 	return TextureHandle(new SDLCPUTexture(loadedSurface));
 };
