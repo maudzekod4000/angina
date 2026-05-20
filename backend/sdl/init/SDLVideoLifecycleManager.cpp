@@ -16,6 +16,7 @@ ErrorCode SDLVideoLifecycleManager::init(uint64_t flags)
 	return ErrorCode();
 }
 
+
 ErrorCode SDLVideoLifecycleManager::destroy()
 {
 	SDL_Quit();

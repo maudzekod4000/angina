@@ -3,7 +3,6 @@ add_executable(tests
     test_FreeList.cpp
     resources/test_SDLCPUTextureResourceLoader.cpp
     resources/test_SDLCPUTextureResourceLoaderAsync.cpp
-    resources/test_SDLCPUTextureResourceLoaderHyperAsync.cpp
     resources/test_CPUTextureLoadWorker.cpp
     resources/test_GPUTextureLoader.cpp
     platform/test_BaseInputEventManager.cpp
