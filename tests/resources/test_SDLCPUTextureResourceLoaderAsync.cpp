@@ -26,7 +26,7 @@ TEST(SDLCPUTextureResourceAsync, Init)
 
 TEST(SDLCPUTextureResourceAsync, Load10)
 {
-    const std::string dir = std::string(TEST_RESOURCE_DIR) + "/textures10";
+    const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
 
     EXPECT_EQ(10, texFilePaths.size());
@@ -49,7 +49,7 @@ TEST(SDLCPUTextureResourceAsync, Load10)
 
 TEST(SDLCPUTextureResourceAsync, Load50)
 {
-    const std::string dir = std::string(TEST_RESOURCE_DIR) + "/textures10";
+    const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
 
     std::vector<std::filesystem::path> texFilePaths50;

@@ -28,7 +28,7 @@ TEST(CPUTextureLoadWorker, Init)
 TEST(CPUTextureLoadWorker, Load)
 {
     CPUTextureLoadWorker loader(workload);
-    const std::string path = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
+    const auto path = resource("Bishop_W.png");
 
     auto start = std::chrono::steady_clock::now();
     const auto idOrErr = loader.load(path);
@@ -52,8 +52,8 @@ TEST(CPUTextureLoadWorker, Load)
 TEST(CPUTextureLoadWorker, LoadTwo)
 {
     CPUTextureLoadWorker loader(workload);
-    const std::filesystem::path path1 = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
-    const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
+    const auto path1 = resource("Bishop_W.png");
+    const auto path2 = resource("Bishop_B.png");
     
     auto start = std::chrono::steady_clock::now();
     const auto ids = loader.load(std::vector({ path1, path2 }));
@@ -78,7 +78,7 @@ TEST(CPUTextureLoadWorker, LoadTwo)
 
 TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 {
-    const std::string dir = std::string(TEST_RESOURCE_DIR) + "/textures10";
+    const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
 
     std::vector<std::filesystem::path> texFilePaths50;
@@ -122,8 +122,8 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 TEST(CPUTextureLoadWorker, ThreadRelaxation)
 {
     CPUTextureLoadWorker loader(workload);
-    const std::filesystem::path path1 = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
-    const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
+    const auto path1 = resource("Bishop_W.png");
+    const auto path2 = resource("Bishop_B.png");
     
     const auto id1 = loader.load(path1);
 
@@ -145,8 +145,8 @@ TEST(CPUTextureLoadWorker, ThreadRelaxation)
 TEST(CPUTextureLoadWorker, TypicalEngineUsage)
 {
     CPUTextureLoadWorker loader(workload);
-    const std::filesystem::path path1 = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
-    const std::filesystem::path path2 = std::string(TEST_RESOURCE_DIR) + "/Bishop_B.png";
+    const auto path1 = resource("Bishop_W.png");
+    const auto path2 = resource("Bishop_B.png");
     
     const auto ids = loader.load(std::vector{ path1, path2 });
     // Usually around this point in code we will have more subsystems loading resources:
@@ -157,9 +157,9 @@ TEST(CPUTextureLoadWorker, TypicalEngineUsage)
     EXPECT_TRUE(loader.isValid(ids[1].value()));
 
     // Attepmting to load a second batch. The state of the class should be ready.
-    const std::filesystem::path path3 = std::string(TEST_RESOURCE_DIR) + "/Queen_B.png";
-    const std::filesystem::path path4 = std::string(TEST_RESOURCE_DIR) + "/Queen_W.png";
-    const std::filesystem::path path5 = std::string(TEST_RESOURCE_DIR) + "/Rook_B.png";
+    const auto path3 = resource("Queen_B.png");
+    const auto path4 = resource("Queen_W.png");
+    const auto path5 = resource("Rook_B.png");
 
     const auto ids2 = loader.load(std::vector{ path3, path4, path5 });
 

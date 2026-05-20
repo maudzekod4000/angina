@@ -10,7 +10,10 @@ public:
 	explicit MyTestEngine(const Platform::UI::WindowConfig& config, Core::Units::RatePerSecond fps)
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
-	Core::Errors::ErrorCode beforeStart() override { return {}; }
+	Core::Errors::ErrorCode beforeStart() override {
+		//texResLoader->load()
+		return {};
+	}
 	Core::Errors::ErrorCode beforeUpdate() override { return {}; }
 	Core::Errors::ErrorCode afterUpdate() override { return {}; }
 	Core::Errors::ErrorCode beforeEnd() override { return {}; }

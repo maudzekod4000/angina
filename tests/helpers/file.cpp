@@ -1,5 +1,7 @@
 #include "file.h"
 
+#include <string_view>
+
 std::vector<std::filesystem::path> Test::Helpers::File::loadFileNames(const std::filesystem::path& dir)
 {
     std::vector<std::filesystem::path> res;
@@ -15,4 +17,9 @@ std::vector<std::filesystem::path> Test::Helpers::File::loadFileNames(const std:
     }
 
     return res;
+}
+
+std::filesystem::path Test::Helpers::File::resource(std::string_view filename)
+{
+    return std::filesystem::path(TEST_RESOURCE_DIR) / filename;
 }

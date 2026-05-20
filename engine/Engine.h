@@ -49,15 +49,16 @@ protected:
 
 	/// Run after the main loop has exited.
 	virtual Core::Errors::ErrorCode beforeEnd() = 0;
+
+	const Platform::Resources::GPUTextureResourceLoaderPtr texResLoader;
 private:
 	EngineState state;
 	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
 	Platform::Logging::LoggerPtr logger;
 	Platform::UI::WindowPtr window;
-	
+
 	Platform::Input::InputEventManagerPtr inputEventMgr;
 	Platform::Rendering::RendererPtr renderer;
-	Platform::Resources::GPUTextureResourceLoaderPtr texResLoader;
 
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.

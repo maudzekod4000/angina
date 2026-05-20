@@ -26,7 +26,7 @@ TEST(SDLCPUTextureResource, Load)
 {
     SDLCPUTextureResourceLoader texLoader;
 
-    const std::string path = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
+    const auto path = resource("Bishop_W.png");
 
     const auto idOrErr = texLoader.load(path);
 
@@ -43,7 +43,7 @@ TEST(SDLCPUTextureResource, Release)
 {
     SDLCPUTextureResourceLoader texLoader;
 
-    const std::string path = std::string(TEST_RESOURCE_DIR) + "/Bishop_W.png";
+    const auto path = resource("Bishop_W.png");
 
     const auto idOrErr = texLoader.load(path);
     const auto id = idOrErr.value();
@@ -63,7 +63,7 @@ TEST(SDLCPUTextureResource, LoadNonExist)
 {
     SDLCPUTextureResourceLoader texLoader;
 
-    const std::string path = std::string(TEST_RESOURCE_DIR) + "/not-really-there.png";
+    const auto path = resource("not-really-there.png");
 
     const auto idOrErr = texLoader.load(path);
     texLoader.wait();
@@ -73,7 +73,7 @@ TEST(SDLCPUTextureResource, LoadNonExist)
 
 TEST(SDLCPUTextureResource, Load10)
 {
-    const std::string dir = std::string(TEST_RESOURCE_DIR) + "/textures10";
+    const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
 
     EXPECT_EQ(10, texFilePaths.size());
@@ -97,7 +97,7 @@ TEST(SDLCPUTextureResource, Load10)
 
 TEST(SDLCPUTextureResource, Load50)
 {
-    const std::string dir = std::string(TEST_RESOURCE_DIR) + "/textures10";
+    const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
 
     std::vector<std::filesystem::path> texFilePaths50;
