@@ -3,8 +3,10 @@ add_library(logging OBJECT)
 target_sources(logging
 	PRIVATE
 		ConsoleLogger.cpp
+		DeduplicatingLogger.cpp
 	PUBLIC
 		ConsoleLogger.h
+		DeduplicatingLogger.h
 		ILogger.h
 )
 

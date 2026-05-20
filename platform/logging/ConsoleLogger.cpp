@@ -23,3 +23,21 @@ void ConsoleLogger::log(Level lvl, std::string_view msg)
 	}
 	}
 }
+
+void ConsoleLogger::log(Level lvl, const Core::Errors::ErrorCode& err)
+{
+	switch (lvl) {
+	case Level::INFO: {
+		std::cout << std::format("INFO: [{}] {}\n", err.function(), std::string_view(err));
+		break;
+	}
+	case Level::ERROR: {
+		std::cerr << std::format("ERROR: [{}] {}\n", err.function(), std::string_view(err));
+		break;
+	}
+	default: {
+		assert(false);
+		break;
+	}
+	}
+}

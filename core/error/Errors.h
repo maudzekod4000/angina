@@ -27,6 +27,10 @@ public:
     operator std::string_view() const noexcept {
         return msg;
     }
+
+    std::string_view function() const noexcept {
+        return functionName;
+    }
 private:
     const int code;
     const std::string msg;
