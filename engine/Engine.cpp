@@ -3,8 +3,6 @@
 #include <cassert>
 #include <optional>
 
-#include "platform/logging/ILogger.h"
-
 using namespace Angina::EngineV3;
 using namespace Platform::Init;
 using namespace Platform::Logging;
@@ -47,7 +45,6 @@ Engine::Engine(
 ErrorCode Engine::start()
 {
     if (const auto err = subsystemLifecycleManagers->init(0); err) {
-        logger->log(Level::ERROR, err);
         return err;
     }
 
@@ -55,7 +52,6 @@ ErrorCode Engine::start()
     // ErrorCode has const members and is not assignable, only copy-constructible.
     auto runMain = [&]() -> std::optional<ErrorCode> {
         if (const auto err = beforeStart(); err) {
-            logger->log(Level::ERROR, err);
             return err;
         }
 
@@ -67,7 +63,6 @@ ErrorCode Engine::start()
             framePacer.startFrame();
 
             if (const auto err = beforeUpdate(); err) {
-                logger->log(Level::ERROR, err);
                 return err;
             }
 
@@ -78,7 +73,6 @@ ErrorCode Engine::start()
             }
 
             if (const auto err = afterUpdate(); err) {
-                logger->log(Level::ERROR, err);
                 return err;
             }
 
@@ -90,7 +84,6 @@ ErrorCode Engine::start()
         }
 
         if (const auto err = beforeEnd(); err) {
-            logger->log(Level::ERROR, err);
             return err;
         }
 
@@ -100,7 +93,6 @@ ErrorCode Engine::start()
     const auto mainErr = runMain();
 
     if (const auto err = subsystemLifecycleManagers->destroy(); err) {
-        logger->log(Level::ERROR, err);
         if (!mainErr) return err;
     }
 

@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <cstdlib>
+#include <iostream>
 
 #include "engine_impl/sdl/SDLEngine.h"
 #include "core/units/Units.hpp"
@@ -12,7 +13,7 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
-		auto idOrErr = texResLoader->load(::Resources::resource("engine/balls.png"));
+		const auto idOrErr = texResLoader->load(::Resources::resource("engine/balls.png"));
 
 		if (!idOrErr.has_value()) {
 			return idOrErr.error();
@@ -33,6 +34,7 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	MyTestEngine eng(winConfig, Core::Units::RatePerSecond(60));
 
 	if (const auto result = eng.start(); result) {
+		std::cerr << std::string_view(result) << '\n';
 		return EXIT_FAILURE;
 	}
 
