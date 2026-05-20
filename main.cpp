@@ -4,6 +4,7 @@
 #include "engine_impl/sdl/SDLEngine.h"
 #include "core/units/Units.hpp"
 #include "core/error/Errors.h"
+#include "resources/Resources.h"
 
 class MyTestEngine : public EngineImpl::SDL::SDLEngine {
 public:
@@ -11,7 +12,13 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
-		//texResLoader->load()
+		auto idOrErr = texResLoader->load(::Resources::resource("engine/balls.png"));
+
+		if (!idOrErr.has_value()) {
+			return idOrErr.error();
+		}
+		texResLoader->wait();
+
 		return {};
 	}
 	Core::Errors::ErrorCode beforeUpdate() override { return {}; }
