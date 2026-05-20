@@ -3,6 +3,8 @@
 
 #include "EngineState.h"
 
+#include "core/error/Errors.h"
+
 #include "platform/ui/window/IWindow.h"
 
 #include "platform/init/SubsystemLifecycleManagers.h"
@@ -15,8 +17,6 @@
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
 
-/// There is an idea for 'update phases', so that the system updates are structured via an ordered enum.
-/// TODO: There is runtime costs for this, but it can serialize complex pipelines.
 
 namespace Angina::EngineV3 {
 
@@ -36,24 +36,19 @@ public:
 	virtual ~Engine() = default;
 
 	/// Initializes subsystems and, if successful, starts the main loop.
-	/// @return Non-zero if there was an error.
-	int start();
+	Core::Errors::ErrorCode start();
 protected:
 	/// Run after the subsystems are initialized, but before the main loop has started.
-	/// @return Non-zero if there was an error.
-	virtual int beforeStart() = 0;
+	virtual Core::Errors::ErrorCode beforeStart() = 0;
 
 	/// Run before update of the subsystems, i.e. physics, animation.
-	/// @return Non-zero if there was an error.
-	virtual int beforeUpdate() = 0;
+	virtual Core::Errors::ErrorCode beforeUpdate() = 0;
 
 	/// Run after update of the subsystems, i.e. physics, animation.
-	/// @return Non-zero if there was an error.
-	virtual int afterUpdate() = 0;
+	virtual Core::Errors::ErrorCode afterUpdate() = 0;
 
 	/// Run after the main loop has exited.
-	/// @return Non-zero if there was an error.
-	virtual int beforeEnd() = 0;
+	virtual Core::Errors::ErrorCode beforeEnd() = 0;
 private:
 	EngineState state;
 	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;

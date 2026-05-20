@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 #include <cassert>
+#include <optional>
 
 #include "platform/logging/ILogger.h"
 
@@ -13,6 +14,7 @@ using namespace Platform::System;
 using namespace Platform::Resources;
 using namespace Platform::Rendering;
 using namespace Core::Units;
+using namespace Core::Errors;
 
 Engine::Engine(
     SubsystemLifecycleManagersPtr slms,
@@ -42,48 +44,66 @@ Engine::Engine(
     systems.push_back(this->inputEventMgr.get());
 }
 
-int Engine::start()
+ErrorCode Engine::start()
 {
     if (const auto err = subsystemLifecycleManagers->init(0); err) {
         logger->log(Level::ERROR, err);
-        return -1; // Error codes enum would be useful but this far into the development its hard to say.
+        return err;
     }
 
-    beforeStart();
+    // Lambda so we can early-return on hook errors while always reaching destroy().
+    // ErrorCode has const members and is not assignable, only copy-constructible.
+    auto runMain = [&]() -> std::optional<ErrorCode> {
+        if (const auto err = beforeStart(); err) {
+            logger->log(Level::ERROR, err);
+            return err;
+        }
 
-    // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
-    state.set(EngineState::State::RUNNING);
-    globalClock.reset(); // One and only call to 'reset'
+        // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
+        state.set(EngineState::State::RUNNING);
+        globalClock.reset(); // One and only call to 'reset'
 
-    while (state.isRunning()) {
-        framePacer.startFrame();
+        while (state.isRunning()) {
+            framePacer.startFrame();
 
-        beforeUpdate();
-
-        for (int i = 0; i < int(Phase::Count); i++) {
-            for (auto system : systems) {
-                system->update(static_cast<Phase>(i));
+            if (const auto err = beforeUpdate(); err) {
+                logger->log(Level::ERROR, err);
+                return err;
             }
+
+            for (int i = 0; i < int(Phase::Count); i++) {
+                for (auto system : systems) {
+                    system->update(static_cast<Phase>(i));
+                }
+            }
+
+            if (const auto err = afterUpdate(); err) {
+                logger->log(Level::ERROR, err);
+                return err;
+            }
+
+            // This code might be in a callback if we use the observable pattern.
+            if (inputEventMgr->getSnapshot().quit) {
+                state.set(EngineState::State::STOPPING);
+            }
+            framePacer.endFrame();
         }
 
-        afterUpdate();
-
-        // This code might be in a callback if we use the observable pattern.
-        if (inputEventMgr->getSnapshot().quit) {
-            state.set(EngineState::State::STOPPING);
+        if (const auto err = beforeEnd(); err) {
+            logger->log(Level::ERROR, err);
+            return err;
         }
-        framePacer.endFrame();
-    }
 
-    beforeEnd();
+        return std::nullopt;
+    };
 
-    // TODO: I think the start method of the engine should return either expected or just a ErrorCode
-    // And then the caller should log on critical stuff. 
-    // The engine will also log but just as to say what is going on.
+    const auto mainErr = runMain();
 
     if (const auto err = subsystemLifecycleManagers->destroy(); err) {
         logger->log(Level::ERROR, err);
-        return -1;
+        if (!mainErr) return err;
     }
-    return 0;
+
+    if (mainErr) return *mainErr;
+    return {};
 }
