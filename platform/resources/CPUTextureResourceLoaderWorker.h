@@ -8,6 +8,7 @@
 #include <functional>
 #include <atomic>
 #include <expected>
+#include <unordered_map>
 
 #include "core/datastructures/FreeList.h"
 #include "core/datastructures/RWProtected.h"
@@ -50,7 +51,7 @@ public:
 
 	TextureHandle resolve(Core::Identity::Id id) override;
 
-	bool isValid(Core::Identity::Id id) override;
+	Core::Errors::ErrorCode hasError(Core::Identity::Id id) override;
 
 	bool isDone() const override;
 
@@ -87,6 +88,7 @@ private:
 	std::queue<TexLoadJob> jobQueue; ///< Buffers incoming load commands, so they can be executed later, when the thread is available.
 	mutable std::shared_mutex jobQueueMutex; ///< Guards the job queue from concurrent access.
 	Core::DataStructures::RWProtected<Core::DataStructures::FreeList<TextureHandle>> texHandleFreeList; ///< Actual storage of the CPU texture handles.
+	Core::DataStructures::RWProtected<std::unordered_map<Core::Identity::Id, Core::Errors::ErrorCode>> loadErrors; ///< Errors from failed loads, keyed by the ID that was allocated for that job.
 	std::jthread workerThread; ///< This thread polls from the job queue and executes texture loading commands.
 };
 

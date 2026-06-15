@@ -42,8 +42,8 @@ public:
         return TextureHandle(fakeCpuTex.get());
     }
 
-    bool isValid(Core::Identity::Id id) override {
-        return true;
+    Core::Errors::ErrorCode hasError(Core::Identity::Id id) override {
+        return {};
     }
 
     bool isDone() const override {
@@ -85,7 +85,7 @@ TEST(GPUTextureLoader, Load)
 
     auto id = someIdOrErr.value();
 
-    ASSERT_TRUE(texLoader.isValid(id));
+    ASSERT_FALSE(texLoader.hasError(id));
 
     auto texHdl = texLoader.resolve(id);
 

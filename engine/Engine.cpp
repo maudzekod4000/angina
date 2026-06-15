@@ -21,14 +21,14 @@ Engine::Engine(
     InputEventManagerPtr inputMgr,
     RatePerSecond desiredFPS,
     RendererPtr renderer,
-    GPUTextureResourceLoaderPtr texResLoader
+    TextureResourceLoaderPtr texLoader
 ):
     subsystemLifecycleManagers(std::move(slms)),
     logger(std::move(logger)),
     window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
     renderer(std::move(renderer)),
-    texResLoader(std::move(texResLoader)),
+    texResLoader(std::move(texLoader)),
     desiredFPS(desiredFPS),
     globalClock({}),
     framePacer(desiredFPS, globalClock)
@@ -40,6 +40,17 @@ Engine::Engine(
     assert(this->texResLoader);
 
     systems.push_back(this->inputEventMgr.get());
+}
+
+IdOrError Engine::load(const std::filesystem::path& path) {
+    const auto idOrErr = texResLoader->load(path);
+    if (!idOrErr) {
+        logger->log(Level::ERROR, idOrErr.error());
+        return idOrErr;
+    }
+    texResLoader->wait();
+    textureIds.push_back(*idOrErr);
+    return idOrErr;
 }
 
 ErrorCode Engine::start()
@@ -69,6 +80,12 @@ ErrorCode Engine::start()
             for (int i = 0; i < int(Phase::Count); i++) {
                 for (auto system : systems) {
                     system->update(static_cast<Phase>(i));
+                }
+            }
+
+            for (const auto id : textureIds) {
+                if (!texResLoader->hasError(id)) {
+                    renderer->render(texResLoader->resolve(id));
                 }
             }
 

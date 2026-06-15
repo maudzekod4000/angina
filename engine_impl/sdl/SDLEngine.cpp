@@ -41,7 +41,7 @@ SDLEngine::Resources SDLEngine::build(const WindowConfig& config) {
 	auto inputMgr = Backend::SDL::Input::SDLInputEventManager::make();
 	auto sdlRenderer = Backend::SDL::Rendering::SDLRenderer::makeShared(rendererOrErr.value());
 	auto cpuTexLoader = Backend::SDL::Resources::SDLCPUTextureResourceLoader::make();
-	auto gpuTexLoader = std::make_unique<Platform::Resources::GPUTextureLoader>(sdlRenderer, std::move(cpuTexLoader));
+	auto texLoader = std::make_unique<Platform::Resources::GPUTextureLoader>(sdlRenderer, std::move(cpuTexLoader));
 
 	return {
 		std::move(slms),
@@ -49,7 +49,7 @@ SDLEngine::Resources SDLEngine::build(const WindowConfig& config) {
 		std::move(window),
 		std::move(inputMgr),
 		std::move(sdlRenderer),
-		std::move(gpuTexLoader)
+		std::move(texLoader)
 	};
 }
 
@@ -64,5 +64,5 @@ SDLEngine::SDLEngine(Resources res, Core::Units::RatePerSecond fps)
 		std::move(res.inputMgr),
 		fps,
 		std::move(res.renderer),
-		std::move(res.gpuTexLoader)
+		std::move(res.texLoader)
 	) {}

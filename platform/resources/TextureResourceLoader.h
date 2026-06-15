@@ -28,24 +28,24 @@ public:
 	/// The mapping of indexes between resourceFiles vector and the return vector is direct, i.e. 0 -> 0, 1 -> 1, etc.
 	virtual std::vector<IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) = 0;
 
-	/// Frees the memory allocated for the resource. Check with isValid before calling this.
+	/// Frees the memory allocated for the resource. Check with hasError before calling this.
 	/// @param id Same id that was returned from 'load' when the resource was allocated.
 	/// @return Non-empty error object if there was an error during release of resource.
 	virtual Core::Errors::ErrorCode release(Core::Identity::Id id) = 0;
 
-	/// Looks for a texture with the provided id and returns a handle to it. Check with isValid before calling this.
+	/// Looks for a texture with the provided id and returns a handle to it. Check with hasError before calling this.
 	/// @param id The id of the required texture.
 	/// @return Returns a handle to the texture.
 	virtual TextureHandle resolve(Core::Identity::Id id) = 0; // TODO: Maybe std::expected is a good fit here too.
 
 	/// Checks if the resource is valid, i.e. is ready, loaded and not deleted.
 	/// @param id Id of the resource.
-	/// @return True if the resource is valid, false otherwise.
-	virtual bool isValid(Core::Identity::Id id) = 0;
+	/// @return Empty ErrorCode if valid, otherwise the error that caused it to be invalid.
+	virtual Core::Errors::ErrorCode hasError(Core::Identity::Id id) = 0;
 
 	/// Returns true, if all the requested loads are done, either successfully or not.
-	/// We can't rely on isValid, because some of the ids might not load at all 
-	/// thus the isValid state will always be false for the set of resources being loaded.
+	/// We can't rely on hasError, because some of the ids might not load at all 
+	/// thus the hasError state will always be false for the set of resources being loaded.
 	/// The name means 'is the loader done with load requests that it received to this point in time'
 	virtual bool isDone() const = 0;
 
@@ -56,7 +56,7 @@ public:
 	virtual ~TextureResourceLoader() = default;
 };
 
-using GPUTextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader>;
+using TextureResourceLoaderPtr = std::unique_ptr<TextureResourceLoader>;
 }
 
 #endif // !RESOURCES_IRESOURCE_LOADER_H

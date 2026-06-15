@@ -14,7 +14,7 @@
 using namespace Backend::SDL::Resources;
 using namespace Test::Helpers::File;
 
-// Note: Always use isValid before calling release or resolve!
+// Note: Always use hasError before calling release or resolve!
 // Tests are like usage examples.
 
 TEST(SDLCPUTextureResourceAsync, Init)

@@ -16,7 +16,7 @@ private:
 		Platform::UI::WindowPtr window;
 		Platform::Input::InputEventManagerPtr inputMgr;
 		Platform::Rendering::RendererPtr renderer;
-		Platform::Resources::GPUTextureResourceLoaderPtr gpuTexLoader;
+		Platform::Resources::TextureResourceLoaderPtr texLoader;
 	};
 	static Resources build(const Platform::UI::WindowConfig&);
 	explicit SDLEngine(Resources, Core::Units::RatePerSecond);

@@ -60,9 +60,10 @@ TextureHandle SDLCPUTextureLoaderAsync::resolve(Core::Identity::Id id)
 	return texHandleFreeList.get(id);
 }
 
-bool SDLCPUTextureLoaderAsync::isValid(Core::Identity::Id id)
+ErrorCode SDLCPUTextureLoaderAsync::hasError(Core::Identity::Id id)
 {
-	return texHandleFreeList.has(id);
+	if (texHandleFreeList.has(id)) return {};
+	return ErrorCode(1, "Texture not found");
 }
 
 bool SDLCPUTextureLoaderAsync::isDone() const

@@ -11,7 +11,7 @@
 using namespace Backend::SDL::Resources;
 using namespace Test::Helpers::File;
 
-// Note: Always use isValid before calling release or resolve!
+// Note: Always use hasError before calling release or resolve!
 // Tests are like usage examples.
 
 TEST(SDLCPUTextureResource, Init)
@@ -33,7 +33,7 @@ TEST(SDLCPUTextureResource, Load)
     texLoader.wait();
 
     EXPECT_TRUE(idOrErr.has_value());
-    EXPECT_TRUE(texLoader.isValid(idOrErr.value()));
+    EXPECT_FALSE(texLoader.hasError(idOrErr.value()));
     auto handle = texLoader.resolve(idOrErr.value());
     EXPECT_TRUE(handle.ptr);
 }
@@ -50,12 +50,12 @@ TEST(SDLCPUTextureResource, Release)
 
     texLoader.wait();
 
-    EXPECT_TRUE(texLoader.isValid(id));
-    
+    EXPECT_FALSE(texLoader.hasError(id));
+
     auto err = texLoader.release(id);
 
     EXPECT_FALSE(err);
-    EXPECT_FALSE(texLoader.isValid(id));
+    EXPECT_TRUE(texLoader.hasError(id));
 }
 
 // 3. Loading an non-existent resource should return a good error
@@ -68,7 +68,7 @@ TEST(SDLCPUTextureResource, LoadNonExist)
     const auto idOrErr = texLoader.load(path);
     texLoader.wait();
 
-    EXPECT_FALSE(texLoader.isValid(idOrErr.value()));
+    EXPECT_TRUE(texLoader.hasError(idOrErr.value()));
 }
 
 TEST(SDLCPUTextureResource, Load10)

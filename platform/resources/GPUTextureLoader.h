@@ -25,7 +25,7 @@ public:
 
 	TextureHandle resolve(Core::Identity::Id id) override;
 
-	bool isValid(Core::Identity::Id id) override;
+	Core::Errors::ErrorCode hasError(Core::Identity::Id id) override;
 
 	bool isDone() const override;
 

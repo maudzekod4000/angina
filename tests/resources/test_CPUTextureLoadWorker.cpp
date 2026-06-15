@@ -43,10 +43,10 @@ TEST(CPUTextureLoadWorker, Load)
 
     // This test is kinda heavy too ....
     // maybe there is a way to make the is valid check have a cheap way to wait?
-    while (!loader.isValid(id)) {
+    while (loader.hasError(id)) {
     }
 
-    EXPECT_TRUE(loader.isValid(id));
+    EXPECT_FALSE(loader.hasError(id));
 }
 
 TEST(CPUTextureLoadWorker, LoadTwo)
@@ -69,11 +69,11 @@ TEST(CPUTextureLoadWorker, LoadTwo)
     EXPECT_TRUE(ids[1].has_value());
     auto id2 = ids[1].value();
 
-    while (loader.isValid(id1) == false || loader.isValid(id2) == false) {
+    while (loader.hasError(id1) || loader.hasError(id2)) {
     }
 
-    EXPECT_TRUE(loader.isValid(id1));
-    EXPECT_TRUE(loader.isValid(id2));
+    EXPECT_FALSE(loader.hasError(id1));
+    EXPECT_FALSE(loader.hasError(id2));
 }
 
 TEST(CPUTextureLoadWorker, LoadManyResolveOne)
@@ -106,7 +106,7 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 
     // TODO: This is not cool, because some resources might just fail to load
     // and this will clog the whole test execution forever...
-    while (!loader.isValid(id)) {
+    while (loader.hasError(id)) {
     }
 
     auto texLoadedEnd = std::chrono::steady_clock::now();
@@ -114,7 +114,7 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
         std::chrono::duration_cast<std::chrono::milliseconds>(texLoadedEnd - start).count() <<
         " ms." << std::endl;
 
-    EXPECT_TRUE(loader.isValid(id));
+    EXPECT_FALSE(loader.hasError(id));
 }
 
 /// This test is meant to be debugged and observed and has little value by
@@ -128,7 +128,7 @@ TEST(CPUTextureLoadWorker, ThreadRelaxation)
     const auto id1 = loader.load(path1);
 
     // Wait for the texture to load
-    while (!loader.isValid(id1.value())) {}
+    while (loader.hasError(id1.value())) {}
 
     // Observe that the loader is waiting via debugging.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -136,7 +136,7 @@ TEST(CPUTextureLoadWorker, ThreadRelaxation)
     const auto id2 = loader.load(path2);
 
     // The loader should be back into working mode
-    while (!loader.isValid(id2.value())) {}
+    while (loader.hasError(id2.value())) {}
 
     // Observe that the loader is waiting via debugging.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -153,8 +153,8 @@ TEST(CPUTextureLoadWorker, TypicalEngineUsage)
     // Audio, shaders, serialized maps or levels, etc.
     loader.wait();
 
-    EXPECT_TRUE(loader.isValid(ids[0].value()));
-    EXPECT_TRUE(loader.isValid(ids[1].value()));
+    EXPECT_FALSE(loader.hasError(ids[0].value()));
+    EXPECT_FALSE(loader.hasError(ids[1].value()));
 
     // Attepmting to load a second batch. The state of the class should be ready.
     const auto path3 = resource("Queen_B.png");
@@ -165,7 +165,7 @@ TEST(CPUTextureLoadWorker, TypicalEngineUsage)
 
     loader.wait();
 
-    EXPECT_TRUE(loader.isValid(ids2[0].value()));
-    EXPECT_TRUE(loader.isValid(ids2[1].value()));
-    EXPECT_TRUE(loader.isValid(ids2[2].value()));
+    EXPECT_FALSE(loader.hasError(ids2[0].value()));
+    EXPECT_FALSE(loader.hasError(ids2[1].value()));
+    EXPECT_FALSE(loader.hasError(ids2[2].value()));
 }

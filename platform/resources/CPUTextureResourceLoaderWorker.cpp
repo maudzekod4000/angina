@@ -54,6 +54,11 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 					list.add(job.getId(), tex);
 				});
 			}
+			else {
+				loadErrors.write([&job, &texOrErr](auto& map) {
+					map[job.getId()] = texOrErr.error();
+				});
+			}
 
 			auto cpuEndTime = std::clock();
 
@@ -123,6 +128,9 @@ ErrorCode CPUTextureLoadWorker::release(Core::Identity::Id id)
 	texHandleFreeList.write([id](auto& list) {
 		list.remove(id);
 	});
+	loadErrors.write([id](auto& map) {
+		map.erase(id);
+	});
 	return ErrorCode();
 }
 
@@ -133,10 +141,15 @@ TextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
 	});
 }
 
-bool CPUTextureLoadWorker::isValid(Core::Identity::Id id)
+ErrorCode CPUTextureLoadWorker::hasError(Core::Identity::Id id)
 {
-	return texHandleFreeList.read([id](auto& list) {
-		return list.has(id);
+	if (texHandleFreeList.read([id](const auto& list) { return list.has(id); })) {
+		return {};
+	}
+	return loadErrors.read([id](const auto& map) -> ErrorCode {
+		auto it = map.find(id);
+		if (it != map.end()) return it->second;
+		return ErrorCode(1, "Texture not found");
 	});
 }
 

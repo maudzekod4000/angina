@@ -25,7 +25,7 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 		if (idOrErr.has_value()) {
 			auto id = idOrErr.value();
 
-			if (cpuTexLoaderPtr->isValid(id)) {
+			if (!cpuTexLoaderPtr->hasError(id)) {
 				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
 				auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
 
@@ -49,7 +49,8 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 
 IdOrError GPUTextureLoader::load(const std::filesystem::path& resourceFile)
 {
-	return {};
+	auto results = load(std::vector<std::filesystem::path>{ resourceFile });
+	return results[0];
 }
 
 ErrorCode GPUTextureLoader::release(Core::Identity::Id id)
@@ -63,9 +64,10 @@ TextureHandle GPUTextureLoader::resolve(Core::Identity::Id id)
 	return gpuTexturesFreeList.get(id);
 }
 
-bool GPUTextureLoader::isValid(Core::Identity::Id id)
+ErrorCode GPUTextureLoader::hasError(Core::Identity::Id id)
 {
-	return gpuTexturesFreeList.has(id);
+	if (gpuTexturesFreeList.has(id)) return {};
+	return ErrorCode(1, "Texture not found");
 }
 
 bool GPUTextureLoader::isDone() const

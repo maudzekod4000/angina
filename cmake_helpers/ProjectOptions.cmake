@@ -5,6 +5,11 @@ target_compile_features(project_options
         cxx_std_23
 )
 
+target_include_directories(project_options
+    INTERFACE
+        ${CMAKE_SOURCE_DIR}
+)
+
 set_target_properties(project_options PROPERTIES
     CXX_STANDARD 23
     CXX_STANDARD_REQUIRED YES

@@ -13,13 +13,10 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
-		const auto idOrErr = texResLoader->load(::Resources::resource("engine/balls.png"));
-
+		const auto idOrErr = load(::Resources::resource("engine/balls.png"));
 		if (!idOrErr.has_value()) {
 			return idOrErr.error();
 		}
-		texResLoader->wait();
-
 		return {};
 	}
 	Core::Errors::ErrorCode beforeUpdate() override { return {}; }

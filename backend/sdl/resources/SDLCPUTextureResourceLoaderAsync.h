@@ -23,7 +23,7 @@ public:
 
 	Platform::Resources::TextureHandle resolve(Core::Identity::Id id) override;
 
-	bool isValid(Core::Identity::Id id) override;
+	Core::Errors::ErrorCode hasError(Core::Identity::Id id) override;
 
 	/// I don't plan to use this class...
 	/// But let us think. So this class is expected to be used from a single thread,

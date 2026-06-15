@@ -3,7 +3,11 @@
 
 #include "EngineState.h"
 
+#include <filesystem>
+#include <vector>
+
 #include "core/error/Errors.h"
+#include "core/identity/Id.h"
 
 #include "platform/ui/window/IWindow.h"
 
@@ -30,7 +34,7 @@ public:
 		Platform::Input::InputEventManagerPtr inputMgr,
 		Core::Units::RatePerSecond desiredFPS,
 		Platform::Rendering::RendererPtr renderer,
-		Platform::Resources::GPUTextureResourceLoaderPtr gpuTexLoader
+		Platform::Resources::TextureResourceLoaderPtr texLoader
 	);
 
 	virtual ~Engine() = default;
@@ -50,8 +54,10 @@ protected:
 	/// Run after the main loop has exited.
 	virtual Core::Errors::ErrorCode beforeEnd() = 0;
 
-	const Platform::Resources::GPUTextureResourceLoaderPtr texResLoader;
+	std::vector<Core::Identity::Id> textureIds;
+	Platform::Resources::IdOrError load(const std::filesystem::path&);
 private:
+	const Platform::Resources::TextureResourceLoaderPtr texResLoader;
 	EngineState state;
 	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
 	Platform::Logging::LoggerPtr logger;
