@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "SDLCPUTexture.h"
+#include "SDLResourceUtils.h"
 
 #include "SDL_image.h"
 #include "backend/sdl/error/SDLError.h"
@@ -13,7 +14,8 @@ using namespace Core::Errors;
 
 namespace {
 const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std::expected<TextureHandle, ErrorCode> {
-	SDL_Surface* loadedSurface = IMG_Load((const char*)(path.u8string().c_str()));
+	const std::filesystem::path finalPath = resolvePath(path);
+	SDL_Surface* loadedSurface = IMG_Load((const char*)(finalPath.u8string().c_str()));
 
 	if (!loadedSurface) return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
 

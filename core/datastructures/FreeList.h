@@ -43,24 +43,24 @@ public:
 
 	/// Adds an item to the free list and associates it with the provided texId.
 	/// Make sure the id is not taken, i.e. isValid(id) == false.
-	Core::Identity::Id add(Core::Identity::Id texId, T item) {
+	Core::Identity::Id add(Core::Identity::Id id, T item) {
 		if (freeList.size() > 0) {
 			const size_t idx = freeList.top();
 			freeList.pop();
 			storage[idx] = std::move(item);
-			idToIndexInStorage[texId] = idx;
+			idToIndexInStorage[id] = idx;
 		}
 		else {
 			storage.push_back(std::move(item));
-			idToIndexInStorage[texId] = storage.size() - 1;
+			idToIndexInStorage[id] = storage.size() - 1;
 		}
 
-		return texId;
+		return id;
 	}
 
 	Core::Identity::Id add(T item) {
-		const Core::Identity::Id texId = idGenerator.next();
-		return add(texId, item);
+		const Core::Identity::Id id = idGenerator.next();
+		return add(id, item);
 	}
 
 	/// Calls the freeMem method on the value associated with this id and free the index in storage so it can be reused.

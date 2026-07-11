@@ -25,7 +25,8 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 		if (idOrErr.has_value()) {
 			auto id = idOrErr.value();
 
-			if (!cpuTexLoaderPtr->hasError(id)) {
+			const ErrorCode cpuLoadErr = cpuTexLoaderPtr->hasError(id);
+			if (!cpuLoadErr) {
 				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
 				auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
 
@@ -36,6 +37,9 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 				else {
 					res.push_back(std::unexpected(gpuHandleOrErr.error()));
 				}
+			}
+			else {
+				res.push_back(std::unexpected(cpuLoadErr));
 			}
 		}
 		else {

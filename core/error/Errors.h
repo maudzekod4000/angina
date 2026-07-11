@@ -32,9 +32,9 @@ public:
         return functionName;
     }
 private:
-    const int code;
-    const std::string msg;
-    const char* functionName;
+    int code;
+    std::string msg;
+    std::string_view functionName;
 };
 
 }

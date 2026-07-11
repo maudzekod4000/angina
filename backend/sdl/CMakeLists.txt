@@ -9,6 +9,7 @@ target_sources(sdl
 		resources/SDLGPUTexture.cpp
 		resources/SDLCPUTextureResourceLoader.cpp
 		resources/SDLCPUTextureResourceLoaderAsync.cpp
+		resources/SDLResourceUtils.cpp
 		rendering/SDLRenderer.cpp
 		error/SDLError.cpp
 	PUBLIC
@@ -19,6 +20,7 @@ target_sources(sdl
 		resources/SDLGPUTexture.h
 		resources/SDLCPUTextureResourceLoader.h
 		resources/SDLCPUTextureResourceLoaderAsync.h
+		resources/SDLResourceUtils.h
 		rendering/SDLRenderer.h
 		error/SDLError.h
 )
