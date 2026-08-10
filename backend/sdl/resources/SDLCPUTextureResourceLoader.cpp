@@ -24,7 +24,7 @@ const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std:
 }
 
 SDLCPUTextureResourceLoader::SDLCPUTextureResourceLoader():
-	CPUTextureLoadWorker(loadSDLTex) {}
+	AsyncTextureLoadWorker(loadSDLTex) {}
 
 std::unique_ptr<SDLCPUTextureResourceLoader> SDLCPUTextureResourceLoader::make()
 {

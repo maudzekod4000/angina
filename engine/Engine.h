@@ -17,6 +17,7 @@
 #include "platform/time/FramePacer.h"
 #include "platform/resources/TextureResourceLoader.h"
 #include "platform/rendering/Renderer.h"
+#include "platform/resources/TextureTransferer.h"
 
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
@@ -65,6 +66,7 @@ private:
 
 	Platform::Input::InputEventManagerPtr inputEventMgr;
 	Platform::Rendering::RendererPtr renderer;
+	Platform::Resources::TextureTransfererPtr textureTransferer; ///< Used to transfer textures, from CPU to GPU, for example.
 
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.

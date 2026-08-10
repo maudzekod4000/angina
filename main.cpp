@@ -13,6 +13,10 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
+		// BUG: For some reason, the resource is either not loaded properly,
+		// or not rendered properly...
+		// I checked that the loading should work...
+		// we use the GPUTextureLoader which does the CPU loading + transfer to GPU.
 		const auto idOrErr = load(::Resources::resource("engine/balls.png"));
 		if (!idOrErr.has_value()) {
 			return idOrErr.error();

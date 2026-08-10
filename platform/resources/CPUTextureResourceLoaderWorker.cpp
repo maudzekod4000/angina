@@ -6,7 +6,7 @@
 using namespace Platform::Resources;
 using namespace Core::Errors;
 
-CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
+AsyncTextureLoadWorker::AsyncTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 {
 	looping = true;
 	workerThread = std::jthread([loadTextureFunc, this]() {
@@ -73,7 +73,7 @@ CPUTextureLoadWorker::CPUTextureLoadWorker(LoadTextureFunc loadTextureFunc)
 	});
 }
 
-CPUTextureLoadWorker::~CPUTextureLoadWorker()
+AsyncTextureLoadWorker::~AsyncTextureLoadWorker()
 {
 	{
 		const std::lock_guard lock(waitOnWorkMutex);
@@ -83,7 +83,7 @@ CPUTextureLoadWorker::~CPUTextureLoadWorker()
 	looping = false;
 }
 
-IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
+IdOrError AsyncTextureLoadWorker::load(const std::filesystem::path& texturePath)
 {
 	const auto id = idGen.next();
 	{
@@ -101,7 +101,7 @@ IdOrError CPUTextureLoadWorker::load(const std::filesystem::path& texturePath)
 	return id;
 }
 
-std::vector<IdOrError> CPUTextureLoadWorker::load(const std::vector<std::filesystem::path>& resourceFiles)
+std::vector<IdOrError> AsyncTextureLoadWorker::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
 	const std::unique_lock lock(jobQueueMutex);
 	std::vector<IdOrError> ids;
@@ -123,7 +123,7 @@ std::vector<IdOrError> CPUTextureLoadWorker::load(const std::vector<std::filesys
 	return ids;
 }
 
-ErrorCode CPUTextureLoadWorker::release(Core::Identity::Id id)
+ErrorCode AsyncTextureLoadWorker::release(Core::Identity::Id id)
 {
 	texHandleFreeList.write([id](auto& list) {
 		list.remove(id);
@@ -134,14 +134,14 @@ ErrorCode CPUTextureLoadWorker::release(Core::Identity::Id id)
 	return ErrorCode();
 }
 
-TextureHandle CPUTextureLoadWorker::resolve(Core::Identity::Id id)
+TextureHandle AsyncTextureLoadWorker::resolve(Core::Identity::Id id)
 {
 	return texHandleFreeList.read([id](auto& list) {
 		return list.get(id);
 	});
 }
 
-ErrorCode CPUTextureLoadWorker::hasError(Core::Identity::Id id)
+ErrorCode AsyncTextureLoadWorker::hasError(Core::Identity::Id id)
 {
 	if (texHandleFreeList.read([id](const auto& list) { return list.has(id); })) {
 		return {};
@@ -153,13 +153,13 @@ ErrorCode CPUTextureLoadWorker::hasError(Core::Identity::Id id)
 	});
 }
 
-bool CPUTextureLoadWorker::isDone() const
+bool AsyncTextureLoadWorker::isDone() const
 {
 	std::shared_lock lock(jobQueueMutex);
 	return jobQueue.empty();
 }
 
-void CPUTextureLoadWorker::wait()
+void AsyncTextureLoadWorker::wait()
 {
 	// Hmmmmm....
 	// So we need a way to track not only whether we are waiting or not

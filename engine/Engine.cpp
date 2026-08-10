@@ -43,14 +43,15 @@ Engine::Engine(
 }
 
 IdOrError Engine::load(const std::filesystem::path& path) {
-    const auto idOrErr = texResLoader->load(path);
-    if (!idOrErr) {
-        logger->log(Level::ERROR, idOrErr.error());
-        return idOrErr;
+    const auto id = texResLoader->load(path);
+    if (!id) {
+        logger->log(Level::ERROR, id.error());
+        return id;
     }
     texResLoader->wait();
-    textureIds.push_back(*idOrErr);
-    return idOrErr;
+
+    textureIds.push_back(*id);
+    return id;
 }
 
 ErrorCode Engine::start()

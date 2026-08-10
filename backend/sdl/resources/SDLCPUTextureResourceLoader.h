@@ -5,7 +5,7 @@
 
 namespace Backend::SDL::Resources {
 
-class SDLCPUTextureResourceLoader : public Platform::Resources::CPUTextureLoadWorker {
+class SDLCPUTextureResourceLoader : public Platform::Resources::AsyncTextureLoadWorker {
 public:
 	static std::unique_ptr<SDLCPUTextureResourceLoader> make();
 

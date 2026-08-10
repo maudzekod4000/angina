@@ -28,13 +28,13 @@ using LoadTextureFunc = std::function<std::expected<TextureHandle, Core::Errors:
 /// Call this class' methods from the same thread, usually the main thread.
 /// I am not sure whether this will be the case forever....I have to use the class more,
 /// to know for certain.
-class CPUTextureLoadWorker : public TextureResourceLoader {
+class AsyncTextureLoadWorker : public TextureResourceLoader {
 public:
 	/// Starts the worker thread.
-	CPUTextureLoadWorker(LoadTextureFunc);
-	
+	AsyncTextureLoadWorker(LoadTextureFunc);
+
 	/// Sets up the state of the loader so that the worker thread is shutdown gracefully.
-	virtual ~CPUTextureLoadWorker();
+	virtual ~AsyncTextureLoadWorker();
 	
 	// Note: It would be cool to have the loader have a way to reference
 	// textures via path too...sometimes we want to resolve by Id, but sometimes

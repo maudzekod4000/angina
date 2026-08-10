@@ -15,19 +15,19 @@ static auto workload = [](const std::filesystem::path& path) -> TextureHandle {
     return TextureHandle(nullptr);
 };
 
-TEST(CPUTextureLoadWorker, Init)
+TEST(AsyncTextureLoadWorker, Init)
 {
     // Note: Maybe it will be a better design to pass the workload 
     // on calling load()...that way we can have different workloads...
     // Idk if this is applicable, lets see in practice.
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
 
     EXPECT_TRUE(&loader);
 }
 
-TEST(CPUTextureLoadWorker, Load)
+TEST(AsyncTextureLoadWorker, Load)
 {
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
     const auto path = resource("Bishop_W.png");
 
     auto start = std::chrono::steady_clock::now();
@@ -49,9 +49,9 @@ TEST(CPUTextureLoadWorker, Load)
     EXPECT_FALSE(loader.hasError(id));
 }
 
-TEST(CPUTextureLoadWorker, LoadTwo)
+TEST(AsyncTextureLoadWorker, LoadTwo)
 {
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
     const auto path1 = resource("Bishop_W.png");
     const auto path2 = resource("Bishop_B.png");
     
@@ -76,7 +76,7 @@ TEST(CPUTextureLoadWorker, LoadTwo)
     EXPECT_FALSE(loader.hasError(id2));
 }
 
-TEST(CPUTextureLoadWorker, LoadManyResolveOne)
+TEST(AsyncTextureLoadWorker, LoadManyResolveOne)
 {
     const auto dir = resource("textures10");
     const std::vector<std::filesystem::path> texFilePaths = loadFileNames(dir);
@@ -92,7 +92,7 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 
     EXPECT_EQ(50, texFilePaths50.size());
 
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
 
     auto start = std::chrono::steady_clock::now();
     const auto ids = loader.load(texFilePaths50);
@@ -119,9 +119,9 @@ TEST(CPUTextureLoadWorker, LoadManyResolveOne)
 
 /// This test is meant to be debugged and observed and has little value by
 /// just being run.
-TEST(CPUTextureLoadWorker, ThreadRelaxation)
+TEST(AsyncTextureLoadWorker, ThreadRelaxation)
 {
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
     const auto path1 = resource("Bishop_W.png");
     const auto path2 = resource("Bishop_B.png");
     
@@ -142,9 +142,9 @@ TEST(CPUTextureLoadWorker, ThreadRelaxation)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
-TEST(CPUTextureLoadWorker, TypicalEngineUsage)
+TEST(AsyncTextureLoadWorker, TypicalEngineUsage)
 {
-    CPUTextureLoadWorker loader(workload);
+    AsyncTextureLoadWorker loader(workload);
     const auto path1 = resource("Bishop_W.png");
     const auto path2 = resource("Bishop_B.png");
     
