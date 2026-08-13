@@ -84,11 +84,13 @@ ErrorCode Engine::start()
                 }
             }
 
+            renderer->clear();
             for (const auto id : textureIds) {
                 if (!texResLoader->hasError(id)) {
                     renderer->render(texResLoader->resolve(id));
                 }
             }
+            renderer->present();
 
             if (const auto err = afterUpdate(); err) {
                 return err;

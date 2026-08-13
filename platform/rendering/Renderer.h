@@ -12,6 +12,10 @@ namespace Platform::Rendering {
 class Renderer {
 public:
 	virtual void render(Platform::Resources::TextureHandle) = 0;
+
+	virtual void clear() = 0;
+
+	virtual void present() = 0;
 };
 
 using RendererPtr = std::shared_ptr<Platform::Rendering::Renderer>;

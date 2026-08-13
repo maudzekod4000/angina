@@ -17,6 +17,10 @@ public:
 
 	void render(Platform::Resources::TextureHandle) override;
 
+	void clear() override;
+
+	void present() override;
+
 	std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> transferGPU(Platform::Resources::TextureHandle) override;
 private:
 	explicit SDLRenderer(SDL_Renderer*);

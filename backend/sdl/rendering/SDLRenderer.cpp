@@ -42,6 +42,15 @@ void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 	assert(res == 0);
 }
 
+void SDLRenderer::clear()
+{
+	SDL_RenderClear(renderer);
+}
+
+void SDLRenderer::present()
+{
+	SDL_RenderPresent(renderer);
+}
 
 // So there should be a class that is a texture loader.
 // it should have a reference to the CPU texture loader and
