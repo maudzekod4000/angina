@@ -25,6 +25,10 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 		if (idOrErr.has_value()) {
 			auto id = idOrErr.value();
 
+			// TODO: we can check hasError as a first thing of this loop
+			// ids will always contain just values because it's an async api
+			// only after wait() we can check with hasError, whether something is
+			// success.
 			const ErrorCode cpuLoadErr = cpuTexLoaderPtr->hasError(id);
 			if (!cpuLoadErr) {
 				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);

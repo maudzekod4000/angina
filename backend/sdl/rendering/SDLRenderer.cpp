@@ -23,10 +23,8 @@ std::shared_ptr<SDLRenderer> SDLRenderer::makeShared(SDL_Renderer* r)
 void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 {
 	SDLGPUTexture* sdlTexWrapper = dynamic_cast<SDLGPUTexture*>(tex.ptr);
-	if (!sdlTexWrapper) {
-		assert(false && "render: expected SDLGPUTexture");
-		return;
-	}
+
+	assert(sdlTexWrapper && "render: expected SDLGPUTexture");
 
 	auto sdlTex = sdlTexWrapper->get();
 
@@ -68,6 +66,7 @@ void SDLRenderer::present()
 
 std::expected<TextureHandle, ErrorCode> SDLRenderer::transferGPU(TextureHandle cpuTex)
 {
+	// I think with the use of some templates we can avoid using dynamic_cast.
 	SDLCPUTexture* sdlTexWrapper = dynamic_cast<SDLCPUTexture*>(cpuTex.ptr);
 	if (!sdlTexWrapper) {
 		return std::unexpected(ErrorCode(-1, "cast failed: expected handle to SDLCPUTexture", ANGINA_CURRENT_FUNCTION));
