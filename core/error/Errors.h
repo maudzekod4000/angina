@@ -17,7 +17,7 @@ namespace Core::Errors {
 class ErrorCode {
 public:
     ErrorCode() noexcept;
-    explicit ErrorCode(int code, const std::string& msg, const char* functionName = "") noexcept;
+    explicit ErrorCode(int code, std::string&& msg, const char* functionName = "") noexcept;
 
     /// True, if there is an error.
     explicit operator bool() const noexcept {

@@ -42,16 +42,10 @@ Engine::Engine(
     systems.push_back(this->inputEventMgr.get());
 }
 
-IdOrError Engine::load(const std::filesystem::path& path) {
-    const auto id = texResLoader->load(path);
-    if (!id) {
-        logger->log(Level::ERROR, id.error());
-        return id;
-    }
+std::vector<IdOrError> Engine::load(const std::vector<std::filesystem::path>& paths) {
+    const auto idsOrErrors = texResLoader->load(paths);
     texResLoader->wait();
-
-    textureIds.push_back(*id);
-    return id;
+    return idsOrErrors;
 }
 
 ErrorCode Engine::start()

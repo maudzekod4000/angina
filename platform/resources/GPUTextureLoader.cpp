@@ -1,6 +1,9 @@
 #include "GPUTextureLoader.h"
 
+#include "TextureHandle.h"
+
 #include <memory>
+#include <filesystem>
 
 using namespace Platform::Resources;
 using namespace Core::Errors;
@@ -10,12 +13,10 @@ GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransfe
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
-	auto ids = cpuTexLoaderPtr->load(resourceFiles);
+	const auto ids = cpuTexLoaderPtr->load(resourceFiles);
 	
 	cpuTexLoaderPtr->wait();
 
-	// Note: Whoa....std::expected is 72 bytes...
-	// I don't think i use it in some hot paths but its worth keeping in mind.
 	std::vector<IdOrError> res;
 
 	for (const auto& idOrErr : ids) {
@@ -25,14 +26,14 @@ std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem:
 		}
 
 		TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(idOrErr.value());
-		auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
+		const auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
 
 		if (!gpuHandleOrErr) {
 			res.push_back(std::unexpected(gpuHandleOrErr.error()));
 			continue;
 		}
 
-		auto gpuId = gpuTexturesFreeList.add(gpuHandleOrErr.value());
+		const auto gpuId = gpuTexturesFreeList.add(gpuHandleOrErr.value());
 		res.push_back(gpuId);
 	}
 

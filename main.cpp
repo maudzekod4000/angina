@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 
 #include "engine_impl/sdl/SDLEngine.h"
 #include "core/units/Units.hpp"
@@ -13,14 +14,10 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
-		// BUG: For some reason, the resource is either not loaded properly,
-		// or not rendered properly...
-		// I checked that the loading should work...
-		// we use the GPUTextureLoader which does the CPU loading + transfer to GPU.
-		const auto idOrErr = load(::Resources::resource("engine/balls.png"));
-		if (!idOrErr.has_value()) {
-			return idOrErr.error();
-		}
+		std::vector<std::filesystem::path> resourcePaths;
+		resourcePaths.push_back(::Resources::resource("engine/balls.png"));
+		resourcePaths.push_back(::Resources::resource("engine/human.png"));
+		const auto idOrErr = load(resourcePaths);
 		return {};
 	}
 	Core::Errors::ErrorCode beforeUpdate() override { return {}; }
@@ -34,8 +31,8 @@ int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
 	MyTestEngine eng(winConfig, Core::Units::RatePerSecond(60));
 
-	if (const auto result = eng.start(); result) {
-		std::cerr << std::string_view(result) << '\n';
+	if (const auto err = eng.start(); err) {
+		std::cerr << std::string_view(err) /* TODO: Add a << operator to ErrorCode */ << '\n';
 		return EXIT_FAILURE;
 	}
 
