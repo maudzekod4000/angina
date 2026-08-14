@@ -14,6 +14,7 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
+		// BUG: Haha seems that loading more than one texture does not work...
 		std::vector<std::filesystem::path> resourcePaths;
 		resourcePaths.push_back(::Resources::resource("engine/balls.png"));
 		resourcePaths.push_back(::Resources::resource("engine/human.png"));
