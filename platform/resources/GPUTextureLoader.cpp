@@ -10,49 +10,33 @@ GPUTextureLoader::GPUTextureLoader(std::shared_ptr<TextureTransferer> texTransfe
 
 std::vector<IdOrError> GPUTextureLoader::load(const std::vector<std::filesystem::path>& resourceFiles)
 {
-	// Ok, so what do we do here...
-	
-	// 1. Use the CPU Loader to load the textures to main memory.
 	auto ids = cpuTexLoaderPtr->load(resourceFiles);
 	
-	// 2. Wait for all the textures to load using the wait method
 	cpuTexLoaderPtr->wait();
 
+	// Note: Whoa....std::expected is 72 bytes...
+	// I don't think i use it in some hot paths but its worth keeping in mind.
 	std::vector<IdOrError> res;
 
-	// 3. Transfer the textures to the GPU using the transfer class of your choice.
-	for (auto idOrErr : ids) {
-		if (idOrErr.has_value()) {
-			auto id = idOrErr.value();
-
-			// TODO: we can check hasError as a first thing of this loop
-			// ids will always contain just values because it's an async api
-			// only after wait() we can check with hasError, whether something is
-			// success.
-			const ErrorCode cpuLoadErr = cpuTexLoaderPtr->hasError(id);
-			if (!cpuLoadErr) {
-				TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(id);
-				auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
-
-				if (gpuHandleOrErr.has_value()) {
-					auto addId = gpuTexturesFreeList.add(gpuHandleOrErr.value());
-					res.push_back(addId);
-				}
-				else {
-					res.push_back(std::unexpected(gpuHandleOrErr.error()));
-				}
-			}
-			else {
-				res.push_back(std::unexpected(cpuLoadErr));
-			}
-		}
-		else {
-			// Relay the error to the caller.
+	for (const auto& idOrErr : ids) {
+		if (!idOrErr || cpuTexLoaderPtr->hasError(idOrErr.value())) {
 			res.push_back(std::unexpected(idOrErr.error()));
+			continue;
 		}
+
+		TextureHandle cpuHandle = cpuTexLoaderPtr->resolve(idOrErr.value());
+		auto gpuHandleOrErr = texTransfererPtr->transferGPU(cpuHandle);
+
+		if (!gpuHandleOrErr) {
+			res.push_back(std::unexpected(gpuHandleOrErr.error()));
+			continue;
+		}
+
+		auto gpuId = gpuTexturesFreeList.add(gpuHandleOrErr.value());
+		res.push_back(gpuId);
 	}
-	// 4. This will be a synchrnonous task so, just return...
-	return res; // Actually, we can test this with a test...i dont see a problem.
+
+	return res;
 }
 
 IdOrError GPUTextureLoader::load(const std::filesystem::path& resourceFile)
