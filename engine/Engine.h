@@ -56,13 +56,13 @@ protected:
 	virtual Core::Errors::ErrorCode beforeEnd() = 0;
 
 	std::vector<Core::Identity::Id> textureIds;
+	Platform::Logging::LoggerPtr logger;
 
 	std::vector<Platform::Resources::IdOrError> load(const std::vector<std::filesystem::path>&);
 private:
 	const Platform::Resources::TextureResourceLoaderPtr texResLoader;
 	EngineState state;
 	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
-	Platform::Logging::LoggerPtr logger;
 	Platform::UI::WindowPtr window;
 
 	Platform::Input::InputEventManagerPtr inputEventMgr;

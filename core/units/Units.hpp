@@ -7,6 +7,8 @@
 
 namespace Core::Units {
 
+using PositionType = uint16_t;
+
 // Notes: I am a bit unsure of the implementation of these classes and the use of asserts.
 // I think, as long as the class is instantiated dynamically by the gameplay logic, it is fine to 
 // have asserts.
@@ -16,7 +18,7 @@ namespace Core::Units {
 // The benefit of having some assertions is that while I am developing a game I can be guarded and 
 // warned about wrong uses of the object.
 struct Dimension {
-	explicit constexpr Dimension(uint32_t v): value(v) {
+	explicit constexpr Dimension(PositionType v): value(v) {
 		constexpr const char msg[] = "Value must be > 0";
 		if consteval {
 			if (v <= 0) {
@@ -28,22 +30,32 @@ struct Dimension {
 		}
 	}
 
-	const uint32_t value;
+	const PositionType value;
 };
 
 using Width = Dimension;
 using Height = Dimension;
 
-struct AbsPosition {
-	explicit constexpr AbsPosition(uint32_t p) : value(p) {}
+struct Size2D {
+	explicit constexpr Size2D(Width w, Height h) : width(w), height(h) {}
+	constexpr Size2D() : width(0), height(0) {}
+private:
+	Width width;
+	Height height;
+};
 
-	const uint32_t value;
+struct AbsPosition {
+	explicit constexpr AbsPosition(PositionType p) : value(p) {}
+
+	const PositionType value;
 };
 
 /// Helps catching configuration bugs at compile time and enforces invariants on the rate per second value.
 /// Improves the API to the client with a more readable, distinct type.
 struct RatePerSecond {
-	explicit constexpr RatePerSecond(uint32_t v): value(v) {
+	using RateType = uint16_t;
+
+	explicit constexpr RatePerSecond(RateType v): value(v) {
 		constexpr const char msg[] = "Value must be between 1 and 'max'";
 		if consteval {
 			if (v <= 0 || v > max) {
@@ -60,9 +72,9 @@ struct RatePerSecond {
 	}
 
 	// Note: Hardcoded value...maybe there is a better way to configure this. Macros or constexprs
-	static const uint32_t max = 120;
+	static const RateType max = 120;
 
-	const uint32_t value;
+	const RateType value;
 };
 
 using AbsX = AbsPosition;

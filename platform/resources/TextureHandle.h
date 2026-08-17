@@ -8,7 +8,7 @@ namespace Platform::Resources {
 struct TextureHandle {
 	explicit TextureHandle(Texture* ptr) noexcept;
 
-	Texture* ptr = nullptr; ///< Pointer to the resource. Read-only, do not delete. Always check if it is a live resource before using.
+	Texture* ptr = nullptr; ///> Do not manually delete or call freeMem(). Engine takes care of it.
 
 	void freeMem();
 };

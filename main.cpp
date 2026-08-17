@@ -14,11 +14,25 @@ public:
 		: EngineImpl::SDL::SDLEngine(config, fps) {}
 protected:
 	Core::Errors::ErrorCode beforeStart() override {
-		// BUG: Haha seems that loading more than one texture does not work...
+		// TODO: Hmmmm....so I wonder whether its better to have the size of an image
+		// hardcoded in the codebase or dynamically fetched from the image file?
+		// I think its better to have it dynamically read from the headers of the image.
+		// And the client of the code could overwrite that in order to scale the image
+		// which is not a great idea usually...
 		std::vector<std::filesystem::path> resourcePaths;
 		resourcePaths.push_back(::Resources::resource("engine/balls.png"));
 		resourcePaths.push_back(::Resources::resource("engine/human.png"));
-		const auto idOrErr = load(resourcePaths);
+		const auto idsOrErrs = load(resourcePaths);
+
+		for (const auto& idOrErr : idsOrErrs) {
+			if (idOrErr.has_value()) {
+				textureIds.push_back(idOrErr.value());
+			}
+			else {
+				logger->log(Platform::Logging::Level::ERROR, idOrErr.error());
+			}
+		}
+
 		return {};
 	}
 	Core::Errors::ErrorCode beforeUpdate() override { return {}; }

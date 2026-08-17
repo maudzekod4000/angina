@@ -22,6 +22,8 @@ std::shared_ptr<SDLRenderer> SDLRenderer::makeShared(SDL_Renderer* r)
 
 void SDLRenderer::render(Platform::Resources::TextureHandle tex)
 {
+	// TODO: Let's think how we can avoid dynamic_casts.
+	// I think that templates will help us.
 	SDLGPUTexture* sdlTexWrapper = dynamic_cast<SDLGPUTexture*>(tex.ptr);
 
 	assert(sdlTexWrapper && "render: expected SDLGPUTexture");
