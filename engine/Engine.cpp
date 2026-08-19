@@ -80,9 +80,7 @@ ErrorCode Engine::start()
 
             renderer->clear();
             for (const auto id : textureIds) {
-                if (!texResLoader->hasError(id)) {
-                    renderer->render(texResLoader->resolve(id));
-                }
+                renderer->render(texResLoader->resolve(id));
             }
             renderer->present();
 
