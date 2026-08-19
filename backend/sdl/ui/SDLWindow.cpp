@@ -16,10 +16,10 @@ std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const Windo
 {
 	SDL_Window* window = SDL_CreateWindow(
 		c.title.c_str(),
-		c.xPos.value,
-		c.yPos.value,
-		c.width.value,
-		c.height.value,
+		c.xPos,
+		c.yPos,
+		c.width,
+		c.height,
 		SDL_WINDOW_SHOWN
 	);
 	if (!window) {
@@ -31,7 +31,7 @@ std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const Windo
 
 ErrorCode SDLWindow::resize(Width w, Height h)
 {
-	SDL_SetWindowSize(window, w.value, h.value);
+	SDL_SetWindowSize(window, w, h);
 	return ErrorCode();
 }
 

@@ -43,7 +43,7 @@ protected:
 #undef main
 
 int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
-	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(480));
+	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(255), Core::Units::Height(128));
 	MyTestEngine eng(winConfig, Core::Units::RatePerSecond(60));
 
 	if (const auto err = eng.start(); err) {
