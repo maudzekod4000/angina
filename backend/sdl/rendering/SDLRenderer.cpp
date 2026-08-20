@@ -1,6 +1,7 @@
 #include "SDLRenderer.h"
 
 #include <cassert>
+#include <iostream>
 
 #include "SDL_render.h"
 
@@ -60,5 +61,9 @@ std::expected<TextureHandle, ErrorCode> SDLRenderer::transferGPU(TextureHandle c
 		return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
 	}
 
-	return TextureHandle(new SDLGPUTexture(sdlTex));
+	auto gpuTex = new SDLGPUTexture(sdlTex);
+
+	std::cout << "The width of the texture is: " << gpuTex->width() << std::endl;
+
+	return TextureHandle(gpuTex);
 }

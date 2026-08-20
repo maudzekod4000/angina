@@ -55,7 +55,7 @@ protected:
 	/// Run after the main loop has exited.
 	virtual Core::Errors::ErrorCode beforeEnd() = 0;
 
-	std::vector<Core::Identity::Id> textureIds;
+	std::vector<Core::Identity::Id> textureIds; ///< Live textures.
 	Platform::Logging::LoggerPtr logger;
 
 	std::vector<Platform::Resources::IdOrError> load(const std::vector<std::filesystem::path>&);

@@ -17,8 +17,18 @@ public:
 	~SDLGPUTexture() noexcept;
 
 	SDL_Texture* get() const noexcept;
+
+	int width() const override;
+
+	int height() const override;
 private:
 	SDL_Texture* texture;
+
+	// TODO: At some point I might ditch the inheritance and just
+	// have a concrete implementation of the engine
+	// But let's not overhaul everything at once.
+	int texWidth = 0;
+	int texHeight = 0;
 };
 }
 

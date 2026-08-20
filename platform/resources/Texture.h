@@ -1,14 +1,14 @@
 #ifndef RESOURCES_TEXTURE_H
 #define RESOURCES_TEXTURE_H
 
-#include "core/units/Units.hpp"
-
 namespace Platform::Resources {
 
 struct Texture {
 	virtual ~Texture() {}
 
-	
+	virtual int width() const { return 0; }
+
+	virtual int height() const { return 0; }
 };
 
 }

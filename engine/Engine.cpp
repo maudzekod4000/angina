@@ -92,6 +92,10 @@ ErrorCode Engine::start()
             if (inputEventMgr->getSnapshot().quit) {
                 state.set(EngineState::State::STOPPING);
             }
+
+            // TODO: It would be nice to have some statistics on
+            // How much of the frame time was work vs. waiting.
+            // This might show us how much headroom we got.
             framePacer.endFrame();
         }
 
