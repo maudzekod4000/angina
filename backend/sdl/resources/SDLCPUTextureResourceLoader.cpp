@@ -17,7 +17,7 @@ const LoadTextureFunc loadSDLTex = [](const std::filesystem::path& path) -> std:
 	const std::filesystem::path finalPath = resolvePath(path);
 	SDL_Surface* loadedSurface = IMG_Load((const char*)(finalPath.u8string().c_str()));
 
-	if (!loadedSurface) return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
+	if (!loadedSurface) return std::unexpected(Backend::SDL::Error::makeErr(ANGINA_CURRENT_FUNCTION));
 
 	return TextureHandle(new SDLCPUTexture(loadedSurface));
 };

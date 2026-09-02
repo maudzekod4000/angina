@@ -10,8 +10,9 @@ target_sources(sdl
 		resources/SDLCPUTextureResourceLoader.cpp
 		resources/SDLCPUTextureResourceLoaderAsync.cpp
 		resources/SDLResourceUtils.cpp
-		resources/SDLTexture.cpp
 		rendering/SDLRenderer.cpp
+		resources/SDLTexture.cpp
+		resources/SDLTexLoader.cpp
 		error/SDLError.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
@@ -24,6 +25,7 @@ target_sources(sdl
 		resources/SDLResourceUtils.h
 		rendering/SDLRenderer.h
 		resources/SDLTexture.h
+		resources/SDLTexLoader.h
 		error/SDLError.h
 )
 

@@ -58,7 +58,7 @@ std::expected<TextureHandle, ErrorCode> SDLRenderer::transferGPU(TextureHandle c
 	SDL_Texture* sdlTex = SDL_CreateTextureFromSurface(renderer, sdlSurface);
 
 	if (!sdlTex) {
-		return std::unexpected(Backend::SDL::Error::make(ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(Backend::SDL::Error::makeErr(ANGINA_CURRENT_FUNCTION));
 	}
 
 	auto gpuTex = new SDLGPUTexture(sdlTex);

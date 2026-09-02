@@ -23,7 +23,7 @@ std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const Windo
 		SDL_WINDOW_SHOWN
 	);
 	if (!window) {
-		return std::unexpected(Error::make(ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(Error::makeErr(ANGINA_CURRENT_FUNCTION));
 	}
 
 	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));
@@ -40,7 +40,7 @@ std::expected<SDL_Renderer*, Core::Errors::ErrorCode> SDLWindow::makeRenderer()
 	auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	if (!renderer) {
-		return std::unexpected(Error::make(ANGINA_CURRENT_FUNCTION));
+		return std::unexpected(Error::makeErr(ANGINA_CURRENT_FUNCTION));
 	}
 
 	return renderer;

@@ -1,13 +1,19 @@
-/// ok sooo this will be a simple wrapper around SDL.
-/// namespaces are OK...getters ....idk....i think they are fine
-/// but...i trust myself and i think i wont set a value after construct...
-/// 
+#ifndef BACKEND_SDL_RESOURCES_SDLTEXTURE_H
+#define BACKEND_SDL_RESOURCES_SDLTEXTURE_H
 
-/// Namespaces are better than prefixes haha
+struct SDL_Texture;
+
 namespace Backend::SDL::Resources {
 	struct SDLTexture {
+		SDLTexture() = default;
+		SDLTexture(SDL_Texture*);
 
+		void freeMem();
+
+		SDL_Texture* tex = nullptr;
 		int width = 0;
 		int height = 0;
 	};
 }
+
+#endif // !BACKEND_SDL_RESOURCES_SDLTEXTURE_H

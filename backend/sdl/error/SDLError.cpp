@@ -4,7 +4,7 @@
 
 using namespace Core::Errors;
 
-ErrorCode Backend::SDL::Error::make(const char* funcName)
+ErrorCode Backend::SDL::Error::makeErr(const char* funcName)
 {
 	return ErrorCode(-3, SDL_GetError(), funcName);
 }

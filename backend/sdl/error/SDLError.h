@@ -5,7 +5,7 @@
 
 namespace Backend::SDL::Error {
 
-Core::Errors::ErrorCode make(const char* funcName);
+Core::Errors::ErrorCode makeErr(const char* funcName);
 
 }
 

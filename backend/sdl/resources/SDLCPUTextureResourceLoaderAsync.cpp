@@ -42,7 +42,7 @@ std::vector<IdOrError> SDLCPUTextureLoaderAsync::load(const std::vector<std::fil
 			result.push_back(texId);
 		}
 		else {
-			result.push_back(std::unexpected(Error::make(ANGINA_CURRENT_FUNCTION)));
+			result.push_back(std::unexpected(Error::makeErr(ANGINA_CURRENT_FUNCTION)));
 		}
 	}
 

@@ -10,7 +10,7 @@ using namespace Backend::SDL::Init;
 ErrorCode SDLVideoLifecycleManager::init(uint64_t flags)
 {
 	if (const int res = SDL_Init(SDL_INIT_VIDEO); res != 0) {
-		return Error::make(ANGINA_CURRENT_FUNCTION);
+		return Error::makeErr(ANGINA_CURRENT_FUNCTION);
 	}
 
 	return ErrorCode();
