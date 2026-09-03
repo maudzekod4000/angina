@@ -22,7 +22,7 @@ protected:
 		std::vector<std::filesystem::path> resourcePaths;
 		resourcePaths.push_back(::Resources::resource("engine/balls.png"));
 		resourcePaths.push_back(::Resources::resource("engine/human.png"));
-		const auto idsOrErrs = load(resourcePaths);
+		const auto idsOrErrs = loadTextures(resourcePaths);
 
 		for (const auto& idOrErr : idsOrErrs) {
 			if (idOrErr.has_value()) {

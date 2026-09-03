@@ -10,7 +10,7 @@ using namespace Backend::SDL::Resources;
 using namespace Core::Errors;
 using namespace Backend::SDL::Error;
 
-SDLTexture load(const char* filepath, ErrorCode& err)
+SDLTexture load(const char* filepath, SDL_Renderer* r, ErrorCode& err)
 {
     assert(filepath);
 
@@ -21,7 +21,12 @@ SDLTexture load(const char* filepath, ErrorCode& err)
         return SDLTexture();
     }
 
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(r, cpuRamTex);
 
+    if (!tex) {
+        err = makeErr(__FUNCTION__);
+        return SDLTexture();
+    }
 
-    return SDLTexture();
+    return SDLTexture(tex);
 }

@@ -1,31 +1,22 @@
 #ifndef BACKEND_SDL_RENDERER_H
 #define BACKEND_SDL_RENDERER_H
 
-#include <expected>
-
-#include "platform/rendering/Renderer.h"
-#include "platform/resources/TextureHandle.h"
-#include "platform/resources/TextureTransferer.h"
-#include "core/error/Errors.h"
+#include "backend/sdl/resources/SDLTexture.h"
 
 struct SDL_Renderer;
 
 namespace Backend::SDL::Rendering {
-class SDLRenderer final : public Platform::Rendering::Renderer, public Platform::Resources::TextureTransferer {
+class SDLRenderer {
 public:
-	static std::shared_ptr<SDLRenderer> makeShared(SDL_Renderer*);
+	SDLRenderer(SDL_Renderer*);
+	
+	void render(Backend::SDL::Resources::SDLTexture);
 
-	void render(Platform::Resources::TextureHandle) override;
+	void clear();
 
-	void clear() override;
+	void present();
 
-	void present() override;
-
-	std::expected<Platform::Resources::TextureHandle, Core::Errors::ErrorCode> transferGPU(Platform::Resources::TextureHandle) override;
-private:
-	explicit SDLRenderer(SDL_Renderer*);
-
-	SDL_Renderer* renderer = nullptr; ///< Received from the outside but managed by this class.
+	SDL_Renderer* handle = nullptr; ///< Received from the outside but managed by this class.
 };
 
 }
