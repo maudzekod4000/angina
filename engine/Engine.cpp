@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "backend/sdl/resources/SDLTexLoader.h"
+#include "backend/sdl/init/SDLVideoLifecycleManager.h"
 
 using namespace Angina::EngineV3;
 using namespace Platform::Init;
@@ -13,9 +14,9 @@ using namespace Platform::System;
 using namespace Platform::Resources;
 using namespace Core::Units;
 using namespace Core::Errors;
+using namespace Backend::SDL;
 
 Engine::Engine(
-    SubsystemLifecycleManagersPtr slms,
     LoggerPtr logger,
     WindowPtr window,
     InputEventManagerPtr inputMgr,
@@ -23,7 +24,6 @@ Engine::Engine(
     Backend::SDL::Rendering::SDLRenderer renderer,
     TextureResourceLoaderPtr texLoader
 ):
-    subsystemLifecycleManagers(std::move(slms)),
     logger(std::move(logger)),
     window(std::move(window)),
     inputEventMgr(std::move(inputMgr)),
@@ -33,7 +33,6 @@ Engine::Engine(
     globalClock({}),
     framePacer(desiredFPS, globalClock)
 {
-    assert(this->subsystemLifecycleManagers);
     assert(this->logger);
     assert(this->window);
     assert(this->inputEventMgr);
@@ -62,7 +61,7 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 
 ErrorCode Engine::start()
 {
-    if (const auto err = subsystemLifecycleManagers->init(0); err) {
+    if (const auto err = Init::initVideo(0); err) {
         return err;
     }
 
@@ -88,9 +87,8 @@ ErrorCode Engine::start()
         }
 
         renderer.clear();
-        // TODO: The rendering does not need to go via the id -> texture cycle.
-        for (const auto id : textureIds) {
-            renderer.render(texResLoader->resolve(id));
+        for (const auto& tex : textures) {
+            renderer.render(tex);
         }
         renderer.present();
 

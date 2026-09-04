@@ -6,24 +6,21 @@
 
 using namespace Core::Errors;
 using namespace Backend::SDL::Init;
+using namespace Backend::SDL::Error;
 
-ErrorCode SDLVideoLifecycleManager::init(uint64_t flags)
+// TODO: Idk if we need separate methods for like video and audio and
+// other subsystems.
+ErrorCode initVideo(uint64_t flags)
 {
 	if (const int res = SDL_Init(SDL_INIT_VIDEO); res != 0) {
-		return Error::makeErr(ANGINA_CURRENT_FUNCTION);
+		return makeErr(ANGINA_CURRENT_FUNCTION);
 	}
 
 	return ErrorCode();
 }
 
 
-ErrorCode SDLVideoLifecycleManager::destroy()
+void destroyVideo()
 {
 	SDL_Quit();
-	return {};
-}
-
-bool SDLVideoLifecycleManager::isCriticalSubsystem()
-{
-	return true;
 }

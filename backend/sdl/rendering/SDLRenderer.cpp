@@ -11,8 +11,8 @@ SDLRenderer::SDLRenderer(SDL_Renderer* r): handle(r) {}
 
 void SDLRenderer::render(SDLTexture texture)
 {
-	assert(texture.tex);
-	const int res = SDL_RenderCopy(handle, texture.tex, NULL, NULL);
+	assert(texture.handle);
+	const int res = SDL_RenderCopy(handle, texture.handle, NULL, NULL);
 
 	assert(res == 0);
 }

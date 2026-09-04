@@ -6,7 +6,7 @@
 
 using namespace Backend::SDL::Resources;
 
-SDLTexture::SDLTexture(SDL_Texture* t): tex(t)
+SDLTexture::SDLTexture(SDL_Texture* t): handle(t)
 {
 	assert(t);
 	SDL_QueryTexture(t, NULL, NULL, &width, &height);
@@ -14,5 +14,5 @@ SDLTexture::SDLTexture(SDL_Texture* t): tex(t)
 
 void SDLTexture::freeMem()
 {
-	SDL_DestroyTexture(tex);
+	SDL_DestroyTexture(handle);
 }

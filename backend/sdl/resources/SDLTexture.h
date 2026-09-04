@@ -10,7 +10,7 @@ namespace Backend::SDL::Resources {
 
 		void freeMem();
 
-		SDL_Texture* tex = nullptr;
+		SDL_Texture* handle = nullptr;
 		int width = 0;
 		int height = 0;
 	};

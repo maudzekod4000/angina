@@ -33,7 +33,6 @@ class Engine {
 public:
 
 	explicit Engine(
-		Platform::Init::SubsystemLifecycleManagersPtr,
 		Platform::Logging::LoggerPtr,
 		Platform::UI::WindowPtr,
 		Platform::Input::InputEventManagerPtr inputMgr,
@@ -66,7 +65,6 @@ protected:
 private:
 	const Platform::Resources::TextureResourceLoaderPtr texResLoader;
 	EngineState state;
-	Platform::Init::SubsystemLifecycleManagersPtr subsystemLifecycleManagers;
 	Platform::UI::WindowPtr window;
 
 	Platform::Input::InputEventManagerPtr inputEventMgr;
