@@ -9,10 +9,7 @@ using namespace Core::Units;
 using namespace Platform::UI;
 using namespace Backend::SDL::UI;
 
-SDLWindow::SDLWindow(SDL_Window* w, const WindowConfig& c):
-	IWindow(c), window(w) {}
-
-std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const WindowConfig& c)
+SDLWindow SDLWindow::make(const WindowConfig& c, Core::Errors::ErrorCode& outErr)
 {
 	SDL_Window* window = SDL_CreateWindow(
 		c.title.c_str(),
@@ -23,16 +20,15 @@ std::expected<std::unique_ptr<SDLWindow>, ErrorCode> SDLWindow::make(const Windo
 		SDL_WINDOW_SHOWN
 	);
 	if (!window) {
-		return std::unexpected(Error::makeErr(ANGINA_CURRENT_FUNCTION));
+		outErr = Error::makeErr(ANGINA_CURRENT_FUNCTION);
 	}
 
-	return std::unique_ptr<SDLWindow>(new SDLWindow(window, c));
+	return SDLWindow(window);
 }
 
-ErrorCode SDLWindow::resize(Width w, Height h)
+void SDLWindow::resize(Width w, Height h)
 {
 	SDL_SetWindowSize(window, w, h);
-	return ErrorCode();
 }
 
 std::expected<SDL_Renderer*, Core::Errors::ErrorCode> SDLWindow::makeRenderer()

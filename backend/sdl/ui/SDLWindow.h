@@ -4,7 +4,6 @@
 #include <memory>
 #include <expected>
 
-#include "platform/ui/window/IWindow.h"
 #include "platform/ui/window/WindowConfig.h"
 #include "core/units/Units.hpp"
 #include "core/error/Errors.h"
@@ -14,16 +13,16 @@ struct SDL_Renderer;
 
 namespace Backend::SDL::UI {
 
-class SDLWindow : public Platform::UI::IWindow {
-	SDLWindow(SDL_Window*, const Platform::UI::WindowConfig&);
+class SDLWindow {
+	SDLWindow(SDL_Window*);
 public:
-	static std::expected<std::unique_ptr<SDLWindow>, Core::Errors::ErrorCode> make(const Platform::UI::WindowConfig&);
+	static SDLWindow make(const Platform::UI::WindowConfig&, Core::Errors::ErrorCode&);
 
-	Core::Errors::ErrorCode resize(Core::Units::Width w, Core::Units::Height h) override;
+	void resize(Core::Units::Width w, Core::Units::Height h);
 
 	std::expected<SDL_Renderer*, Core::Errors::ErrorCode> makeRenderer();
 private:
-	SDL_Window* window;
+	SDL_Window* window = nullptr;
 };
 
 }
