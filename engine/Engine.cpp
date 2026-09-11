@@ -111,9 +111,7 @@ ErrorCode Engine::start()
         return err;
     }
 
-    if (const auto err = subsystemLifecycleManagers->destroy(); err) {
-        return err;
-    }
+    Init::destroyVideo();
 
     return {};
 }

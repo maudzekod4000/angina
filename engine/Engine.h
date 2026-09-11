@@ -41,22 +41,8 @@ public:
 		Platform::Resources::TextureResourceLoaderPtr texLoader
 	);
 
-	virtual ~Engine() = default;
-
 	/// Initializes subsystems and, if successful, starts the main loop.
 	Core::Errors::ErrorCode start();
-protected:
-	/// Run after the subsystems are initialized, but before the main loop has started.
-	virtual Core::Errors::ErrorCode beforeStart() = 0;
-
-	/// Run before update of the subsystems, i.e. physics, animation.
-	virtual Core::Errors::ErrorCode beforeUpdate() = 0;
-
-	/// Run after update of the subsystems, i.e. physics, animation.
-	virtual Core::Errors::ErrorCode afterUpdate() = 0;
-
-	/// Run after the main loop has exited.
-	virtual Core::Errors::ErrorCode beforeEnd() = 0;
 
 	std::vector<Core::Identity::Id> textureIds; ///< Live textures.
 	Platform::Logging::LoggerPtr logger;
