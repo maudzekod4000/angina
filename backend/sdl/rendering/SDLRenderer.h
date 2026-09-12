@@ -2,6 +2,7 @@
 #define BACKEND_SDL_RENDERER_H
 
 #include "backend/sdl/resources/SDLTexture.h"
+#include "core/units/Units.hpp"
 
 struct SDL_Renderer;
 
@@ -10,8 +11,8 @@ class SDLRenderer {
 public:
 	SDLRenderer(SDL_Renderer*);
 	SDLRenderer() = default;
-	
-	void render(Backend::SDL::Resources::SDLTexture, int x, int y);
+
+	void render(Backend::SDL::Resources::SDLTexture, int viewportXpos, int viewportYpos, const Core::Units::Rect& texRenderRect);
 
 	void clear();
 

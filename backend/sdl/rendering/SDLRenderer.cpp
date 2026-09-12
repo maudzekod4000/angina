@@ -9,16 +9,13 @@ using namespace Backend::SDL::Resources;
 
 SDLRenderer::SDLRenderer(SDL_Renderer* r): handle(r) {}
 
-void SDLRenderer::render(SDLTexture texture, int x, int y)
+void SDLRenderer::render(SDLTexture texture, int x, int y, const Core::Units::Rect& texRenderRect)
 {
 	assert(texture.handle);
-	SDL_Rect dstRect{};
-	dstRect.x = x;
-	dstRect.y = y;
-	dstRect.w = texture.width;
-	dstRect.h = texture.height;
+	SDL_Rect dstRect{ x, y, texture.width, texture.height };
+	SDL_Rect srcRect{ texRenderRect.x, texRenderRect.y, texRenderRect.w, texRenderRect.h };
 
-	const int res = SDL_RenderCopy(handle, texture.handle, NULL, &dstRect);
+	const int res = SDL_RenderCopy(handle, texture.handle, &srcRect, &dstRect);
 
 	assert(res == 0);
 }

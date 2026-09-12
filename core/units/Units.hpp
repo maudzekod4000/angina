@@ -46,5 +46,9 @@ using AbsX = AbsPosition;
 using AbsY = AbsPosition;
 using FPS = RatePerSecond;
 
+struct Rect {
+	AbsPosition x, y, w, h;
+};
+
 }
 #endif

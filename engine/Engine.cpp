@@ -67,13 +67,28 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 
 void Angina::EngineV3::Engine::beforeGameLoop()
 {
-    Resources::SDLTexture arrowTex = loadTexture("resources/engine/arrow.png");
-    GameObject arrow{arrowTex, 0, 0};
-    gameObjects.push_back(arrow);
-
     Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
-    GameObject balls{ ballsTex, 100, 100 };
-    gameObjects.push_back(balls);
+    // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
+    ballsTex.width = 100;
+    ballsTex.height = 100;
+    SpriteTexFrame redBallFrame{ ballsTex, Core::Units::Rect{0, 0, 100, 100} };
+    // TODO: Hmmm...soo the creation of the object needs to be thought out
+    // but lets just do manual creation and then we will see the patterns in the 
+    // creation and we will adjust.
+    GameObject redBall{redBallFrame, 0, 0};
+    gameObjects.push_back(redBall);
+
+    SpriteTexFrame greenBallFrame{ ballsTex, Core::Units::Rect{100, 0, 100, 100} };
+    GameObject greenBall{ greenBallFrame, 540, 0 };
+    gameObjects.push_back(greenBall);
+
+    SpriteTexFrame yellowBallFrame{ ballsTex, Core::Units::Rect{0, 100, 100, 100} };
+    GameObject yellowBall{ yellowBallFrame, 0, 380 };
+    gameObjects.push_back(yellowBall);
+
+    SpriteTexFrame blueBallFrame{ ballsTex, Core::Units::Rect{100, 100, 100, 100} };
+    GameObject blueBall{ blueBallFrame, 540, 380 };
+    gameObjects.push_back(blueBall);
 }
 
 ErrorCode Engine::start()
@@ -92,14 +107,12 @@ ErrorCode Engine::start()
 
         for (int i = 0; i < int(Phase::Count); i++) {
             // update systems
-            inputEventMgr.update(Phase(i)); // TODO: This still uses virtual dispatch...maybe we can simplify it.
-            // If i watch some of the Handmade hero videos i can see if i can buffer the input somehow
-            // or it has to be consumed every frame...
+            inputEventMgr.update(Phase(i));
         }
 
         renderer.clear();
-        for (const auto& gameObject : gameObjects) {
-            renderer.render(gameObject.texture, gameObject.x, gameObject.y);
+        for (const GameObject& gameObject : gameObjects) {
+            renderer.render(gameObject.sprite.texture, gameObject.x, gameObject.y, gameObject.sprite.texSrc);
         }
         renderer.present();
 
