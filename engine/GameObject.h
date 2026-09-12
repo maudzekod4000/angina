@@ -7,6 +7,24 @@
 namespace Angina::EngineV3 {
 	struct SpriteAnim {
 
+		SpriteAnim(Core::Units::Rect onlyFrame) : currentFrame(onlyFrame) {}
+
+		SpriteAnim(std::vector<Core::Units::Rect> frames, float animDuration) :
+			currentFrame(), frames(std::move(frames)), animDuration(animDuration) {}
+
+
+		// We need:
+		// 1. a way to start the animation
+		// 2. a way to reset the animation
+		// 3. a way to stop the animation
+
+		void update() {
+			if (frames.empty()) return; // This is a single frame sprite, i.e. a normal texture.
+
+			// TODO: Do some calculations to figure out the current frame based on the time that passed
+			// between starting the animation and now.
+		}
+
 		// Design:
 		// we need to track when the animation started and how long it has been running
 		// in order to figure out which frame to show in the case of multiple frames.
@@ -16,6 +34,9 @@ namespace Angina::EngineV3 {
 		// with any time management.
 
 		// another important thing is that we need to be able to stop the animation.
+
+		Core::Units::Rect currentFrame;
+	private:
 		std::vector<Core::Units::Rect> frames;
 		float animDuration = 0.0f;
 	};
