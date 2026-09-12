@@ -1,6 +1,4 @@
 #include "Engine.h"
-#include "Engine.h"
-#include "Engine.h"
 
 #include <cassert>
 
@@ -69,7 +67,13 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 
 void Angina::EngineV3::Engine::beforeGameLoop()
 {
-    loadTexture("resources/engine/phoneix.png");
+    Resources::SDLTexture arrowTex = loadTexture("resources/engine/arrow.png");
+    GameObject arrow{arrowTex, 0, 0};
+    gameObjects.push_back(arrow);
+
+    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
+    GameObject balls{ ballsTex, 100, 100 };
+    gameObjects.push_back(balls);
 }
 
 ErrorCode Engine::start()
@@ -94,8 +98,8 @@ ErrorCode Engine::start()
         }
 
         renderer.clear();
-        for (const auto& tex : textures) {
-            renderer.render(tex);
+        for (const auto& gameObject : gameObjects) {
+            renderer.render(gameObject.texture, gameObject.x, gameObject.y);
         }
         renderer.present();
 

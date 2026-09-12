@@ -9,10 +9,12 @@ using namespace Backend::SDL::Resources;
 
 SDLRenderer::SDLRenderer(SDL_Renderer* r): handle(r) {}
 
-void SDLRenderer::render(SDLTexture texture)
+void SDLRenderer::render(SDLTexture texture, int x, int y)
 {
 	assert(texture.handle);
 	SDL_Rect dstRect{};
+	dstRect.x = x;
+	dstRect.y = y;
 	dstRect.w = texture.width;
 	dstRect.h = texture.height;
 

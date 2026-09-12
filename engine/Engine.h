@@ -28,6 +28,7 @@
 #include "platform/logging/ConsoleLogger.h"
 #include "backend/sdl/ui/SDLWindow.h"
 #include "platform/ui/window/WindowConfig.h"
+#include "engine/GameObject.h"
 
 namespace Angina::EngineV3 {
 
@@ -49,6 +50,8 @@ private:
 	Backend::SDL::UI::SDLWindow window;
 	Backend::SDL::Input::SDLInputEventManager inputEventMgr;
 	std::vector<Backend::SDL::Resources::SDLTexture> textures;
+
+	std::vector<GameObject> gameObjects;
 	
 	EngineState state;
 	Core::Units::RatePerSecond desiredFPS;

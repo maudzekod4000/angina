@@ -5,10 +5,12 @@ target_sources(engine
         Engine.h
         EngineConfig.h
         EngineState.h
+        GameObject.h
     PRIVATE
         Engine.cpp
         EngineConfig.cpp
         EngineState.cpp
+        GameObject.cpp
 )
 
 target_include_directories(engine

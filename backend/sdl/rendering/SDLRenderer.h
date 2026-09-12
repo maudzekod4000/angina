@@ -11,7 +11,7 @@ public:
 	SDLRenderer(SDL_Renderer*);
 	SDLRenderer() = default;
 	
-	void render(Backend::SDL::Resources::SDLTexture);
+	void render(Backend::SDL::Resources::SDLTexture, int x, int y);
 
 	void clear();
 
