@@ -9,6 +9,7 @@ namespace Backend::SDL::Rendering {
 class SDLRenderer {
 public:
 	SDLRenderer(SDL_Renderer*);
+	SDLRenderer() = default;
 	
 	void render(Backend::SDL::Resources::SDLTexture);
 

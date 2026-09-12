@@ -16,11 +16,12 @@ namespace Backend::SDL::UI {
 class SDLWindow {
 	SDLWindow(SDL_Window*);
 public:
+	SDLWindow() = default;
 	static SDLWindow make(const Platform::UI::WindowConfig&, Core::Errors::ErrorCode&);
 
 	void resize(Core::Units::Width w, Core::Units::Height h);
 
-	std::expected<SDL_Renderer*, Core::Errors::ErrorCode> makeRenderer();
+	SDL_Renderer* makeRenderer(Core::Errors::ErrorCode&);
 private:
 	SDL_Window* window = nullptr;
 };

@@ -6,18 +6,14 @@
 #include "platform/input/BaseInputEventManager.h"
 #include "core/error/Errors.h"
 
-union SDL_Event;
-
 namespace Backend::SDL::Input {
 
 class SDLInputEventManager : public Platform::Input::BaseInputEventManager {
 public:
-	static std::unique_ptr<SDLInputEventManager> make();
+	SDLInputEventManager() = default;
 
 	/// Call from the main thread!
 	Core::Errors::ErrorCode update(Platform::System::Phase) override;
-private:
-	explicit SDLInputEventManager();
 };
 
 }

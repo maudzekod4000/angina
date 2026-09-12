@@ -10,8 +10,6 @@
 #include "core/error/Errors.h"
 #include "core/identity/Id.h"
 
-#include "platform/ui/window/IWindow.h"
-
 #include "platform/init/SubsystemLifecycleManagers.h"
 #include "platform/logging/ILogger.h"
 #include "platform/input/IInputEventManager.h"
@@ -22,46 +20,42 @@
 
 #include "core/datastructures/FreeList.h"
 #include "backend/sdl/resources/SDLTexture.h"
+#include "backend/sdl/input/SDLInputEventManager.h"
 
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
 
+#include "platform/logging/ConsoleLogger.h"
+#include "backend/sdl/ui/SDLWindow.h"
+#include "platform/ui/window/WindowConfig.h"
 
 namespace Angina::EngineV3 {
 
 class Engine {
-public:
-
 	explicit Engine(
-		Platform::Logging::LoggerPtr,
-		Platform::UI::WindowPtr,
-		Platform::Input::InputEventManagerPtr inputMgr,
 		Core::Units::RatePerSecond desiredFPS,
 		Backend::SDL::Rendering::SDLRenderer renderer,
-		Platform::Resources::TextureResourceLoaderPtr texLoader
+		Backend::SDL::UI::SDLWindow window
 	);
+public:
+	static Engine make(const Platform::UI::WindowConfig& winCfg, Core::Units::RatePerSecond fps, Core::Errors::ErrorCode&);
 
 	/// Initializes subsystems and, if successful, starts the main loop.
 	Core::Errors::ErrorCode start();
 
-	std::vector<Core::Identity::Id> textureIds; ///< Live textures.
-	Platform::Logging::LoggerPtr logger;
-
 	Backend::SDL::Resources::SDLTexture loadTexture(const char* filepath);
 private:
-	const Platform::Resources::TextureResourceLoaderPtr texResLoader;
-	EngineState state;
-	Platform::UI::WindowPtr window;
-
-	Platform::Input::InputEventManagerPtr inputEventMgr;
 	Backend::SDL::Rendering::SDLRenderer renderer;
-	Platform::Resources::TextureTransfererPtr textureTransferer; ///< Used to transfer textures, from CPU to GPU, for example.
-
+	Backend::SDL::UI::SDLWindow window;
+	Backend::SDL::Input::SDLInputEventManager inputEventMgr;
+	std::vector<Backend::SDL::Resources::SDLTexture> textures;
+	
+	EngineState state;
 	Core::Units::RatePerSecond desiredFPS;
 	Core::Time::Stopwatch globalClock; ///< Clock that runs from the start of the engine, monotonically, until the end and is never reset.
 	Platform::Time::FramePacer framePacer; ///< Measures and stalls the main loop in order to provide a stable frame rate, i.e. each frame should take the same time.
 	
-	std::vector<Platform::System::Updateable*> systems;
+	Platform::Logging::ConsoleLogger logger;
 
 	// TO DO: For textures we want a data structure that is:
 	// We need a simple data structure that can hold the loaded textures
@@ -70,7 +64,6 @@ private:
 	// case of: 1. loading all textures at start
 	// 2. deleting all textures at the end of the game
 	// 3. all other things are optimizations.
-	std::vector<Backend::SDL::Resources::SDLTexture> textures;
 
 	// So for example, the game objects will have a SDLTexture field
 	// when we are quitting the game we first delete the game objects

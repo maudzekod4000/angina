@@ -74,7 +74,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	platform
 	backend
     engine
-    engine_impl
 )
 
 if(TEST_BUILD)

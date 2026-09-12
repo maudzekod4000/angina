@@ -9,6 +9,8 @@ using namespace Core::Units;
 using namespace Platform::UI;
 using namespace Backend::SDL::UI;
 
+SDLWindow::SDLWindow(SDL_Window* w) : window(w) {}
+
 SDLWindow SDLWindow::make(const WindowConfig& c, Core::Errors::ErrorCode& outErr)
 {
 	SDL_Window* window = SDL_CreateWindow(
@@ -31,12 +33,12 @@ void SDLWindow::resize(Width w, Height h)
 	SDL_SetWindowSize(window, w, h);
 }
 
-std::expected<SDL_Renderer*, Core::Errors::ErrorCode> SDLWindow::makeRenderer()
+SDL_Renderer* SDLWindow::makeRenderer(Core::Errors::ErrorCode& err)
 {
-	auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	if (!renderer) {
-		return std::unexpected(Error::makeErr(ANGINA_CURRENT_FUNCTION));
+		err = Error::makeErr(ANGINA_CURRENT_FUNCTION);
 	}
 
 	return renderer;
