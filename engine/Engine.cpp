@@ -103,8 +103,7 @@ ErrorCode Engine::start()
         }
         renderer.present();
 
-        // This code might be in a callback if we use the observable pattern.
-        if (inputEventMgr.getSnapshot().quit) {
+        if (inputEventMgr.inEvent.quit) {
             state.set(EngineState::State::STOPPING);
         }
 

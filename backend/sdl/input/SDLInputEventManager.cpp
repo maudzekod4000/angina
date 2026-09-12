@@ -7,12 +7,11 @@ using namespace Backend::SDL::Input;
 
 #include "SDL_events.h"
 
-ErrorCode SDLInputEventManager::update(Phase phase)
+void SDLInputEventManager::update(Phase phase)
 {
-	if (phase != Phase::Input) return ErrorCode();
+	if (phase != Phase::Input) return;
 
 	SDL_Event e{};
-	InputSnapshot inEvent;
 
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
@@ -22,7 +21,5 @@ ErrorCode SDLInputEventManager::update(Phase phase)
 		}
 	}
 
-	setSnapshot(inEvent);
-
-	return ErrorCode();
+	return;
 }
