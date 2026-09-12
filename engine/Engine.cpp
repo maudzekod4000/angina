@@ -69,26 +69,34 @@ void Angina::EngineV3::Engine::beforeGameLoop()
 {
     Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
-    ballsTex.width = 100;
-    ballsTex.height = 100;
-    SpriteTexFrame redBallFrame{ ballsTex, Core::Units::Rect{0, 0, 100, 100} };
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
-    GameObject redBall{redBallFrame, 0, 0};
+    GameObject redBall{ballsTex, 0, 0, 100, 100};
     gameObjects.push_back(redBall);
+    SpriteAnim redBallFrame{ {Core::Units::Rect{0, 0, 100, 100}}, 0.0f };
+    gameObjSpriteAnim.push_back(redBallFrame);
 
-    SpriteTexFrame greenBallFrame{ ballsTex, Core::Units::Rect{100, 0, 100, 100} };
-    GameObject greenBall{ greenBallFrame, 540, 0 };
+    GameObject greenBall{ ballsTex, 540, 0, 100, 100 };
     gameObjects.push_back(greenBall);
+    SpriteAnim greenBallFrame{ {Core::Units::Rect{100, 0, 100, 100}}, 0.0f };
+    gameObjSpriteAnim.push_back(greenBallFrame);
 
-    SpriteTexFrame yellowBallFrame{ ballsTex, Core::Units::Rect{0, 100, 100, 100} };
-    GameObject yellowBall{ yellowBallFrame, 0, 380 };
+    GameObject yellowBall{ ballsTex, 0, 380, 100, 100 };
     gameObjects.push_back(yellowBall);
+    SpriteAnim yellowBallFrame{ {Core::Units::Rect{0, 100, 100, 100}} };
+    gameObjSpriteAnim.push_back(yellowBallFrame);
 
-    SpriteTexFrame blueBallFrame{ ballsTex, Core::Units::Rect{100, 100, 100, 100} };
-    GameObject blueBall{ blueBallFrame, 540, 380 };
+    GameObject blueBall{ ballsTex, 540, 380, 100, 100 };
     gameObjects.push_back(blueBall);
+    SpriteAnim blueBallFrame{ {Core::Units::Rect{100, 100, 100, 100}} };
+    gameObjSpriteAnim.push_back(blueBallFrame);
+
+    // TODO: Sooo i think that the whole sprite thing has to go in a separate structure
+    // that will be somewhat of a animation controller
+    // we will just need to keep a 1-to-1 correspondence between the object index and the
+    // animation index.
+    // If a object does not have an animation it will hold a 1 sprite frame.
 }
 
 ErrorCode Engine::start()
@@ -111,8 +119,12 @@ ErrorCode Engine::start()
         }
 
         renderer.clear();
-        for (const GameObject& gameObject : gameObjects) {
-            renderer.render(gameObject.sprite.texture, gameObject.x, gameObject.y, gameObject.sprite.texSrc);
+        for (int i = 0; i < gameObjects.size(); i++) {
+            const GameObject& gameObject = gameObjects[i];
+            const SpriteAnim& spriteAnim = gameObjSpriteAnim[i];
+            renderer.render(gameObject.texture, gameObject.x, gameObject.y,
+                gameObject.w, gameObject.h, spriteAnim);
+
         }
         renderer.present();
 

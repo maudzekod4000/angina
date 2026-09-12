@@ -52,6 +52,7 @@ private:
 	std::vector<Backend::SDL::Resources::SDLTexture> textures;
 
 	std::vector<GameObject> gameObjects;
+	std::vector<SpriteAnim> gameObjSpriteAnim; ///< This should be in sync with the above (game objects) vector.
 	
 	EngineState state;
 	Core::Units::RatePerSecond desiredFPS;

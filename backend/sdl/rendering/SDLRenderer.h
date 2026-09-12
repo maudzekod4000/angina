@@ -12,7 +12,8 @@ public:
 	SDLRenderer(SDL_Renderer*);
 	SDLRenderer() = default;
 
-	void render(Backend::SDL::Resources::SDLTexture, int viewportXpos, int viewportYpos, const Core::Units::Rect& texRenderRect);
+	void render(Backend::SDL::Resources::SDLTexture, int viewportOffX, int viewportOffY, int renderWidth, int renderHeight,
+		int texOffX, int texOffY, int texCropW, int texCropH);
 
 	void clear();
 
