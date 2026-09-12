@@ -70,6 +70,8 @@ private:
 	// as they are more superficial and then we delete the textures
 	// it is more explicit control of the lifecycle, but at least its
 	// plain to see what the behavior is. It's more C-like style.
+
+	void beforeGameLoop();
 };
 
 }

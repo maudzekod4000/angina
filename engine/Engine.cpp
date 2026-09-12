@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Engine.h"
+#include "Engine.h"
 
 #include <cassert>
 
@@ -66,15 +67,19 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
     return tex;
 }
 
+void Angina::EngineV3::Engine::beforeGameLoop()
+{
+    loadTexture("resources/engine/phoneix.png");
+}
+
 ErrorCode Engine::start()
 {
     if (const auto err = Init::initVideo(0); err) {
         return err;
     }
 
-    loadTexture("resources/engine/balls.png");
+    beforeGameLoop();
 
-    // TOTHINK: Maybe it is good to pass this state from the outside so we can control it?
     state.set(EngineState::State::RUNNING);
     globalClock.reset(); // One and only call to 'reset'
 

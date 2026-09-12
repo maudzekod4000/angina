@@ -12,7 +12,11 @@ SDLRenderer::SDLRenderer(SDL_Renderer* r): handle(r) {}
 void SDLRenderer::render(SDLTexture texture)
 {
 	assert(texture.handle);
-	const int res = SDL_RenderCopy(handle, texture.handle, NULL, NULL);
+	SDL_Rect dstRect{};
+	dstRect.w = texture.width;
+	dstRect.h = texture.height;
+
+	const int res = SDL_RenderCopy(handle, texture.handle, NULL, &dstRect);
 
 	assert(res == 0);
 }
