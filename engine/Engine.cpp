@@ -67,36 +67,25 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 
 void Angina::EngineV3::Engine::beforeGameLoop()
 {
-    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
+    Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
-    GameObject redBall{ballsTex, 0, 0, 100, 100};
-    gameObjects.push_back(redBall);
-    SpriteAnim redBallFrame{ {Core::Units::Rect{0, 0, 100, 100}}, 0.0f };
-    gameObjSpriteAnim.push_back(redBallFrame);
+    GameObject stickfigure{stickfigureTex, 0, 0, 64, 205};
+    gameObjects.push_back(stickfigure);
 
-    GameObject greenBall{ ballsTex, 540, 0, 100, 100 };
-    gameObjects.push_back(greenBall);
-    SpriteAnim greenBallFrame{ {Core::Units::Rect{100, 0, 100, 100}}, 0.0f };
-    gameObjSpriteAnim.push_back(greenBallFrame);
-
-    GameObject yellowBall{ ballsTex, 0, 380, 100, 100 };
-    gameObjects.push_back(yellowBall);
-    SpriteAnim yellowBallFrame{ {Core::Units::Rect{0, 100, 100, 100}} };
-    gameObjSpriteAnim.push_back(yellowBallFrame);
-
-    GameObject blueBall{ ballsTex, 540, 380, 100, 100 };
-    gameObjects.push_back(blueBall);
-    SpriteAnim blueBallFrame{ {Core::Units::Rect{100, 100, 100, 100}} };
-    gameObjSpriteAnim.push_back(blueBallFrame);
+    SpriteAnim stickAnim{ 4 };
+    stickAnim.start(1000);
+    gameObjSpriteAnim.push_back(stickAnim);
 
     // TODO: Sooo i think that the whole sprite thing has to go in a separate structure
     // that will be somewhat of a animation controller
     // we will just need to keep a 1-to-1 correspondence between the object index and the
     // animation index.
     // If a object does not have an animation it will hold a 1 sprite frame.
+
+
 }
 
 ErrorCode Engine::start()
@@ -112,19 +101,25 @@ ErrorCode Engine::start()
 
     while (state.isRunning()) {
         framePacer.startFrame();
+        
+        inputEventMgr.update(Phase::Input);
 
-        for (int i = 0; i < int(Phase::Count); i++) {
-            // update systems
-            inputEventMgr.update(Phase(i));
+        for (SpriteAnim& anim : gameObjSpriteAnim) {
+            anim.update();
         }
 
         renderer.clear();
+
+        // So idk, maybe this rendering part can be just over the SpriteAnim thingies...
+        // but lets see...
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
             const SpriteAnim& spriteAnim = gameObjSpriteAnim[i];
+            int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
+            // TODO: Think about simplifying this API after testing that
+            // the animations kinda work.
             renderer.render(gameObject.texture, gameObject.x, gameObject.y,
-                gameObject.w, gameObject.h, spriteAnim);
-
+                gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h);
         }
         renderer.present();
 

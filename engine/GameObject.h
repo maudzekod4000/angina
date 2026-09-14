@@ -1,28 +1,52 @@
 #ifndef ENGINE_GAME_OBJECT_H
 #define ENGINE_GAME_OBJECT_H
 
+#include <chrono>
+#include <cassert>
+
 #include "backend/sdl/resources/SDLTexture.h"
 #include "core/units/Units.hpp"
+#include "core/time/Stopwatch.h"
 
 namespace Angina::EngineV3 {
 	struct SpriteAnim {
 
-		SpriteAnim(Core::Units::Rect onlyFrame) : currentFrame(onlyFrame) {}
-
-		SpriteAnim(std::vector<Core::Units::Rect> frames, float animDuration) :
-			currentFrame(), frames(std::move(frames)), animDuration(animDuration) {}
-
+		SpriteAnim(int frameCount): frameCount(frameCount) {}
 
 		// We need:
 		// 1. a way to start the animation
 		// 2. a way to reset the animation
 		// 3. a way to stop the animation
+		
+		// TODO: THink: Hmmm i think this kinda time interpolation
+		// and the kind that will be used for movement might share similar properties
+		// but lets see...
+
+		// Having the animation duration here allows us to change up the 
+		// animation speed without creating a new SpriteAnim
+		void start(int animDurMs) {
+			animDurationMs = animDurMs;
+			animationStopwatch.reset();
+			active = true;
+		}
+
+		void stop() {
+			active = false;
+		}
 
 		void update() {
-			if (frames.empty()) return; // This is a single frame sprite, i.e. a normal texture.
+			assert(animDurationMs > 0);
+			if (!active || frameCount == 1) return; // This is a single frame sprite, i.e. a normal texture.
 
 			// TODO: Do some calculations to figure out the current frame based on the time that passed
 			// between starting the animation and now.
+			long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(animationStopwatch.elapsed()).count();
+
+			float animProgressPercent = timeSinceStartMs / float(animDurationMs);
+			float animPercentNormalized = animProgressPercent - int(animProgressPercent);
+			currentFrameIdx = int(frameCount * animPercentNormalized);
+
+			// TODO: I think this calculation can be optimized.
 		}
 
 		// Design:
@@ -35,10 +59,12 @@ namespace Angina::EngineV3 {
 
 		// another important thing is that we need to be able to stop the animation.
 
-		Core::Units::Rect currentFrame;
+		int currentFrameIdx = 0;
 	private:
-		std::vector<Core::Units::Rect> frames;
-		float animDuration = 0.0f;
+		bool active = false;
+		int frameCount = 0;
+		int animDurationMs = 0;
+		Core::Time::Stopwatch animationStopwatch;
 	};
 
 	struct GameObject {
