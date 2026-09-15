@@ -7,31 +7,71 @@
 #include "core/time/Stopwatch.h"
 
 namespace Angina::EngineV3 {
-	struct SpriteAnim {
 
-		SpriteAnim(int frameCount): frameCount(frameCount) {}
+	// TODO: I never created such a class so its a bit weird
+	// but i think the idea is that every object might have a movement
+	// associated with it.
+	// the movement will have a destination and a starting point
+	// ( i am omitting collisions for now haha)
+	// sooo every movement will have a speed (a bit naieve because what about different terrains)
+	// the good thing is that we can iterate only these Movement objects to figure out 
+	// the next step in the movement.
+	// on 'update' we will interpolate between the start and destination points
+	// but here again we also depend on the time...sooo for example
+	// what would be the speed of the object? in pixels? some arbitrary unit?
+	// If there is some metric system used at some point we can convert the pixels 
+	// to meters hahahah, but wait........what if the resolution changes....
+	// then the movement will be different....we have to keep the scale of things
+	// even if the resolution changes.
+	// well we will use a fixed resolution for starters.
+	// Hmmm so it turns out that accessing several vectors at once is very cache friendly.
+	struct Movement {
+
+		void start(int destX, int destY, int speed) {
+
+		}
+
+		void stop() {
+
+		}
+
+		// This will advance the movement to the next step based on the passed time.
+		void update() {
+
+		}
+
+		int posX = 0, posY = 0; // These are the GameObject positions.
+	private:
+		int destinationX = 0, destinationY = 0;
+		int speed = 0;
+		Core::Time::Stopwatch clock;
+	};
+
+	struct Animation {
+
+		Animation(int frameCount): frameCount(frameCount) {}
 		
 		// TODO: THink: Hmmm i think this kinda time interpolation
 		// and the kind that will be used for movement might share similar properties
 		// but lets see...
 
 		// Having the animation duration here allows us to change up the 
-		// animation speed without creating a new SpriteAnim
+		// animation speed without creating a new Animation
 		void start(int animDurMs) {
-			animDurationMs = animDurMs;
-			animationStopwatch.reset();
+			durationMs = animDurMs;
+			clock.reset();
 		}
 
 		void stop() {
-			animDurationMs = 0;
+			durationMs = 0;
 		}
 
 		void update() {
-			if (animDurationMs == 0 || frameCount == 1) return;
+			if (durationMs == 0 || frameCount == 1) return;
 
-			long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(animationStopwatch.elapsed()).count();
+			long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
 
-			float animProgressPercent = timeSinceStartMs / float(animDurationMs);
+			float animProgressPercent = timeSinceStartMs / float(durationMs);
 			float animPercentNormalized = animProgressPercent - int(animProgressPercent);
 			currentFrameIdx = int(frameCount * animPercentNormalized);
 		}
@@ -39,11 +79,12 @@ namespace Angina::EngineV3 {
 		int currentFrameIdx = 0;
 	private:
 		int frameCount = 0;
-		int animDurationMs = 0;
-		Core::Time::Stopwatch animationStopwatch;
+		int durationMs = 0;
+		Core::Time::Stopwatch clock;
 	};
 
 	struct GameObject {
+		// TODO: Think: Maybe the texture can be in the Animation struct?
 		Backend::SDL::Resources::SDLTexture texture;
 		int x, y, w, h;
 

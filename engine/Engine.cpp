@@ -75,7 +75,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     GameObject stickfigure{stickfigureTex, 0, 0, 64, 205};
     gameObjects.push_back(stickfigure);
 
-    SpriteAnim stickAnim(4);
+    Animation stickAnim(4);
     stickAnim.start(1000);
     animations.push_back(stickAnim);
 
@@ -83,7 +83,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     GameObject balls{ ballsTex, 200, 200, 200, 200 };
     gameObjects.push_back(balls);
 
-    SpriteAnim ballsAnim(1);
+    Animation ballsAnim(1);
     animations.push_back(ballsAnim);
 
     // TODO: Sooo i think that the whole sprite thing has to go in a separate structure
@@ -112,7 +112,7 @@ ErrorCode Engine::start()
         /* State Updates */
         inputEventMgr.update();
 
-        for (SpriteAnim& anim : animations) {
+        for (Animation& anim : animations) {
             anim.update();
         }
         /* End State Updates */
@@ -120,14 +120,13 @@ ErrorCode Engine::start()
         /* Rendering */
         renderer.clear();
 
-        // So idk, maybe this rendering part can be just over the SpriteAnim thingies...
+        // So idk, maybe this rendering part can be just over the Animation thingies...
         // but lets see...
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
-            const SpriteAnim& spriteAnim = animations[i];
+            const Animation& spriteAnim = animations[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
-            // TODO: Think about simplifying this API after testing that
-            // the animations kinda work.
+
             renderer.render(gameObject.texture, gameObject.x, gameObject.y,
                 gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h);
         }
