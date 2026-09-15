@@ -8,7 +8,7 @@ namespace Backend::SDL::Input {
 class SDLInputEventManager {
 public:
 	/// Call from the main thread!
-	void update(Platform::System::Phase);
+	void update();
 
 	Platform::Input::InputSnapshot inEvent;
 };

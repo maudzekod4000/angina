@@ -7,10 +7,8 @@ using namespace Backend::SDL::Input;
 
 #include "SDL_events.h"
 
-void SDLInputEventManager::update(Phase phase)
+void SDLInputEventManager::update()
 {
-	if (phase != Phase::Input) return;
-
 	SDL_Event e{};
 
 	while (SDL_PollEvent(&e)) {

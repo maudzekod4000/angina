@@ -2,10 +2,8 @@
 #define ENGINE_GAME_OBJECT_H
 
 #include <chrono>
-#include <cassert>
 
 #include "backend/sdl/resources/SDLTexture.h"
-#include "core/units/Units.hpp"
 #include "core/time/Stopwatch.h"
 
 namespace Angina::EngineV3 {

@@ -75,9 +75,16 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     GameObject stickfigure{stickfigureTex, 0, 0, 64, 205};
     gameObjects.push_back(stickfigure);
 
-    SpriteAnim stickAnim{ 4 };
+    SpriteAnim stickAnim(4);
     stickAnim.start(1000);
-    gameObjSpriteAnim.push_back(stickAnim);
+    animations.push_back(stickAnim);
+
+    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
+    GameObject balls{ ballsTex, 200, 200, 200, 200 };
+    gameObjects.push_back(balls);
+
+    SpriteAnim ballsAnim(1);
+    animations.push_back(ballsAnim);
 
     // TODO: Sooo i think that the whole sprite thing has to go in a separate structure
     // that will be somewhat of a animation controller
@@ -102,19 +109,22 @@ ErrorCode Engine::start()
     while (state.isRunning()) {
         framePacer.startFrame();
         
-        inputEventMgr.update(Phase::Input);
+        /* State Updates */
+        inputEventMgr.update();
 
-        for (SpriteAnim& anim : gameObjSpriteAnim) {
+        for (SpriteAnim& anim : animations) {
             anim.update();
         }
+        /* End State Updates */
 
+        /* Rendering */
         renderer.clear();
 
         // So idk, maybe this rendering part can be just over the SpriteAnim thingies...
         // but lets see...
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
-            const SpriteAnim& spriteAnim = gameObjSpriteAnim[i];
+            const SpriteAnim& spriteAnim = animations[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
             // TODO: Think about simplifying this API after testing that
             // the animations kinda work.
@@ -122,6 +132,7 @@ ErrorCode Engine::start()
                 gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h);
         }
         renderer.present();
+        /* End Rendering */
 
         if (inputEventMgr.inEvent.quit) {
             state.set(EngineState::State::STOPPING);
