@@ -27,23 +27,30 @@ namespace Angina::EngineV3 {
 	// Hmmm so it turns out that accessing several vectors at once is very cache friendly.
 	struct Movement {
 
-		void start(int destX, int destY, int speed) {
-
+		void start(int destX, int destY, int movSpeed) {
+			destinationX = destX;
+			destinationY = destY;
+			speed = movSpeed;
+			clock.reset();
 		}
 
 		void stop() {
-
+			speed = 0;
 		}
 
 		// This will advance the movement to the next step based on the passed time.
 		void update() {
+			if (speed == 0) return;
+
+			long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
+
 
 		}
 
 		int posX = 0, posY = 0; // These are the GameObject positions.
 	private:
 		int destinationX = 0, destinationY = 0;
-		int speed = 0;
+		int speed = 0; // Pixels per 1000 ms
 		Core::Time::Stopwatch clock;
 	};
 
