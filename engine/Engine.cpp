@@ -72,19 +72,26 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
-    GameObject stickfigure{stickfigureTex, 0, 0, 64, 205};
+    GameObject stickfigure{stickfigureTex, 64, 205};
     gameObjects.push_back(stickfigure);
 
     Animation stickAnim(4);
     stickAnim.start(1000);
     animations.push_back(stickAnim);
 
-    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
-    GameObject balls{ ballsTex, 200, 200, 200, 200 };
+    Movement stickMov;
+    stickMov.start(300, 300, 150);
+    movements.push_back(stickMov);
+
+    /*Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
+    GameObject balls{ ballsTex, 200, 200 };
     gameObjects.push_back(balls);
 
     Animation ballsAnim(1);
     animations.push_back(ballsAnim);
+
+    Movement ballsMov;
+    movements.push_back(ballsMov);*/
 
     // TODO: Sooo i think that the whole sprite thing has to go in a separate structure
     // that will be somewhat of a animation controller
@@ -115,6 +122,10 @@ ErrorCode Engine::start()
         for (Animation& anim : animations) {
             anim.update();
         }
+
+        for (Movement& mov : movements) {
+            mov.update();
+        }
         /* End State Updates */
 
         /* Rendering */
@@ -125,9 +136,10 @@ ErrorCode Engine::start()
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
             const Animation& spriteAnim = animations[i];
+            const Movement& movement = movements[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
 
-            renderer.render(gameObject.texture, gameObject.x, gameObject.y,
+            renderer.render(gameObject.texture, int(movement.pos.x), int(movement.pos.y),
                 gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h);
         }
         renderer.present();

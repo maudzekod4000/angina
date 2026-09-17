@@ -50,5 +50,27 @@ struct Rect {
 	int x = 0, y = 0, w = 0, h = 0;
 };
 
+struct Vec2 {
+	float x = 0.0f, y = 0.0f;
+};
+
+// TODO: Inlining these for now but i will extract this class into a separate 
+// h and cpp file and there will be no multiple defined symbols problem.
+inline Vec2 calcDirVec(const Vec2& src, const Vec2& dst) {
+	return { dst.x - src.x, dst.y - src.y };
+}
+
+inline float calcLength(const Vec2& v) {
+	return sqrt(v.x * v.x + v.y * v.y);
+}
+
+inline Vec2 scale(const Vec2& v, float s) {
+	return { v.x * s, v.y * s };
+}
+
+inline Vec2 addVec(const Vec2& a, const Vec2& b) {
+	return { a.x + b.x, a.y + b.y };
+}
+
 }
 #endif

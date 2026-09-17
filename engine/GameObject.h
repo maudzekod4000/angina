@@ -2,9 +2,11 @@
 #define ENGINE_GAME_OBJECT_H
 
 #include <chrono>
+#include <cmath>
 
 #include "backend/sdl/resources/SDLTexture.h"
 #include "core/time/Stopwatch.h"
+#include "core/units/Units.hpp"
 
 namespace Angina::EngineV3 {
 
@@ -27,10 +29,15 @@ namespace Angina::EngineV3 {
 	// Hmmm so it turns out that accessing several vectors at once is very cache friendly.
 	struct Movement {
 
+		Movement() = default;
+		Movement(int posX, int posY) : pos(Core::Units::Vec2{ float(posX), float(posY) }) {}
+
 		void start(int destX, int destY, int movSpeed) {
-			destinationX = destX;
-			destinationY = destY;
+			startPos = pos;
 			speed = movSpeed;
+			dir = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
+			int distance = int(round(Core::Units::calcLength(dir)));
+			timeToDestMs = int(round((distance / float(speed) * 1000.0f)));
 			clock.reset();
 		}
 
@@ -42,15 +49,25 @@ namespace Angina::EngineV3 {
 		void update() {
 			if (speed == 0) return;
 
-			long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
+			const long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
+			
+			if (timeSinceStartMs >= timeToDestMs) {
+				stop();
+				return;
+			}
 
-
+			float timeStep = timeSinceStartMs / float(timeToDestMs);
+			Core::Units::Vec2 dirStep = Core::Units::scale(dir, timeStep);
+			Core::Units::Vec2 nextPos = Core::Units::addVec(startPos, dirStep);
+			pos = { round(nextPos.x), round(nextPos.y) };
 		}
 
-		int posX = 0, posY = 0; // These are the GameObject positions.
+		Core::Units::Vec2 pos; // These are the GameObject positions.
 	private:
-		int destinationX = 0, destinationY = 0;
-		int speed = 0; // Pixels per 1000 ms
+		Core::Units::Vec2 startPos;
+		Core::Units::Vec2 dir; // Calculated on start.
+		int timeToDestMs = 0; // Precalculated based on the distance to destination.
+		int speed = 0; // Pixels per 1 s
 		Core::Time::Stopwatch clock;
 	};
 
@@ -93,7 +110,7 @@ namespace Angina::EngineV3 {
 	struct GameObject {
 		// TODO: Think: Maybe the texture can be in the Animation struct?
 		Backend::SDL::Resources::SDLTexture texture;
-		int x, y, w, h;
+		int w, h;
 
 		// TODO: To be honest, the game object should have a width and height...
 		// semantically its more important that leaving the texture to determine the width and height of the 

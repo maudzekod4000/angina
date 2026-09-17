@@ -53,6 +53,7 @@ private:
 
 	std::vector<GameObject> gameObjects;
 	std::vector<Animation> animations; ///< This should be in sync with the above (game objects) vector.
+	std::vector<Movement> movements;
 	
 	EngineState state;
 	Core::Units::RatePerSecond desiredFPS;
