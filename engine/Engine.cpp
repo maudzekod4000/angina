@@ -80,7 +80,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     animations.push_back(stickAnim);
 
     Movement stickMov;
-    stickMov.start(300, 300, 150);
+    stickMov.start(300, 200, 150);
     movements.push_back(stickMov);
 
     /*Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");

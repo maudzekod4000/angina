@@ -36,8 +36,8 @@ namespace Angina::EngineV3 {
 			startPos = pos;
 			speed = movSpeed;
 			dir = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
-			int distance = int(round(Core::Units::calcLength(dir)));
-			timeToDestMs = int(round((distance / float(speed) * 1000.0f)));
+			const float distance = Core::Units::calcLength(dir);
+			timeToDestMs = int(round(distance / speed * 1000.0f));
 			clock.reset();
 		}
 
@@ -56,10 +56,9 @@ namespace Angina::EngineV3 {
 				return;
 			}
 
-			float timeStep = timeSinceStartMs / float(timeToDestMs);
-			Core::Units::Vec2 dirStep = Core::Units::scale(dir, timeStep);
-			Core::Units::Vec2 nextPos = Core::Units::addVec(startPos, dirStep);
-			pos = { round(nextPos.x), round(nextPos.y) };
+			const float timeStep = timeSinceStartMs / float(timeToDestMs);
+			const Core::Units::Vec2 dirStep = Core::Units::scale(dir, timeStep);
+			pos = Core::Units::addVec(startPos, dirStep);
 		}
 
 		Core::Units::Vec2 pos; // These are the GameObject positions.
