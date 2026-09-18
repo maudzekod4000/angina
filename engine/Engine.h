@@ -29,6 +29,8 @@
 #include "backend/sdl/ui/SDLWindow.h"
 #include "platform/ui/window/WindowConfig.h"
 #include "engine/GameObject.h"
+#include "engine/Animation.h"
+#include "engine/Movement.h"
 
 namespace Angina::EngineV3 {
 

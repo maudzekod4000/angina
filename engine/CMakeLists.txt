@@ -6,11 +6,15 @@ target_sources(engine
         EngineConfig.h
         EngineState.h
         GameObject.h
+        Animation.h
+        Movement.h
     PRIVATE
         Engine.cpp
         EngineConfig.cpp
         EngineState.cpp
         GameObject.cpp
+        Animation.cpp
+        Movement.cpp
 )
 
 target_include_directories(engine
