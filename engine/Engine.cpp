@@ -82,6 +82,9 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     Movement stickMov;
     //stickMov.start(300, 200, 150);
     movements.push_back(stickMov);
+    inputEventMgr.onClickHandler = [this](int x, int y) {
+        movements[0].start(x, y, 150);
+    };
 
     /*Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
     GameObject balls{ ballsTex, 200, 200 };
@@ -129,20 +132,6 @@ ErrorCode Engine::start()
         /* End State Updates */
 
         /* React to input */
-
-        // TODO: This approach is flawed, because on every loop cycle
-        // we update the destination until we have arrived, its like infinite
-        // amnesia where on every step we check for our destination again and start
-        // our journey...
-        // I think it would be better to have a callback that we can attach to the 
-        // input manager and run it when mouse is clicked so we can start the movement.
-        // Also, all the changes I made to the calculation accuracy of the movement might not 
-        // be needed.
-        Movement& playerMov = movements[0];
-        if (int(round(playerMov.pos.x)) != inputEventMgr.inEvent.mouseX ||
-            int(round(playerMov.pos.y)) != inputEventMgr.inEvent.mouseY) {
-            playerMov.start(inputEventMgr.inEvent.mouseX, inputEventMgr.inEvent.mouseY, 150);
-        }
 
         /* End react to input */
 

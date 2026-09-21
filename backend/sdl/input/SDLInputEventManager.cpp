@@ -18,10 +18,25 @@ void SDLInputEventManager::update()
 			inEvent.quit = true;
 			break;
 		case SDL_EventType::SDL_MOUSEBUTTONUP:
-			SDL_GetMouseState(&inEvent.mouseX, &inEvent.mouseY);
+			handleMouseClick();
 			break;
 		}
 	}
 
 	return;
+}
+
+void SDLInputEventManager::handleMouseClick()
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+
+	bool changed = x != inEvent.mouseX || y != inEvent.mouseY;
+
+	if (changed && onClickHandler) {
+		onClickHandler(x, y);
+	}
+
+	inEvent.mouseX = x;
+	inEvent.mouseY = y;
 }
