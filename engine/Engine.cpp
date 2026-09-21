@@ -91,6 +91,15 @@ void Angina::EngineV3::Engine::beforeGameLoop()
         animations[0].stop();
     };
 
+    // How can we start thinking about separating the animation
+    // and movement on separate threads.
+    // soo for instance, the animation does not have new data every frame
+    // most often, the texture we render is the same among 20-30 frames
+    // that means that the animation requires a bigger update interval, like
+    // 24 ms
+    // The movement requires a more refined interval..maybe 10 ms?
+    // and collisions require the smallest interval, like 5 ms.
+
     /*Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
     GameObject balls{ ballsTex, 200, 200 };
     gameObjects.push_back(balls);
