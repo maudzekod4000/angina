@@ -11,6 +11,7 @@ void Animation::start(int animDurMs) {
 
 void Animation::stop() {
 	durationMs = 0;
+	currentFrameIdx = 0;
 }
 
 void Animation::update() {

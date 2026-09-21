@@ -1,10 +1,16 @@
 #ifndef ENGINE_MOVEMENT_H
 #define ENGINE_MOVEMENT_H
 
+#include <functional>
+
 #include "core/units/Units.hpp"
 #include "core/time/Stopwatch.h"
 
 namespace Angina::EngineV3 {
+
+using OnMovementStart = std::function<void()>;
+using OnMovementEnd = std::function<void()>;
+
 struct Movement {
 
 	Movement() = default;
@@ -17,6 +23,8 @@ struct Movement {
 	void update();
 
 	Core::Units::Vec2 pos; // These are the GameObject positions.
+	OnMovementStart onMovementStart;
+	OnMovementEnd onMovementEnd;
 private:
 	Core::Units::Vec2 startPos;
 	Core::Units::Vec2 dir; // Calculated on start.

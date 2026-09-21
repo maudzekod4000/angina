@@ -10,11 +10,13 @@ void Movement::start(int destX, int destY, int movSpeed) {
 	dir = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
 	const double distance = Core::Units::calcLength(dir);
 	timeToDestMs = distance / speed * 1000.0;
+	if (onMovementStart) onMovementStart();
 	clock.reset();
 }
 
 void Movement::stop() {
 	speed = 0;
+	if (onMovementEnd) onMovementEnd();
 }
 
 void Movement::update() {

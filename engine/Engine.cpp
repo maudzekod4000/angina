@@ -76,7 +76,6 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     gameObjects.push_back(stickfigure);
 
     Animation stickAnim(4);
-    stickAnim.start(1000);
     animations.push_back(stickAnim);
 
     Movement stickMov;
@@ -84,6 +83,12 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     movements.push_back(stickMov);
     inputEventMgr.onClickHandler = [this](int x, int y) {
         movements[0].start(x, y, 150);
+    };
+    movements[0].onMovementStart = [this]() {
+        animations[0].start(1000);
+    };
+    movements[0].onMovementEnd = [this]() {
+        animations[0].stop();
     };
 
     /*Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
