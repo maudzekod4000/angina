@@ -20,7 +20,7 @@ struct Movement {
 private:
 	Core::Units::Vec2 startPos;
 	Core::Units::Vec2 dir; // Calculated on start.
-	int timeToDestMs = 0; // Precalculated based on the distance to destination.
+	double timeToDestMs = 0; // Precalculated based on the distance to destination.
 	int speed = 0; // Pixels per 1 s
 	Core::Time::Stopwatch clock;
 };

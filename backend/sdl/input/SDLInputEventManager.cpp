@@ -6,6 +6,7 @@ using namespace Platform::System;
 using namespace Backend::SDL::Input;
 
 #include "SDL_events.h"
+#include "SDL_mouse.h"
 
 void SDLInputEventManager::update()
 {
@@ -15,6 +16,9 @@ void SDLInputEventManager::update()
 		switch (e.type) {
 		case SDL_EventType::SDL_QUIT:
 			inEvent.quit = true;
+			break;
+		case SDL_EventType::SDL_MOUSEBUTTONUP:
+			SDL_GetMouseState(&inEvent.mouseX, &inEvent.mouseY);
 			break;
 		}
 	}
