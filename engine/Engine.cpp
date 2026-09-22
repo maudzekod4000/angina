@@ -4,6 +4,7 @@
 
 #include "backend/sdl/resources/SDLTexLoader.h"
 #include "backend/sdl/init/SDLVideoLifecycleManager.h"
+#include "core/physics/PhysicsUtils.h"
 
 using namespace Angina::EngineV3;
 using namespace Platform::Init;
@@ -68,6 +69,7 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 void Angina::EngineV3::Engine::beforeGameLoop()
 {
     Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
+    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
@@ -90,6 +92,15 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     movements[0].onMovementEnd = [this]() {
         animations[0].stop();
     };
+
+    GameObject balls{ ballsTex, 200, 200 };
+    gameObjects.push_back(balls);
+
+    Animation ballsAnim(1);
+    animations.push_back(ballsAnim);
+
+    Movement ballsMov(300, 300);
+    movements.push_back(ballsMov);
 
     // How can we start thinking about separating the animation
     // and movement on separate threads.
@@ -148,6 +159,38 @@ ErrorCode Engine::start()
         /* React to input */
 
         /* End react to input */
+
+        /* Collisions */
+
+        // TODO: Think: Soo if we want the collisions to run on a separate thread
+        // it would be better to make a separate struct/state for them
+        // This means we should update all 'bounding boxes' on every loop iteration, so
+        // that the collision system has the freshest data.
+        // The collision resolution will read the collision state of the objects and 
+        // make changes to the movement of the objects.
+        for (int i = 0; i < gameObjects.size(); i++) {
+            for (int j = 0; j < gameObjects.size(); j++) {
+                if (i != j) {
+                    const GameObject& a = gameObjects[i];
+                    const Movement& am = movements[i];
+                    const GameObject& b = gameObjects[j];
+                    const Movement& bm = movements[j];
+
+                    bool hasCollision = Core::PhysicsUtils::rectIntersect(am.pos.x,
+                        -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
+
+                    if (hasCollision) {
+                        printf("Chestit sbor! %d\n", rand());
+                    }
+                }
+            }
+        }
+
+        /* End collisions */
+
+        /* Resolve collisions */
+
+        /* End Resolve collisions */
 
         /* Rendering */
         renderer.clear();

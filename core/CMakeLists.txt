@@ -5,6 +5,7 @@ add_subdirectory(error)
 add_subdirectory(units)
 add_subdirectory(identity)
 add_subdirectory(datastructures)
+add_subdirectory(physics)
 
 target_include_directories(core
 	PUBLIC
@@ -19,4 +20,5 @@ target_link_libraries(core
 		units
 		identity
 		data_structures
+		physics
 )
