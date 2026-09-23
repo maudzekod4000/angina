@@ -169,22 +169,22 @@ ErrorCode Engine::start()
         // The collision resolution will read the collision state of the objects and 
         // make changes to the movement of the objects.
         for (int i = 0; i < gameObjects.size(); i++) {
-            for (int j = 0; j < gameObjects.size(); j++) {
-                if (i != j) {
-                    const GameObject& a = gameObjects[i];
-                    const Movement& am = movements[i];
-                    const GameObject& b = gameObjects[j];
-                    const Movement& bm = movements[j];
+            for (int j = i + 1; j < gameObjects.size(); j++) {
+                const GameObject& a = gameObjects[i];
+                const Movement& am = movements[i];
+                const GameObject& b = gameObjects[j];
+                const Movement& bm = movements[j];
 
-                    bool hasCollision = Core::PhysicsUtils::rectIntersect(am.pos.x,
-                        -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
+                bool hasCollision = Core::PhysicsUtils::rectIntersect(am.pos.x,
+                    -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
 
-                    if (hasCollision) {
-                        printf("Chestit sbor! %d\n", rand());
-                    }
+                if (hasCollision) {
+                    printf("Chestit sbor! %d\n", rand());
                 }
             }
         }
+        // TODO: It would be nice to have some measurements at this point 
+        // so we can keep track how things are affected while adding features and processing more objects.
 
         /* End collisions */
 
