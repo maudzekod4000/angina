@@ -14,7 +14,8 @@ using OnMovementEnd = std::function<void()>;
 struct Movement {
 
 	Movement() = default;
-	Movement(int posX, int posY) : pos(Core::Units::Vec2{ float(posX), float(posY) }) {}
+	Movement(int posX, int posY) : pos(Core::Units::Vec2{ float(posX), float(posY) }),
+		prevPos(pos) {}
 
 	void start(int destX, int destY, int movSpeed);
 
@@ -26,6 +27,7 @@ struct Movement {
 	OnMovementStart onMovementStart; // TODO: Remove these from here and deal with this another way.
 	OnMovementEnd onMovementEnd;
 	Core::Units::Vec2 dir; // Normalized.
+	Core::Units::Vec2 prevPos;
 private:
 	Core::Units::Vec2 startPos;
 	Core::Units::Vec2 path; // Calculated on start.

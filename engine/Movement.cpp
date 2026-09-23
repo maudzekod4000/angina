@@ -5,7 +5,7 @@
 using namespace Angina::EngineV3;
 
 void Movement::start(int destX, int destY, int movSpeed) {
-	startPos = pos;
+	prevPos = startPos = pos;
 	speed = movSpeed;
 	path = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
 	dir = Core::Units::normalize(path);
@@ -32,5 +32,6 @@ void Movement::update() {
 
 	const double timeStep = timeSinceStartMs / timeToDestMs;
 	const Core::Units::Vec2 dirStep = Core::Units::scale(path, timeStep);
+	prevPos = pos;
 	pos = Core::Units::addVec(startPos, dirStep);
 }

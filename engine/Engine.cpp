@@ -220,6 +220,9 @@ ErrorCode Engine::start()
             if (collisions[i].hasCollision) {
                 movements[i].pos = addVec(movements[i].pos, Vec2{ -collisions[i].dir.x, -collisions[i].dir.y });
                 movements[i].stop();
+                // TODO: I have to decide what data type to use
+                // all these conversions are cumbersome.
+                //movements[i].start(int(dest.x), int(dest.y), 1500);
             }
         }
 
