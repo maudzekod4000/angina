@@ -8,6 +8,7 @@ target_sources(engine
         GameObject.h
         Animation.h
         Movement.h
+	Collision.h
     PRIVATE
         Engine.cpp
         EngineConfig.cpp
@@ -15,6 +16,7 @@ target_sources(engine
         GameObject.cpp
         Animation.cpp
         Movement.cpp
+	Collision.cpp
 )
 
 target_include_directories(engine

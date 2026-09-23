@@ -31,6 +31,7 @@
 #include "engine/GameObject.h"
 #include "engine/Animation.h"
 #include "engine/Movement.h"
+#include "engine/Collision.h"
 
 namespace Angina::EngineV3 {
 
@@ -56,6 +57,7 @@ private:
 	std::vector<GameObject> gameObjects;
 	std::vector<Animation> animations; ///< This should be in sync with the above (game objects) vector.
 	std::vector<Movement> movements;
+	std::vector<Collision> collisions;
 	
 	EngineState state;
 	Core::Units::RatePerSecond desiredFPS;

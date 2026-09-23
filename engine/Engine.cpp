@@ -86,12 +86,20 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     inputEventMgr.onClickHandler = [this](int x, int y) {
         movements[0].start(x, y, 150);
     };
+
+    // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
+    // object too much in size.
+    // Maybe we need some system that can check the state of the movement
+    // and dispatch additional actions when it starts/finishes.
     movements[0].onMovementStart = [this]() {
         animations[0].start(1000);
     };
     movements[0].onMovementEnd = [this]() {
         animations[0].stop();
     };
+
+    Collision stickCollision{};
+    collisions.push_back(stickCollision);
 
     GameObject balls{ ballsTex, 200, 200 };
     gameObjects.push_back(balls);
@@ -101,6 +109,9 @@ void Angina::EngineV3::Engine::beforeGameLoop()
 
     Movement ballsMov(300, 300);
     movements.push_back(ballsMov);
+
+    Collision ballsCollision{};
+    collisions.push_back(ballsCollision);
 
     // How can we start thinking about separating the animation
     // and movement on separate threads.
@@ -168,17 +179,32 @@ ErrorCode Engine::start()
         // that the collision system has the freshest data.
         // The collision resolution will read the collision state of the objects and 
         // make changes to the movement of the objects.
+
+        // So if I copy the data into a Collision object that is a write
+        // it will happen on every update of the movement system (possibly another thread too)
+        // If i decide not to copy the data, then i have to read it.
+        // so I would say the movement has to be processed with the fastest rate.
+        // Sooo refresh rate (starting from smallest to largest)
+        // 1. movement
+        // 2. collisions
+        // 3. animation
+        // 4. rendering
         for (int i = 0; i < gameObjects.size(); i++) {
             for (int j = i + 1; j < gameObjects.size(); j++) {
                 const GameObject& a = gameObjects[i];
                 const Movement& am = movements[i];
                 const GameObject& b = gameObjects[j];
                 const Movement& bm = movements[j];
+                Collision& colA = collisions[i];
+                Collision& colB = collisions[j];
 
                 bool hasCollision = Core::PhysicsUtils::rectIntersect(am.pos.x,
                     -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
-
+                    
+                colA.hasCollision = colB.hasCollision = hasCollision;
                 if (hasCollision) {
+                    colA.dir = am.dir;
+                    colB.dir = bm.dir;
                     printf("Chestit sbor! %d\n", rand());
                 }
             }

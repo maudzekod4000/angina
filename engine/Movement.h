@@ -23,11 +23,11 @@ struct Movement {
 	void update();
 
 	Core::Units::Vec2 pos; // These are the GameObject positions.
-	OnMovementStart onMovementStart;
+	OnMovementStart onMovementStart; // TODO: Remove these from here and deal with this another way.
 	OnMovementEnd onMovementEnd;
+	Core::Units::Vec2 dir; // Calculated on start.
 private:
 	Core::Units::Vec2 startPos;
-	Core::Units::Vec2 dir; // Calculated on start.
 	double timeToDestMs = 0; // Precalculated based on the distance to destination.
 	int speed = 0; // Pixels per 1 s
 	Core::Time::Stopwatch clock;
