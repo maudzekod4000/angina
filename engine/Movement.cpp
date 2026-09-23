@@ -7,8 +7,9 @@ using namespace Angina::EngineV3;
 void Movement::start(int destX, int destY, int movSpeed) {
 	startPos = pos;
 	speed = movSpeed;
-	dir = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
-	const double distance = Core::Units::calcLength(dir);
+	path = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
+	dir = Core::Units::normalize(path);
+	const double distance = Core::Units::calcLength(path);
 	timeToDestMs = distance / speed * 1000.0;
 	if (onMovementStart) onMovementStart();
 	clock.reset();
@@ -30,6 +31,6 @@ void Movement::update() {
 	}
 
 	const double timeStep = timeSinceStartMs / timeToDestMs;
-	const Core::Units::Vec2 dirStep = Core::Units::scale(dir, timeStep);
+	const Core::Units::Vec2 dirStep = Core::Units::scale(path, timeStep);
 	pos = Core::Units::addVec(startPos, dirStep);
 }

@@ -198,11 +198,11 @@ ErrorCode Engine::start()
                 Collision& colA = collisions[i];
                 Collision& colB = collisions[j];
 
-                bool hasCollision = Core::PhysicsUtils::rectIntersect(am.pos.x,
+                bool collided = Core::PhysicsUtils::rectIntersect(am.pos.x,
                     -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
                     
-                colA.hasCollision = colB.hasCollision = hasCollision;
-                if (hasCollision) {
+                colA.hasCollision = colB.hasCollision = collided;
+                if (collided) {
                     colA.dir = am.dir;
                     colB.dir = bm.dir;
                     printf("Chestit sbor! %d\n", rand());
@@ -215,6 +215,13 @@ ErrorCode Engine::start()
         /* End collisions */
 
         /* Resolve collisions */
+
+        for (int i = 0; i < collisions.size(); i++) {
+            if (collisions[i].hasCollision) {
+                movements[i].pos = addVec(movements[i].pos, Vec2{ -collisions[i].dir.x, -collisions[i].dir.y });
+                movements[i].stop();
+            }
+        }
 
         /* End Resolve collisions */
 

@@ -13,7 +13,7 @@ namespace Angina::EngineV3 {
 	// we reduce the number of allocations and dealocations happening.
 	struct Collision {
 		bool hasCollision = false;
-		Core::Units::Vec2 dir;
+		Core::Units::Vec2 dir; // Normalized.
 	};
 }
 
