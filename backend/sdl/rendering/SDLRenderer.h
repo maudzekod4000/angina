@@ -13,7 +13,7 @@ public:
 	SDLRenderer() = default;
 
 	void render(Backend::SDL::Resources::SDLTexture, int viewportOffX, int viewportOffY, int renderWidth, int renderHeight,
-		int texOffX, int texOffY, int texCropW, int texCropH);
+		int texOffX, int texOffY, int texCropW, int texCropH, int flip /* see SDL_RendererFlip */);
 
 	void clear();
 

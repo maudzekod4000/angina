@@ -75,6 +75,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
     GameObject stickfigure{stickfigureTex, 64, 205};
+    stickfigure.flip = 0x1;
     gameObjects.push_back(stickfigure);
 
     Animation stickAnim(4);
@@ -94,6 +95,10 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     movements[0].onMovementStart = [this]() {
         animations[0].start(1000);
     };
+    // TODO: So for the movement thing, we can create a MovementObservable
+    // that will take care of registering subscribers and the Movement object 
+    // will hold a reference to it, so it can notify subscribers for events.
+    // ...idk it seems that i dont want to complicate things RN
     movements[0].onMovementEnd = [this]() {
         animations[0].stop();
     };
@@ -104,6 +109,10 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     GameObject balls{ ballsTex, 200, 200 };
     gameObjects.push_back(balls);
 
+    // TODO: It would be nice to have just a simple method that creates
+    // one element into all the needed vectors, and after that i can populate what i want
+    // For this to be easy, we need default constructors and ability to set things later.
+    // Although, I would not put much emphasis on these factory methods.
     Animation ballsAnim(1);
     animations.push_back(ballsAnim);
 
@@ -238,9 +247,8 @@ ErrorCode Engine::start()
             const Animation& spriteAnim = animations[i];
             const Movement& movement = movements[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
-
             renderer.render(gameObject.texture, int(round(movement.pos.x)), int(round(movement.pos.y)),
-                gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h);
+                gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h, gameObject.flip);
         }
         renderer.present();
         /* End Rendering */

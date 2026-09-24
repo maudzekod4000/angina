@@ -8,6 +8,7 @@ namespace Angina::EngineV3 {
 		// TODO: Think: Maybe the texture can be in the Animation struct?
 		Backend::SDL::Resources::SDLTexture texture;
 		int w, h;
+		int flip = 0; // See SDL_RendererFlip
 
 		// TODO: To be honest, the game object should have a width and height...
 		// semantically its more important that leaving the texture to determine the width and height of the 
