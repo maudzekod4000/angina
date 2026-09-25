@@ -84,7 +84,7 @@ Resources::AudioEffect Engine::loadSoundEffect(const char* filepath)
     return audio;
 }
 
-void Angina::EngineV3::Engine::beforeGameLoop()
+void Engine::beforeGameLoop()
 {
     Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
     Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
@@ -121,6 +121,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     // ...idk it seems that i dont want to complicate things RN
     movements[0].onMovementEnd = [this]() {
         animations[0].stop();
+        audioEffects[0].stop();
     };
 
     Collision stickCollision{};

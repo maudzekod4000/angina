@@ -19,7 +19,12 @@ void AudioEffect::play()
 	// TODO: THink: It might not be that straightforward...
 	// I think the effects would interrupt each other....we have to think of a way
 	// to play them repeatedly but smartly.
-	Mix_PlayChannel(-1, audio, 0);
+	channel = Mix_PlayChannel(channel, audio, -1);
+}
+
+void AudioEffect::stop()
+{
+	Mix_HaltChannel(channel);
 }
 
 void AudioEffect::freeMem() {

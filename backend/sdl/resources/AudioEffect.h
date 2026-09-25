@@ -14,9 +14,14 @@ struct AudioEffect {
 
 	void play();
 
+	void stop();
+
 	void freeMem();
 
 	Mix_Chunk* audio = nullptr;
+
+private:
+	int channel = -1;
 };
 
 AudioEffect loadAudioEffect(const char* path, Core::Errors::ErrorCode&);
