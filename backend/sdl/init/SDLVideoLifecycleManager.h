@@ -4,8 +4,8 @@
 #include "core/error/Errors.h"
 
 namespace Backend::SDL::Init {
-	Core::Errors::ErrorCode initVideo(uint64_t flags);
-	void destroyVideo();
+	Core::Errors::ErrorCode initSDLSystems(uint64_t flags);
+	void destroySDLSystems();
 }
 
 #endif // !INIT_SDL_INITIALIZER_H

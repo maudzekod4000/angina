@@ -13,6 +13,7 @@ target_sources(sdl
 		rendering/SDLRenderer.cpp
 		resources/SDLTexture.cpp
 		resources/SDLTexLoader.cpp
+		resources/AudioEffect.cpp
 		error/SDLError.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
@@ -26,6 +27,7 @@ target_sources(sdl
 		rendering/SDLRenderer.h
 		resources/SDLTexture.h
 		resources/SDLTexLoader.h
+		resources/AudioEffect.h
 		error/SDLError.h
 )
 

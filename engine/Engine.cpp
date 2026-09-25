@@ -152,7 +152,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
 
 ErrorCode Engine::start()
 {
-    if (const auto err = Init::initVideo(0); err) {
+    if (const auto err = Init::initSDLSystems(0); err) {
         return err;
     }
 
@@ -263,7 +263,7 @@ ErrorCode Engine::start()
         framePacer.endFrame();
     }
 
-    Init::destroyVideo();
+    Init::destroySDLSystems();
 
     return {};
 }
