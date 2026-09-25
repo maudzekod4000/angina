@@ -21,6 +21,7 @@
 #include "core/datastructures/FreeList.h"
 #include "backend/sdl/resources/SDLTexture.h"
 #include "backend/sdl/input/SDLInputEventManager.h"
+#include "backend/sdl/resources/AudioEffect.h"
 
 #include "core/time/Stopwatch.h"
 #include "core/units/Units.hpp"
@@ -48,11 +49,13 @@ public:
 	Core::Errors::ErrorCode start();
 
 	Backend::SDL::Resources::SDLTexture loadTexture(const char* filepath);
+	Backend::SDL::Resources::AudioEffect loadSoundEffect(const char* filepath);
 private:
 	Backend::SDL::Rendering::SDLRenderer renderer;
 	Backend::SDL::UI::SDLWindow window;
 	Backend::SDL::Input::SDLInputEventManager inputEventMgr;
 	std::vector<Backend::SDL::Resources::SDLTexture> textures;
+	std::vector<Backend::SDL::Resources::AudioEffect> audioEffects;
 
 	std::vector<GameObject> gameObjects;
 	std::vector<Animation> animations; ///< This should be in sync with the above (game objects) vector.

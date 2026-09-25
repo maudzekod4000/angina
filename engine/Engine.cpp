@@ -56,6 +56,7 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
 
     if (err) {
         logger.log(Level::ERROR, err);
+        assert(false);
         return SDLTexture(); // TODO: Return a proper error, so that the client knows it failed
         // or better -> load a default texture for maximum UX or Dev Ex
         // This default texture will be loaded when the engine starts and cached in the 
@@ -66,8 +67,26 @@ Backend::SDL::Resources::SDLTexture Engine::loadTexture(const char* filepath) {
     return tex;
 }
 
+Resources::AudioEffect Engine::loadSoundEffect(const char* filepath)
+{
+    using namespace Backend::SDL::Resources;
+
+    ErrorCode err;
+    AudioEffect audio = loadAudioEffect(filepath, err);
+
+    if (err) {
+        logger.log(Level::ERROR, err);
+        assert(false);
+        return Resources::AudioEffect(); // TODO: return a default effect
+    }
+
+    audioEffects.push_back(audio);
+    return audio;
+}
+
 void Angina::EngineV3::Engine::beforeGameLoop()
 {
+    Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
     Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
     Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
@@ -94,6 +113,7 @@ void Angina::EngineV3::Engine::beforeGameLoop()
     // and dispatch additional actions when it starts/finishes.
     movements[0].onMovementStart = [this]() {
         animations[0].start(1000);
+        audioEffects[0].play();
     };
     // TODO: So for the movement thing, we can create a MovementObservable
     // that will take care of registering subscribers and the Movement object 
