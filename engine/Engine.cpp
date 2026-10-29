@@ -86,6 +86,7 @@ Resources::AudioEffect Engine::loadSoundEffect(const char* filepath)
 
 void Engine::beforeGameLoop()
 {
+    // These load* methods can return the id or index of the resource.
     Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
     Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
     Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
@@ -119,6 +120,11 @@ void Engine::beforeGameLoop()
     // that will take care of registering subscribers and the Movement object 
     // will hold a reference to it, so it can notify subscribers for events.
     // ...idk it seems that i dont want to complicate things RN
+    
+    // 29.10.2026:
+    // From what i have seen from Casey Muratori, it seems smart to complicate things a bit 
+    // in the beginning if you feel its going to improve things in the future
+    // So i would say go for the MovementObservable, create statistics class and create a builder for the GameObject class.
     movements[0].onMovementEnd = [this]() {
         animations[0].stop();
         audioEffects[0].stop();
