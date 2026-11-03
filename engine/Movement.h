@@ -34,6 +34,10 @@ private:
 	double timeToDestMs = 0; // Precalculated based on the distance to destination.
 	int speed = 0; // Pixels per 1 s
 	Core::Time::Stopwatch clock;
+
+	// Thoughts: So, another option is to have a MovementSystem that will hold a reference to a Position struct
+	// it will have a method 'start()' which will accept a destination and speed...
+	// But let's do things this way and later we can refactor if the game turns out hard to maintain.
 };
 }
 
