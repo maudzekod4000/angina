@@ -2,10 +2,14 @@
 
 using namespace Angina::EngineV3;
 
-void MovementObservable::registerHandler(MovementEventHandler)
+void Observable::registerHandler(EventHandler e)
 {
+	handlers.push_back(e);
 }
 
-void MovementObservable::update(MovementEvent)
+void Observable::update(Event e)
 {
+	for (const auto& h : handlers) {
+		h(e);
+	}
 }

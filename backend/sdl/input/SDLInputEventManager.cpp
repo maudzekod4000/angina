@@ -20,6 +20,22 @@ void SDLInputEventManager::update()
 		case SDL_EventType::SDL_MOUSEBUTTONUP:
 			handleMouseClick();
 			break;
+		case SDL_EventType::SDL_KEYDOWN: {
+			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+
+			if (currentKeyStates[SDL_SCANCODE_LEFT]) {
+				if (onLeftPressed) {
+					onLeftPressed();
+				}
+			}
+			else if (currentKeyStates[SDL_SCANCODE_RIGHT]) {
+				if (onRightPressed) {
+					onRightPressed();
+				}
+			}
+
+			break;
+		}
 		}
 	}
 
@@ -33,8 +49,8 @@ void SDLInputEventManager::handleMouseClick()
 
 	bool changed = x != inEvent.mouseX || y != inEvent.mouseY;
 
-	if (changed && onClickHandler) {
-		onClickHandler(x, y);
+	if (changed && onClick) {
+		onClick(x, y);
 	}
 
 	inEvent.mouseX = x;

@@ -8,6 +8,8 @@
 namespace Backend::SDL::Input {
 
 using OnClickHandler = std::function<void(int x, int y)>;
+using LeftMoveHandler = std::function<void()>;
+using RightMoveHandler = std::function<void()>;
 
 class SDLInputEventManager {
 public:
@@ -15,8 +17,9 @@ public:
 	void update();
 
 	Platform::Input::InputSnapshot inEvent;
-	OnClickHandler onClickHandler;
-
+	OnClickHandler onClick;
+	LeftMoveHandler onLeftPressed;
+	RightMoveHandler onRightPressed;
 private:
 	void handleMouseClick();
 };

@@ -6,25 +6,25 @@
 
 namespace Angina::EngineV3 {
 
-enum class MovementEventType {
+enum class EventType {
 	START,
 	STOP
 };
 
-struct MovementEvent {
+struct Event {
 	int id;
-	MovementEventType type;
+	EventType type;
 };
 
-using MovementEventHandler = std::function<void(MovementEvent)>;
+using EventHandler = std::function<void(Event)>;
 
 // What needs to be different if we want to async. notify the listeners?
-class MovementObservable {
+class Observable {
 public:
-	void registerHandler(MovementEventHandler);
-	void update(MovementEvent);
+	void registerHandler(EventHandler);
+	void update(Event);
 private:
-	std::vector<MovementEventHandler> handlers;
+	std::vector<EventHandler> handlers;
 };
 }
 

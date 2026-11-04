@@ -88,13 +88,13 @@ void Engine::beforeGameLoop()
 {
     // These load* methods can return the id or index of the resource.
     Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
-    Resources::SDLTexture stickfigureTex = loadTexture("resources/engine/stickfigure.png");
-    Resources::SDLTexture ballsTex = loadTexture("resources/engine/balls.png");
+    Resources::SDLTexture stickfigureTex = loadTexture("resources/srb/hero.png");
+    Resources::SDLTexture ballsTex = loadTexture("resources/td/textures/grass.png");
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
-    GameObject stickfigure{stickfigureTex, 64, 205};
+    GameObject stickfigure{stickfigureTex, 64, 64};
     stickfigure.flip = 0x1;
     gameObjects.push_back(stickfigure);
 
@@ -104,7 +104,7 @@ void Engine::beforeGameLoop()
     Movement stickMov;
     //stickMov.start(300, 200, 150);
     movements.push_back(stickMov);
-    inputEventMgr.onClickHandler = [this](int x, int y) {
+    inputEventMgr.onClick = [this](int x, int y) {
         movements[0].start(x, y, 150);
     };
 
@@ -133,7 +133,7 @@ void Engine::beforeGameLoop()
     Collision stickCollision{};
     collisions.push_back(stickCollision);
 
-    GameObject balls{ ballsTex, 200, 200 };
+    GameObject balls{ ballsTex, 64, 64 };
     gameObjects.push_back(balls);
 
     // TODO: It would be nice to have just a simple method that creates

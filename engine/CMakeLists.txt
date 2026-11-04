@@ -10,6 +10,7 @@ target_sources(engine
         Movement.h
 	    Collision.h
         MovementObservable.h
+        MovementSystem.h
     PRIVATE
         Engine.cpp
         EngineConfig.cpp
@@ -19,6 +20,7 @@ target_sources(engine
         Movement.cpp
 	    Collision.cpp
         MovementObservable.cpp
+        MovementSystem.cpp
 )
 
 target_include_directories(engine

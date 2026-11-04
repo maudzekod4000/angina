@@ -5,7 +5,7 @@
 
 namespace Core::Identity {
 
-using Id = uint64_t; ///< Keep this a unsigned integer type.
+using Id = uint8_t; ///< Keep this a unsigned integer type.
 
 }
 

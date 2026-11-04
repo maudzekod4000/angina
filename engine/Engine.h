@@ -33,6 +33,7 @@
 #include "engine/Animation.h"
 #include "engine/Movement.h"
 #include "engine/Collision.h"
+#include "engine/MovementObservable.h"
 
 namespace Angina::EngineV3 {
 
@@ -54,6 +55,7 @@ private:
 	Backend::SDL::Rendering::SDLRenderer renderer;
 	Backend::SDL::UI::SDLWindow window;
 	Backend::SDL::Input::SDLInputEventManager inputEventMgr;
+	Observable movementObservable;
 	std::vector<Backend::SDL::Resources::SDLTexture> textures;
 	std::vector<Backend::SDL::Resources::AudioEffect> audioEffects;
 
