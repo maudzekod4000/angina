@@ -14,6 +14,7 @@ namespace Angina::EngineV3 {
 	struct Collision {
 		bool hasCollision = false;
 		Core::Units::Vec2 dir; // Normalized.
+		bool collidable = true;
 	};
 }
 

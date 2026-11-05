@@ -29,7 +29,7 @@ public:
 
     std::vector<IdOrError> load(const std::vector<std::filesystem::path>& resourceFiles) override {
         std::vector<IdOrError> res;
-        res.push_back(1);
+        res.push_back(IdOrError(Core::Identity::Id(1U)));
         res.push_back(std::unexpected(ErrorCode(-1, "This is an error...")));
         return res;
     }

@@ -15,6 +15,9 @@ using Height = Dimension;
 
 using AbsPosition = PositionType;
 
+constexpr int WINDOW_WIDTH = 640;
+constexpr int WINDOW_HEIGHT = 448;
+
 /// Helps catching configuration bugs at compile time and enforces invariants on the rate per second value.
 /// Improves the API to the client with a more readable, distinct type.
 struct RatePerSecond {
@@ -75,6 +78,10 @@ inline Vec2 addVec(const Vec2& a, const Vec2& b) {
 inline Vec2 normalize(const Vec2& v) {
 	double len = calcLength(v);
 	return { float(double(v.x) / len), float(double(v.y) / len) };
+}
+
+inline float dot(const Vec2& a, const Vec2& b) {
+	return a.x * b.x + a.y * b.y;
 }
 
 }

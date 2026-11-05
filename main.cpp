@@ -12,7 +12,7 @@
 
 int32_t main([[maybe_unused]] int32_t argc, [[maybe_unused]] char **argv) {
 	Core::Errors::ErrorCode err;
-	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(640), Core::Units::Height(448));
+	Platform::UI::WindowConfig winConfig("Hi!", Core::Units::AbsX(100), Core::Units::AbsY(100), Core::Units::Width(Core::Units::WINDOW_WIDTH), Core::Units::Height(Core::Units::WINDOW_HEIGHT));
 	Angina::EngineV3::Engine eng = Angina::EngineV3::Engine::make(winConfig, Core::Units::RatePerSecond(60), err);
 
 	if (err) {

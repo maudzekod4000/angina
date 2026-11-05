@@ -16,6 +16,11 @@ using namespace Core::Units;
 using namespace Core::Errors;
 using namespace Backend::SDL;
 
+namespace {
+    const Vec2 left(-1.0f, 0.0f);
+    const Vec2 right(1.0f, 0.0f);
+}
+
 Engine::Engine(
     RatePerSecond desiredFPS,
     Backend::SDL::Rendering::SDLRenderer renderer,
@@ -101,11 +106,13 @@ void Engine::beforeGameLoop()
     Animation stickAnim(4);
     animations.push_back(stickAnim);
 
-    Movement stickMov;
-    //stickMov.start(300, 200, 150);
+    Movement stickMov(0, WINDOW_HEIGHT - 128);
     movements.push_back(stickMov);
-    inputEventMgr.onClick = [this](int x, int y) {
-        movements[0].start(x, y, 150);
+    inputEventMgr.onLeftPressed = [this]() {
+        movements[0].start(left, 15, 50);
+    };
+    inputEventMgr.onRightPressed = [this]() {
+        movements[0].start(right, 15, 50);
     };
 
     // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
@@ -133,21 +140,24 @@ void Engine::beforeGameLoop()
     Collision stickCollision{};
     collisions.push_back(stickCollision);
 
-    GameObject balls{ ballsTex, 64, 64 };
-    gameObjects.push_back(balls);
+    for (int offX = 0; offX <= WINDOW_WIDTH - 64; offX += 64) {
+        GameObject balls{ ballsTex, 64, 64 };
+        gameObjects.push_back(balls);
 
-    // TODO: It would be nice to have just a simple method that creates
-    // one element into all the needed vectors, and after that i can populate what i want
-    // For this to be easy, we need default constructors and ability to set things later.
-    // Although, I would not put much emphasis on these factory methods.
-    Animation ballsAnim(1);
-    animations.push_back(ballsAnim);
+        // TODO: It would be nice to have just a simple method that creates
+        // one element into all the needed vectors, and after that i can populate what i want
+        // For this to be easy, we need default constructors and ability to set things later.
+        // Although, I would not put much emphasis on these factory methods.
+        Animation ballsAnim(1);
+        animations.push_back(ballsAnim);
 
-    Movement ballsMov(300, 300);
-    movements.push_back(ballsMov);
+        Movement ballsMov(offX, WINDOW_HEIGHT - 64);
+        movements.push_back(ballsMov);
 
-    Collision ballsCollision{};
-    collisions.push_back(ballsCollision);
+        Collision ballsCollision{};
+        ballsCollision.collidable = false;
+        collisions.push_back(ballsCollision);
+    }
 
     // How can we start thinking about separating the animation
     // and movement on separate threads.
@@ -233,6 +243,10 @@ ErrorCode Engine::start()
                 const Movement& bm = movements[j];
                 Collision& colA = collisions[i];
                 Collision& colB = collisions[j];
+
+                if (!colA.collidable && !colB.collidable) {
+                    continue;
+                }
 
                 bool collided = Core::PhysicsUtils::rectIntersect(am.pos.x,
                     -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));

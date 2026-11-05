@@ -19,6 +19,8 @@ struct Movement {
 
 	void start(int destX, int destY, int movSpeed);
 
+	void start(const Core::Units::Vec2& dir, int distance, int movSpeed);
+
 	void stop();
 
 	void update();
