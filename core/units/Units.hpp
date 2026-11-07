@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cassert>
 #include <chrono>
+#include <numeric>
 
 namespace Core::Units {
 
@@ -55,6 +56,11 @@ struct Rect {
 
 struct Vec2 {
 	float x = 0.0f, y = 0.0f;
+
+	bool eq(const Vec2& other) {
+		return fabs(x - other.x) < std::numeric_limits<float>::epsilon() &&
+			fabs(y - other.y) < std::numeric_limits<float>::epsilon();
+	}
 };
 
 // TODO: Inlining these for now but i will extract this class into a separate 

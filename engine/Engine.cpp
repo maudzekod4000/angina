@@ -106,20 +106,23 @@ void Engine::beforeGameLoop()
     Animation stickAnim(4);
     animations.push_back(stickAnim);
 
-    Movement stickMov(0, WINDOW_HEIGHT - 128);
+    // TODO: The fixed pixel movement is jittery as fuck...i think the time based one is fine but i have to
+    // make it smarter
+    // Maybe i have to think about it when my head is not tired.
+    BasicMovement stickMov(0, WINDOW_HEIGHT - 128);
     movements.push_back(stickMov);
     inputEventMgr.onLeftPressed = [this]() {
-        movements[0].start(left, 15, 50);
+        movements[0].move(left, 5);
     };
     inputEventMgr.onRightPressed = [this]() {
-        movements[0].start(right, 15, 50);
+        movements[0].move(right, 5);
     };
 
     // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
     // object too much in size.
     // Maybe we need some system that can check the state of the movement
     // and dispatch additional actions when it starts/finishes.
-    movements[0].onMovementStart = [this]() {
+    movements[0].onStart = [this]() {
         animations[0].start(1000);
         audioEffects[0].play();
     };
@@ -132,7 +135,7 @@ void Engine::beforeGameLoop()
     // From what i have seen from Casey Muratori, it seems smart to complicate things a bit 
     // in the beginning if you feel its going to improve things in the future
     // So i would say go for the MovementObservable, create statistics class and create a builder for the GameObject class.
-    movements[0].onMovementEnd = [this]() {
+    movements[0].onEnd = [this]() {
         animations[0].stop();
         audioEffects[0].stop();
     };
@@ -151,7 +154,7 @@ void Engine::beforeGameLoop()
         Animation ballsAnim(1);
         animations.push_back(ballsAnim);
 
-        Movement ballsMov(offX, WINDOW_HEIGHT - 64);
+        BasicMovement ballsMov(offX, WINDOW_HEIGHT - 64);
         movements.push_back(ballsMov);
 
         Collision ballsCollision{};
@@ -208,7 +211,7 @@ ErrorCode Engine::start()
             anim.update();
         }
 
-        for (Movement& mov : movements) {
+        for (BasicMovement& mov : movements) {
             mov.update();
         }
         /* End State Updates */
@@ -238,9 +241,9 @@ ErrorCode Engine::start()
         for (int i = 0; i < gameObjects.size(); i++) {
             for (int j = i + 1; j < gameObjects.size(); j++) {
                 const GameObject& a = gameObjects[i];
-                const Movement& am = movements[i];
+                const BasicMovement& am = movements[i];
                 const GameObject& b = gameObjects[j];
-                const Movement& bm = movements[j];
+                const BasicMovement& bm = movements[j];
                 Collision& colA = collisions[i];
                 Collision& colB = collisions[j];
 
@@ -253,8 +256,8 @@ ErrorCode Engine::start()
                     
                 colA.hasCollision = colB.hasCollision = collided;
                 if (collided) {
-                    colA.dir = am.dir;
-                    colB.dir = bm.dir;
+                    colA.dir = am.direction;
+                    colB.dir = bm.direction;
                     printf("Chestit sbor! %d\n", rand());
                 }
             }
@@ -286,7 +289,7 @@ ErrorCode Engine::start()
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
             const Animation& spriteAnim = animations[i];
-            const Movement& movement = movements[i];
+            const BasicMovement& movement = movements[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
             renderer.render(gameObject.texture, int(round(movement.pos.x)), int(round(movement.pos.y)),
                 gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h, gameObject.flip);

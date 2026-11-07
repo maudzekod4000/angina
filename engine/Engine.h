@@ -34,6 +34,7 @@
 #include "engine/Movement.h"
 #include "engine/Collision.h"
 #include "engine/MovementObservable.h"
+#include "engine/BasicMovement.h"
 
 namespace Angina::EngineV3 {
 
@@ -61,7 +62,7 @@ private:
 
 	std::vector<GameObject> gameObjects;
 	std::vector<Animation> animations; ///< This should be in sync with the above (game objects) vector.
-	std::vector<Movement> movements;
+	std::vector<BasicMovement> movements;
 	std::vector<Collision> collisions;
 	
 	EngineState state;
