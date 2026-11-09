@@ -100,7 +100,6 @@ void Engine::beforeGameLoop()
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
     GameObject stickfigure{stickfigureTex, 64, 64};
-    stickfigure.flip = 0x1;
     gameObjects.push_back(stickfigure);
 
     Animation stickAnim(4);
@@ -109,20 +108,15 @@ void Engine::beforeGameLoop()
     // TODO: The fixed pixel movement is jittery as fuck...i think the time based one is fine but i have to
     // make it smarter
     // Maybe i have to think about it when my head is not tired.
-    BasicMovement stickMov(0, WINDOW_HEIGHT - 128);
+    Movement stickMov(0, WINDOW_HEIGHT - 128);
+    stickMov.dir = left;
     movements.push_back(stickMov);
-    inputEventMgr.onLeftPressed = [this]() {
-        movements[0].move(left, 5);
-    };
-    inputEventMgr.onRightPressed = [this]() {
-        movements[0].move(right, 5);
-    };
 
     // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
     // object too much in size.
     // Maybe we need some system that can check the state of the movement
     // and dispatch additional actions when it starts/finishes.
-    movements[0].onStart = [this]() {
+    movements[0].onMovementStart = [this]() {
         animations[0].start(1000);
         audioEffects[0].play();
     };
@@ -135,7 +129,12 @@ void Engine::beforeGameLoop()
     // From what i have seen from Casey Muratori, it seems smart to complicate things a bit 
     // in the beginning if you feel its going to improve things in the future
     // So i would say go for the MovementObservable, create statistics class and create a builder for the GameObject class.
-    movements[0].onEnd = [this]() {
+
+    // 09.11.2026
+    // Callbacks break the game loop sequencing...it would be better to have some state
+    // that the animation and audio can read... although idk if this can be done...
+    // maybe a queue of events to process is better.
+    movements[0].onMovementEnd = [this]() {
         animations[0].stop();
         audioEffects[0].stop();
     };
@@ -154,7 +153,7 @@ void Engine::beforeGameLoop()
         Animation ballsAnim(1);
         animations.push_back(ballsAnim);
 
-        BasicMovement ballsMov(offX, WINDOW_HEIGHT - 64);
+        Movement ballsMov(offX, WINDOW_HEIGHT - 64);
         movements.push_back(ballsMov);
 
         Collision ballsCollision{};
@@ -207,11 +206,23 @@ ErrorCode Engine::start()
         /* State Updates */
         inputEventMgr.update();
 
+        if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
+            movements[0]/* ohh, we need ids... */.start(left, 10, 200);
+            std::puts("left pressed");
+        }
+        else if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
+            movements[0].start(right, 10, 200);
+            std::puts("right pressed");
+            // TODO: Huh...now the events fire as expected but the movement does 
+            // not progress i guess because it gets reset too often.
+            // lets try to sequence the movements until the previous is finished.
+        }
+
         for (Animation& anim : animations) {
             anim.update();
         }
 
-        for (BasicMovement& mov : movements) {
+        for (Movement& mov : movements) {
             mov.update();
         }
         /* End State Updates */
@@ -241,9 +252,9 @@ ErrorCode Engine::start()
         for (int i = 0; i < gameObjects.size(); i++) {
             for (int j = i + 1; j < gameObjects.size(); j++) {
                 const GameObject& a = gameObjects[i];
-                const BasicMovement& am = movements[i];
+                const Movement& am = movements[i];
                 const GameObject& b = gameObjects[j];
-                const BasicMovement& bm = movements[j];
+                const Movement& bm = movements[j];
                 Collision& colA = collisions[i];
                 Collision& colB = collisions[j];
 
@@ -256,8 +267,8 @@ ErrorCode Engine::start()
                     
                 colA.hasCollision = colB.hasCollision = collided;
                 if (collided) {
-                    colA.dir = am.direction;
-                    colB.dir = bm.direction;
+                    colA.dir = am.dir;
+                    colB.dir = bm.dir;
                     printf("Chestit sbor! %d\n", rand());
                 }
             }
@@ -289,10 +300,20 @@ ErrorCode Engine::start()
         for (int i = 0; i < gameObjects.size(); i++) {
             const GameObject& gameObject = gameObjects[i];
             const Animation& spriteAnim = animations[i];
-            const BasicMovement& movement = movements[i];
+            const Movement& movement = movements[i];
             int texOffX = gameObject.w * spriteAnim.currentFrameIdx;
+            // By default all the heroes will look to the left.
+            // this will make calculating the flip easy.
+            int flip = 0x0;
+
+            // if the movement of the hero is left then dont do any flip.
+            // but if its right then we have to flip it.
+            if (dot(movement.dir, left) > 0.0f) {
+                flip = 0x1;
+            }
+
             renderer.render(gameObject.texture, int(round(movement.pos.x)), int(round(movement.pos.y)),
-                gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h, gameObject.flip);
+                gameObject.w, gameObject.h, texOffX, 0, gameObject.w, gameObject.h, flip);
         }
         renderer.present();
         /* End Rendering */

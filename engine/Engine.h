@@ -62,7 +62,7 @@ private:
 
 	std::vector<GameObject> gameObjects;
 	std::vector<Animation> animations; ///< This should be in sync with the above (game objects) vector.
-	std::vector<BasicMovement> movements;
+	std::vector<Movement> movements;
 	std::vector<Collision> collisions;
 	
 	EngineState state;

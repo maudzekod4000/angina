@@ -12,7 +12,11 @@ void SDLInputEventManager::update()
 {
 	SDL_Event e{};
 
+	keyboard.beginFrame();
+
 	while (SDL_PollEvent(&e)) {
+		keyboard.processEvent(e);
+
 		switch (e.type) {
 		case SDL_EventType::SDL_QUIT:
 			inEvent.quit = true;
@@ -20,22 +24,6 @@ void SDLInputEventManager::update()
 		case SDL_EventType::SDL_MOUSEBUTTONUP:
 			handleMouseClick();
 			break;
-		case SDL_EventType::SDL_KEYDOWN: {
-			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-
-			if (currentKeyStates[SDL_SCANCODE_LEFT]) {
-				if (onLeftPressed) {
-					onLeftPressed();
-				}
-			}
-			else if (currentKeyStates[SDL_SCANCODE_RIGHT]) {
-				if (onRightPressed) {
-					onRightPressed();
-				}
-			}
-
-			break;
-		}
 		}
 	}
 

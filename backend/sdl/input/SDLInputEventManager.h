@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "platform/input/BaseInputEventManager.h"
+#include "KeyboardInputState.h"
 
 namespace Backend::SDL::Input {
 
@@ -17,9 +18,8 @@ public:
 	void update();
 
 	Platform::Input::InputSnapshot inEvent;
-	OnClickHandler onClick;
-	LeftMoveHandler onLeftPressed;
-	RightMoveHandler onRightPressed;
+	KeyboardInputState keyboard; ///< Poll this after update() for held/pressed/released keys.
+	OnClickHandler onClick; // TODO: Remove this eventually...callbacks break the game loop sequence
 private:
 	void handleMouseClick();
 };

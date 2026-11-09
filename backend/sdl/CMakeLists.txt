@@ -3,6 +3,7 @@ add_library(sdl OBJECT)
 target_sources(sdl
 	PRIVATE
 		input/SDLInputEventManager.cpp
+		input/KeyboardInputState.cpp
 		init/SDLVideoLifecycleManager.cpp
 		ui/SDLWindow.cpp
 		resources/SDLCPUTexture.cpp
@@ -17,6 +18,7 @@ target_sources(sdl
 		error/SDLError.cpp
 	PUBLIC
 		input/SDLInputEventManager.h
+		input/KeyboardInputState.h
 		init/SDLVideoLifecycleManager.h
 		ui/SDLWindow.h
 		resources/SDLCPUTexture.h

@@ -5,21 +5,28 @@
 #include <cstdlib>
 
 using namespace Angina::EngineV3;
+using namespace Core::Units;
 
 void Movement::start(int destX, int destY, int movSpeed) {
 	prevPos = startPos = pos;
-	speed = movSpeed;
 	path = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
 	dir = Core::Units::normalize(path);
 	const double distance = Core::Units::calcLength(path);
-	timeToDestMs = distance / speed * 1000.0;
-	if (onMovementStart) onMovementStart();
+	timeToDestMs = distance / movSpeed * 1000.0;
+	if (onMovementStart && speed == 0) onMovementStart();
+	speed = movSpeed;
 	clock.reset();
 }
 
+void Movement::start(const Core::Units::Vec2& direction, float step, int movSpeed) {
+	const Vec2 dest = addVec(pos, scale(direction, step));
+
+	start(int(dest.x), int(dest.y), movSpeed);
+}
+
 void Movement::stop() {
+	if (onMovementEnd && speed != 0) onMovementEnd();
 	speed = 0;
-	if (onMovementEnd) onMovementEnd();
 }
 
 void Movement::update() {
