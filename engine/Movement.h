@@ -17,8 +17,6 @@ struct Movement {
 	Movement(int posX, int posY) : pos(Core::Units::Vec2{ float(posX), float(posY) }),
 		prevPos(pos) {}
 
-	void start(int destX, int destY, int movSpeed);
-
 	void start(const Core::Units::Vec2& dir, float step, int movSpeed);
 
 	void stop();
@@ -37,9 +35,9 @@ private:
 	int speed = 0; // Pixels per 1 s
 	Core::Time::Stopwatch clock;
 
-	// Thoughts: So, another option is to have a MovementSystem that will hold a reference to a Position struct
-	// it will have a method 'start()' which will accept a destination and speed...
-	// But let's do things this way and later we can refactor if the game turns out hard to maintain.
+	void start(int destX, int destY, int movSpeed);
+
+	bool isMoving() const { return speed != 0; }
 };
 }
 
