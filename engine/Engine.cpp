@@ -207,10 +207,10 @@ ErrorCode Engine::start()
         inputEventMgr.update();
 
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
-            movements[0]/* ohh, we need ids... */.start(left, 20, 20);
+            movements[0]/* ohh, we need ids... */.start(left, 1, 50);
         }
         else if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
-            movements[0].start(right, 20, 20);
+            movements[0].start(right, 1, 50);
             // TODO: Huh...now the events fire as expected but the movement does 
             // not progress i guess because it gets reset too often.
             // lets try to sequence the movements until the previous is finished.

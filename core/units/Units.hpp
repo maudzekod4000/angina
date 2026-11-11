@@ -90,5 +90,10 @@ inline float dot(const Vec2& a, const Vec2& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
+// It tells us if the vectors are pointing at the same hemisphere...of the circle as we are in 2D :D
+inline float roughlySameDir(const Vec2& a, const Vec2& b) {
+	return dot(a, b) > 0.0f;
+}
+
 }
 #endif

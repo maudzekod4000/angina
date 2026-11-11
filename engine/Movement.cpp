@@ -8,7 +8,6 @@ using namespace Angina::EngineV3;
 using namespace Core::Units;
 
 void Movement::start(int destX, int destY, int movSpeed) {
-	if (speed != 0) return;
 	prevPos = startPos = pos;
 	path = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
 	dir = Core::Units::normalize(path);
@@ -17,7 +16,6 @@ void Movement::start(int destX, int destY, int movSpeed) {
 	if (onMovementStart) onMovementStart();
 	speed = movSpeed;
 	clock.reset();
-	std::puts("restarted mov");
 }
 
 void Movement::start(const Core::Units::Vec2& direction, float step, int movSpeed) {
@@ -35,13 +33,25 @@ void Movement::start(const Core::Units::Vec2& direction, float step, int movSpee
 		return;
 	}
 
+	if (roughlySameDir(dir, direction)) {
+		// ok sooo the path will be continued in the same direction with the current 'step'
+		path = addVec(path, scale(direction, step));
 
+		// time to dest would change
+		const double distance = Core::Units::calcLength(path);
+		timeToDestMs = distance / movSpeed * 1000.0;
+		return;
+	}
+
+	stop();
+	const Vec2 dest = addVec(pos, scale(direction, step));
+
+	start(int(dest.x), int(dest.y), movSpeed);
 }
 
 void Movement::stop() {
-	if (speed == 0) return;
-	if (onMovementEnd) onMovementEnd();
 	speed = 0;
+	if (onMovementEnd) onMovementEnd();
 }
 
 void Movement::update() {
