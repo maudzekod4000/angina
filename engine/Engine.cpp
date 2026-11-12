@@ -17,8 +17,18 @@ using namespace Core::Errors;
 using namespace Backend::SDL;
 
 namespace {
+    // TODO: Make a constexpr constructor for the Vec2.
     const Vec2 left(-1.0f, 0.0f);
     const Vec2 right(1.0f, 0.0f);
+    constexpr int PADDING_PX = 1;
+
+    constexpr int HERO_STEP_SIZE = 1;
+    constexpr int HERO_SPEED = 50;
+    constexpr int HERO_ANIM_MS = 500;
+    constexpr int HERO_WIDTH = 64;
+    constexpr int HERO_HEIGHT = 64;
+    
+    constexpr int GROUND_TEXTURE_SIZE = 32;
 }
 
 Engine::Engine(
@@ -93,72 +103,73 @@ void Engine::beforeGameLoop()
 {
     // These load* methods can return the id or index of the resource.
     Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
-    Resources::SDLTexture stickfigureTex = loadTexture("resources/srb/hero.png");
+    Resources::SDLTexture heroTex = loadTexture("resources/srb/hero.png");
     Resources::SDLTexture ballsTex = loadTexture("resources/td/textures/grass.png");
+
+
     // Sometimes we will use the original texture's w/h but sometimes we need to overwrite it.
     // TODO: Hmmm...soo the creation of the object needs to be thought out
     // but lets just do manual creation and then we will see the patterns in the 
     // creation and we will adjust.
-    GameObject stickfigure{stickfigureTex, 64, 64};
-    gameObjects.push_back(stickfigure);
+    {
+        GameObject hero{heroTex, HERO_WIDTH, HERO_HEIGHT};
+        gameObjects.push_back(hero);
 
-    Animation stickAnim(4);
-    animations.push_back(stickAnim);
+        Animation anim(4);
+        animations.push_back(anim);
 
-    // TODO: The fixed pixel movement is jittery as fuck...i think the time based one is fine but i have to
-    // make it smarter
-    // Maybe i have to think about it when my head is not tired.
-    Movement stickMov(0, WINDOW_HEIGHT - 128);
-    stickMov.dir = left;
-    movements.push_back(stickMov);
+        Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE + PADDING_PX));
+        mov.dir = left;
+        movements.push_back(mov);
 
-    // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
-    // object too much in size.
-    // Maybe we need some system that can check the state of the movement
-    // and dispatch additional actions when it starts/finishes.
-    movements[0].onMovementStart = [this]() {
-        animations[0].start(1000);
-        audioEffects[0].play();
-    };
-    // TODO: So for the movement thing, we can create a MovementObservable
-    // that will take care of registering subscribers and the Movement object 
-    // will hold a reference to it, so it can notify subscribers for events.
-    // ...idk it seems that i dont want to complicate things RN
+        // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
+        // object too much in size.
+        // Maybe we need some system that can check the state of the movement
+        // and dispatch additional actions when it starts/finishes.
+        movements[0].onMovementStart = [this]() {
+            animations[0].start(HERO_ANIM_MS);
+            audioEffects[0].play();
+        };
+        // TODO: So for the movement thing, we can create a MovementObservable
+        // that will take care of registering subscribers and the Movement object 
+        // will hold a reference to it, so it can notify subscribers for events.
+        // ...idk it seems that i dont want to complicate things RN
     
-    // 29.10.2026:
-    // From what i have seen from Casey Muratori, it seems smart to complicate things a bit 
-    // in the beginning if you feel its going to improve things in the future
-    // So i would say go for the MovementObservable, create statistics class and create a builder for the GameObject class.
+        // 29.10.2026:
+        // From what i have seen from Casey Muratori, it seems smart to complicate things a bit 
+        // in the beginning if you feel its going to improve things in the future
+        // So i would say go for the MovementObservable, create statistics class and create a builder for the GameObject class.
 
-    // 09.11.2026
-    // Callbacks break the game loop sequencing...it would be better to have some state
-    // that the animation and audio can read... although idk if this can be done...
-    // maybe a queue of events to process is better.
-    movements[0].onMovementEnd = [this]() {
-        animations[0].stop();
-        audioEffects[0].stop();
-    };
+        // 09.11.2026
+        // Callbacks break the game loop sequencing...it would be better to have some state
+        // that the animation and audio can read... although idk if this can be done...
+        // maybe a queue of events to process is better.
+        movements[0].onMovementEnd = [this]() {
+            animations[0].stop();
+            audioEffects[0].stop();
+        };
+    }
 
     Collision stickCollision{};
     collisions.push_back(stickCollision);
 
-    for (int offX = 0; offX <= WINDOW_WIDTH - 64; offX += 64) {
-        GameObject balls{ ballsTex, 64, 64 };
+    for (int offX = 0; offX <= WINDOW_WIDTH - GROUND_TEXTURE_SIZE; offX += GROUND_TEXTURE_SIZE) {
+        GameObject balls{ ballsTex, GROUND_TEXTURE_SIZE, GROUND_TEXTURE_SIZE };
         gameObjects.push_back(balls);
 
         // TODO: It would be nice to have just a simple method that creates
         // one element into all the needed vectors, and after that i can populate what i want
         // For this to be easy, we need default constructors and ability to set things later.
         // Although, I would not put much emphasis on these factory methods.
-        Animation ballsAnim(1);
-        animations.push_back(ballsAnim);
+        Animation anim(1);
+        animations.push_back(anim);
 
-        Movement ballsMov(offX, WINDOW_HEIGHT - 64);
-        movements.push_back(ballsMov);
+        const Movement mov(offX, WINDOW_HEIGHT - GROUND_TEXTURE_SIZE);
+        movements.push_back(mov);
 
-        Collision ballsCollision{};
-        ballsCollision.collidable = false;
-        collisions.push_back(ballsCollision);
+        Collision coll{};
+        coll.collidable = false;
+        collisions.push_back(coll);
     }
 
     // How can we start thinking about separating the animation
@@ -207,13 +218,10 @@ ErrorCode Engine::start()
         inputEventMgr.update();
 
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
-            movements[0]/* ohh, we need ids... */.start(left, 1, 50);
+            movements[0]/* ohh, we need ids... */.start(left, HERO_STEP_SIZE, HERO_SPEED);
         }
         else if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
-            movements[0].start(right, 1, 50);
-            // TODO: Huh...now the events fire as expected but the movement does 
-            // not progress i guess because it gets reset too often.
-            // lets try to sequence the movements until the previous is finished.
+            movements[0].start(right, HERO_STEP_SIZE, HERO_SPEED);
         }
 
         for (Animation& anim : animations) {
