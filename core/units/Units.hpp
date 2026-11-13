@@ -55,7 +55,10 @@ struct Rect {
 };
 
 struct Vec2 {
-	float x = 0.0f, y = 0.0f;
+	constexpr Vec2(float x, float y): x(x), y(y) {}
+	constexpr Vec2(): Vec2(0.0f, 0.0f) {}
+
+	float x, y;
 
 	bool eq(const Vec2& other) {
 		return fabs(x - other.x) < std::numeric_limits<float>::epsilon() &&
@@ -92,7 +95,7 @@ inline float dot(const Vec2& a, const Vec2& b) {
 
 // It tells us if the vectors are pointing at the same hemisphere...of the circle as we are in 2D :D
 inline float roughlySameDir(const Vec2& a, const Vec2& b) {
-	return dot(a, b) > 0.0f;
+	return dot(a, b) >= 0.0f;
 }
 
 }

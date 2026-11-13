@@ -49,6 +49,17 @@ void Movement::start(const Core::Units::Vec2& direction, float step, int movSpee
 	start(int(dest.x), int(dest.y), movSpeed);
 }
 
+void Movement::jump(float height, int speed)
+{
+	if (isInAir) return;
+
+	constexpr Vec2 UP(0.0f, -1.0f);
+
+	start(UP, height, speed);
+
+	isInAir = true;
+}
+
 void Movement::stop() {
 	speed = 0;
 	if (onMovementEnd) onMovementEnd();
@@ -64,8 +75,18 @@ void Movement::update() {
 		return;
 	}
 
+
 	const double timeStep = timeSinceStartMs / timeToDestMs;
 	const Core::Units::Vec2 dirStep = Core::Units::scale(path, timeStep);
 	prevPos = pos;
 	pos = Core::Units::addVec(startPos, dirStep);
+	// Ok soooo before calculating the next step i think we should check if the hero is in the air
+	// If so we should apply some gravity downward force.
+	if (isInAir) {
+		constexpr int GRAVITY_FORCE = 3;
+		constexpr Vec2 DOWN(0.0f, 1.0f);
+
+		// TODO: hm this scale is a nice candidate for constexpr-ing.
+		pos = addVec(pos, scale(DOWN, GRAVITY_FORCE));
+	}
 }

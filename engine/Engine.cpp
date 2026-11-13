@@ -18,12 +18,15 @@ using namespace Backend::SDL;
 
 namespace {
     // TODO: Make a constexpr constructor for the Vec2.
-    const Vec2 left(-1.0f, 0.0f);
-    const Vec2 right(1.0f, 0.0f);
+    constexpr Vec2 left(-1.0f, 0.0f);
+    constexpr Vec2 right(1.0f, 0.0f);
+    constexpr Vec2 up(0.0f, -1.0f);
     constexpr int PADDING_PX = 1;
 
     constexpr int HERO_STEP_SIZE = 1;
     constexpr int HERO_SPEED = 50;
+    constexpr int HERO_JUMP_SIZE = 40;
+    constexpr int HERO_JUMP_SPEED = 100;
     constexpr int HERO_ANIM_MS = 500;
     constexpr int HERO_WIDTH = 64;
     constexpr int HERO_HEIGHT = 64;
@@ -118,8 +121,8 @@ void Engine::beforeGameLoop()
         Animation anim(4);
         animations.push_back(anim);
 
-        Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE + PADDING_PX));
-        mov.dir = left;
+        Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE));
+        //mov.dir = left;
         movements.push_back(mov);
 
         // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
@@ -220,8 +223,18 @@ ErrorCode Engine::start()
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
             movements[0]/* ohh, we need ids... */.start(left, HERO_STEP_SIZE, HERO_SPEED);
         }
-        else if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
+        if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
             movements[0].start(right, HERO_STEP_SIZE, HERO_SPEED);
+        }
+        if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Space)) {
+            movements[0].start(up, HERO_JUMP_SIZE, HERO_JUMP_SPEED);
+            // Ok sooooo I suppose jumping is kinda different from walking....
+            // The direction that the hero is moving at the moment has to be added with the UP vector
+            // so that we get a nice curve of the jump.
+            // also jumping would set inTheAir to true and in update() we have to apply a downward force
+            // so that the curve starts pointing downward.
+            // Once we have a collision underneat we can stop the jump.
+            // !!! you cant jump from the air :D :D :D 
         }
 
         for (Animation& anim : animations) {
@@ -275,6 +288,7 @@ ErrorCode Engine::start()
                 if (collided) {
                     colA.dir = am.dir;
                     colB.dir = bm.dir;
+
                     printf("Chestit sbor! %d\n", rand());
                 }
             }
@@ -288,11 +302,20 @@ ErrorCode Engine::start()
 
         for (int i = 0; i < collisions.size(); i++) {
             if (collisions[i].hasCollision) {
+                // Ughhh so here we are unstucking the object
                 movements[i].pos = addVec(movements[i].pos, Vec2{ -collisions[i].dir.x, -collisions[i].dir.y });
+
+                // then we are stopping the movement
                 movements[i].stop();
+
                 // TODO: I have to decide what data type to use
                 // all these conversions are cumbersome.
                 //movements[i].start(int(dest.x), int(dest.y), 1500);
+
+                // JUMP RESOLUTION: Of tuka stana vargala...znachi
+                // Ok sooo if one of the objects was with a downward direction......
+                // Or maybe it was downwardish....and inTheAir is true...
+                // then we should make inTheAir false....
             }
         }
 

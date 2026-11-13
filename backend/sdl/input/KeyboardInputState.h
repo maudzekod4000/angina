@@ -13,6 +13,7 @@ namespace Backend::SDL::Input {
 namespace Keys {
 	constexpr int Right = 79;
 	constexpr int Left = 80;
+	constexpr int Space = 44;
 }
 
 /// Tracks keyboard state across frames so game code can poll it instead of reacting to callbacks.

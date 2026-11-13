@@ -19,6 +19,8 @@ struct Movement {
 
 	void start(const Core::Units::Vec2& dir, float step, int movSpeed);
 
+	void jump(float height, int speed);
+
 	void stop();
 
 	void update();
@@ -28,6 +30,7 @@ struct Movement {
 	OnMovementEnd onMovementEnd;
 	Core::Units::Vec2 dir; // Normalized.
 	Core::Units::Vec2 prevPos;
+	bool isInAir = false;
 private:
 	Core::Units::Vec2 startPos;
 	Core::Units::Vec2 path; // Calculated on start.
