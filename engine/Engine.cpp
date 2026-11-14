@@ -227,7 +227,7 @@ ErrorCode Engine::start()
             movements[0].start(right, HERO_STEP_SIZE, HERO_SPEED);
         }
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Space)) {
-            movements[0].start(up, HERO_JUMP_SIZE, HERO_JUMP_SPEED);
+            movements[0].jump(HERO_JUMP_SIZE, HERO_JUMP_SPEED);
             // Ok sooooo I suppose jumping is kinda different from walking....
             // The direction that the hero is moving at the moment has to be added with the UP vector
             // so that we get a nice curve of the jump.
