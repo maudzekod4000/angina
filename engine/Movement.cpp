@@ -49,13 +49,13 @@ void Movement::start(const Core::Units::Vec2& direction, float step, int movSpee
 	start(int(dest.x), int(dest.y), movSpeed);
 }
 
-void Movement::jump(float height, int speed)
+void Movement::jump(float height, int jumpSpeed)
 {
 	if (isInAir) return;
 
 	constexpr Vec2 UP(0.0f, -1.0f);
 
-	start(UP, height, speed);
+	start(UP, height, jumpSpeed);
 
 	isInAir = true;
 }
@@ -66,6 +66,16 @@ void Movement::stop() {
 }
 
 void Movement::update() {
+	// Ok soooo before calculating the next step i think we should check if the hero is in the air
+	// If so we should apply some gravity downward force.
+	if (isInAir) {
+		constexpr int GRAVITY_FORCE = 1;
+		constexpr Vec2 DOWN(0.0f, 1.0f);
+
+		// TODO: hm this scale is a nice candidate for constexpr-ing.
+		pos = addVec(pos, scale(DOWN, GRAVITY_FORCE));
+	}
+
 	if (speed == 0) return;
 
 	const long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
@@ -80,13 +90,4 @@ void Movement::update() {
 	const Core::Units::Vec2 dirStep = Core::Units::scale(path, timeStep);
 	prevPos = pos;
 	pos = Core::Units::addVec(startPos, dirStep);
-	// Ok soooo before calculating the next step i think we should check if the hero is in the air
-	// If so we should apply some gravity downward force.
-	if (isInAir) {
-		constexpr int GRAVITY_FORCE = 3;
-		constexpr Vec2 DOWN(0.0f, 1.0f);
-
-		// TODO: hm this scale is a nice candidate for constexpr-ing.
-		pos = addVec(pos, scale(DOWN, GRAVITY_FORCE));
-	}
 }
