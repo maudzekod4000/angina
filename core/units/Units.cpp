@@ -10,3 +10,9 @@ bool Vec2::eq(const Vec2& other) const {
 float Vec2::len() const {
 	return sqrtf(x * x + y * y);
 }
+
+void Vec2::norm() {
+	const float l = len();
+	x /= l;
+	y /= l;
+}

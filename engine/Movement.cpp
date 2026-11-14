@@ -10,8 +10,9 @@ using namespace Core::Units;
 void Movement::start(int destX, int destY, int movSpeed) {
 	prevPos = startPos = pos;
 	path = Core::Units::calcDirVec(pos, {float(destX), float(destY)});
-	dir = Core::Units::normalize(path);
-	const double distance = Core::Units::calcLength(path);
+	dir = path;
+	dir.norm();
+	const double distance = path.len();
 	timeToDestMs = distance / movSpeed * 1000.0;
 	if (onMovementStart) onMovementStart();
 	speed = movSpeed;
@@ -38,7 +39,7 @@ void Movement::start(const Core::Units::Vec2& direction, float step, int movSpee
 		path = addVec(path, scale(direction, step));
 
 		// time to dest would change
-		const double distance = Core::Units::calcLength(path);
+		const double distance = path.len();
 		timeToDestMs = distance / movSpeed * 1000.0;
 		return;
 	}
@@ -61,21 +62,13 @@ void Movement::jump(float height, int jumpSpeed)
 }
 
 void Movement::stop() {
+	// This might be a bit silly, but we might have to start a new movment if we stopped but we are in the air...
+	// the movement will be downwards haha.
 	speed = 0;
 	if (onMovementEnd) onMovementEnd();
 }
 
 void Movement::update() {
-	// Ok soooo before calculating the next step i think we should check if the hero is in the air
-	// If so we should apply some gravity downward force.
-	if (isInAir) {
-		constexpr int GRAVITY_FORCE = 1;
-		constexpr Vec2 DOWN(0.0f, 1.0f);
-
-		// TODO: hm this scale is a nice candidate for constexpr-ing.
-		pos = addVec(pos, scale(DOWN, GRAVITY_FORCE));
-	}
-
 	if (speed == 0) return;
 
 	const long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
@@ -84,7 +77,6 @@ void Movement::update() {
 		stop();
 		return;
 	}
-
 
 	const double timeStep = timeSinceStartMs / timeToDestMs;
 	const Core::Units::Vec2 dirStep = Core::Units::scale(path, timeStep);

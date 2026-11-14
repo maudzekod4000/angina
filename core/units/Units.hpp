@@ -63,6 +63,8 @@ struct Vec2 {
 	bool eq(const Vec2& other) const;
 
 	float len() const;
+
+	void norm();
 };
 
 // TODO: Inlining these for now but i will extract this class into a separate 
@@ -71,21 +73,12 @@ inline Vec2 calcDirVec(const Vec2& src, const Vec2& dst) {
 	return { dst.x - src.x, dst.y - src.y };
 }
 
-inline double calcLength(const Vec2& v) {
-	return sqrt(double(v.x) * v.x + double(v.y) * v.y);
-}
-
 inline Vec2 scale(const Vec2& v, double s) {
 	return { float(v.x * s), float(v.y * s) };
 }
 
 inline Vec2 addVec(const Vec2& a, const Vec2& b) {
 	return { a.x + b.x, a.y + b.y };
-}
-
-inline Vec2 normalize(const Vec2& v) {
-	double len = calcLength(v);
-	return { float(double(v.x) / len), float(double(v.y) / len) };
 }
 
 inline float dot(const Vec2& a, const Vec2& b) {

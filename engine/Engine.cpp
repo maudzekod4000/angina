@@ -21,6 +21,7 @@ namespace {
     constexpr Vec2 left(-1.0f, 0.0f);
     constexpr Vec2 right(1.0f, 0.0f);
     constexpr Vec2 up(0.0f, -1.0f);
+    constexpr Vec2 down(0.0f, 1.0f);
     constexpr int PADDING_PX = 1;
 
     constexpr int HERO_STEP_SIZE = 1;
@@ -244,6 +245,20 @@ ErrorCode Engine::start()
         for (Movement& mov : movements) {
             mov.update();
         }
+
+        // Apply gravity.
+        for (Movement& mov : movements) {
+            // Ok soooo before calculating the next step i think we should check if the hero is in the air
+            // If so we should apply some gravity downward force.
+            if (mov.isInAir) {
+                //constexpr float GRAVITY_FORCE = 0.00001f;
+                //constexpr Vec2 DOWN(0.0f, 1.0f);
+
+                // TODO: hm this scale is a nice candidate for constexpr-ing.
+                //mov.pos = addVec(mov.pos, scale(DOWN, GRAVITY_FORCE));
+            }
+        }
+
         /* End State Updates */
 
         /* React to input */
@@ -268,6 +283,11 @@ ErrorCode Engine::start()
         // 2. collisions
         // 3. animation
         // 4. rendering
+
+        for (int i = 0; i < collisions.size(); i++) {
+            collisions[i].hasCollision = false;
+        }
+
         for (int i = 0; i < gameObjects.size(); i++) {
             for (int j = i + 1; j < gameObjects.size(); j++) {
                 const GameObject& a = gameObjects[i];
@@ -284,8 +304,8 @@ ErrorCode Engine::start()
                 bool collided = Core::PhysicsUtils::rectIntersect(am.pos.x,
                     -am.pos.y, float(a.w), float(a.h), bm.pos.x, -bm.pos.y, float(b.w), float(b.h));
                     
-                colA.hasCollision = colB.hasCollision = collided;
                 if (collided) {
+                    colA.hasCollision = colB.hasCollision = collided;
                     colA.dir = am.dir;
                     colB.dir = bm.dir;
 
@@ -316,6 +336,9 @@ ErrorCode Engine::start()
                 // Ok sooo if one of the objects was with a downward direction......
                 // Or maybe it was downwardish....and inTheAir is true...
                 // then we should make inTheAir false....
+                if (movements[i].isInAir && roughlySameDir(movements[i].dir, down)) {
+                    //movements[i].isInAir = false;
+                }
             }
         }
 
