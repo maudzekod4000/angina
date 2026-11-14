@@ -69,7 +69,16 @@ void Movement::stop() {
 }
 
 void Movement::update() {
-	if (speed == 0) return;
+	if (speed == 0) {
+		if (!isInAir) return;
+
+		constexpr float GRAVITY_FORCE = 1.0f;
+		constexpr Vec2 DOWN(0.0f, 1.0f);
+
+		// TODO: hm this scale is a nice candidate for constexpr-ing.
+		pos = addVec(pos, scale(DOWN, GRAVITY_FORCE));
+		dir = DOWN;
+	}
 
 	const long long timeSinceStartMs = std::chrono::duration_cast<std::chrono::milliseconds>(clock.elapsed()).count();
 			

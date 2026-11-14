@@ -337,7 +337,7 @@ ErrorCode Engine::start()
                 // Or maybe it was downwardish....and inTheAir is true...
                 // then we should make inTheAir false....
                 if (movements[i].isInAir && roughlySameDir(movements[i].dir, down)) {
-                    //movements[i].isInAir = false;
+                    movements[i].isInAir = false;
                 }
             }
         }
