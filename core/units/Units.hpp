@@ -60,10 +60,9 @@ struct Vec2 {
 
 	float x, y;
 
-	bool eq(const Vec2& other) {
-		return fabs(x - other.x) < std::numeric_limits<float>::epsilon() &&
-			fabs(y - other.y) < std::numeric_limits<float>::epsilon();
-	}
+	bool eq(const Vec2& other) const;
+
+	float len() const;
 };
 
 // TODO: Inlining these for now but i will extract this class into a separate 
