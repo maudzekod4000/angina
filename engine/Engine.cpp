@@ -24,8 +24,8 @@ namespace {
     constexpr Vec2 down(0.0f, 1.0f);
     constexpr int PADDING_PX = 1;
 
-    constexpr int HERO_STEP_SIZE = 1;
-    constexpr int HERO_SPEED = 50;
+    constexpr int HERO_STEP_SIZE = 40;
+    constexpr int HERO_SPEED = 2;
     constexpr int HERO_JUMP_SIZE = 40;
     constexpr int HERO_JUMP_SPEED = 100;
     constexpr int HERO_ANIM_MS = 500;
@@ -122,7 +122,7 @@ void Engine::beforeGameLoop()
         Animation anim(4);
         animations.push_back(anim);
 
-        Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE));
+        Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE + PADDING_PX));
         //mov.dir = left;
         movements.push_back(mov);
 
@@ -221,14 +221,16 @@ ErrorCode Engine::start()
         /* State Updates */
         inputEventMgr.update();
 
+        movements[0].dir = Vec2();
+
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
-            movements[0]/* ohh, we need ids... */.start(left, HERO_STEP_SIZE, HERO_SPEED);
+            movements[0]/* ohh, we need ids... */.start(left, HERO_SPEED);
         }
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Right)) {
-            movements[0].start(right, HERO_STEP_SIZE, HERO_SPEED);
+            movements[0].start(right, HERO_SPEED);
         }
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Space)) {
-            movements[0].jump(HERO_JUMP_SIZE, HERO_JUMP_SPEED);
+            //movements[0].jump(HERO_JUMP_SIZE, HERO_JUMP_SPEED);
             // Ok sooooo I suppose jumping is kinda different from walking....
             // The direction that the hero is moving at the moment has to be added with the UP vector
             // so that we get a nice curve of the jump.
@@ -247,17 +249,17 @@ ErrorCode Engine::start()
         }
 
         // Apply gravity.
-        for (Movement& mov : movements) {
+        //for (Movement& mov : movements) {
             // Ok soooo before calculating the next step i think we should check if the hero is in the air
             // If so we should apply some gravity downward force.
-            if (mov.isInAir) {
+            //if (mov.isInAir) {
                 //constexpr float GRAVITY_FORCE = 0.00001f;
                 //constexpr Vec2 DOWN(0.0f, 1.0f);
 
                 // TODO: hm this scale is a nice candidate for constexpr-ing.
                 //mov.pos = addVec(mov.pos, scale(DOWN, GRAVITY_FORCE));
-            }
-        }
+            //}
+        //}
 
         /* End State Updates */
 
@@ -336,9 +338,9 @@ ErrorCode Engine::start()
                 // Ok sooo if one of the objects was with a downward direction......
                 // Or maybe it was downwardish....and inTheAir is true...
                 // then we should make inTheAir false....
-                if (movements[i].isInAir && roughlySameDir(movements[i].dir, down)) {
+                /*if (movements[i].isInAir && roughlySameDir(movements[i].dir, down)) {
                     movements[i].isInAir = false;
-                }
+                }*/
             }
         }
 
