@@ -221,6 +221,8 @@ ErrorCode Engine::start()
         /* State Updates */
         inputEventMgr.update();
 
+        // TODO: Hmmm actually we might want to reset the dir of several objects...
+        // Although the i am still not sure how the AI system movement will work.
         movements[0].dir = Vec2();
 
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Left)) {
@@ -230,6 +232,8 @@ ErrorCode Engine::start()
             movements[0].start(right, HERO_SPEED);
         }
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Space)) {
+            // Jumping will be a problem...sooo instead i will add ladders on which
+            // the hero will be able to climb
             //movements[0].jump(HERO_JUMP_SIZE, HERO_JUMP_SPEED);
             // Ok sooooo I suppose jumping is kinda different from walking....
             // The direction that the hero is moving at the moment has to be added with the UP vector
