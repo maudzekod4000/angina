@@ -29,7 +29,7 @@ namespace {
     constexpr int HERO_JUMP_SIZE = 40;
     constexpr int HERO_JUMP_SPEED = 100;
     constexpr int HERO_ANIM_MS = 500;
-    constexpr int HERO_WIDTH = 64;
+    constexpr int HERO_WIDTH = 32;
     constexpr int HERO_HEIGHT = 64;
     
     constexpr int GROUND_TEXTURE_SIZE = 32;
@@ -107,7 +107,7 @@ void Engine::beforeGameLoop()
 {
     // These load* methods can return the id or index of the resource.
     Resources::AudioEffect someEffect = loadSoundEffect("resources/engine/scratch.wav");
-    Resources::SDLTexture heroTex = loadTexture("resources/srb/hero.png");
+    Resources::SDLTexture heroTex = loadTexture("resources/atomickitten/pichi-still.png");
     Resources::SDLTexture ballsTex = loadTexture("resources/td/textures/grass.png");
 
 
@@ -119,11 +119,10 @@ void Engine::beforeGameLoop()
         GameObject hero{heroTex, HERO_WIDTH, HERO_HEIGHT};
         gameObjects.push_back(hero);
 
-        Animation anim(4);
+        Animation anim(1);
         animations.push_back(anim);
 
         Movement mov(0, WINDOW_HEIGHT - (HERO_HEIGHT + GROUND_TEXTURE_SIZE + PADDING_PX));
-        //mov.dir = left;
         movements.push_back(mov);
 
         // TODO: Hmmm the std::function is 64 bytes and it expands the Movement
@@ -366,7 +365,7 @@ ErrorCode Engine::start()
 
             // if the movement of the hero is left then dont do any flip.
             // but if its right then we have to flip it.
-            if (dot(movement.dir, left) > 0.0f) {
+            if (dot(movement.dir, right) > 0.0f) {
                 flip = 0x1;
             }
 
