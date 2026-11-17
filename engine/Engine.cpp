@@ -16,25 +16,6 @@ using namespace Core::Units;
 using namespace Core::Errors;
 using namespace Backend::SDL;
 
-namespace {
-    // TODO: Make a constexpr constructor for the Vec2.
-    constexpr Vec2 left(-1.0f, 0.0f);
-    constexpr Vec2 right(1.0f, 0.0f);
-    constexpr Vec2 up(0.0f, -1.0f);
-    constexpr Vec2 down(0.0f, 1.0f);
-    constexpr int PADDING_PX = 1;
-
-    constexpr int HERO_STEP_SIZE = 40;
-    constexpr int HERO_SPEED = 2;
-    constexpr int HERO_JUMP_SIZE = 40;
-    constexpr int HERO_JUMP_SPEED = 100;
-    constexpr int HERO_ANIM_MS = 500;
-    constexpr int HERO_WIDTH = 32;
-    constexpr int HERO_HEIGHT = 64;
-    
-    constexpr int GROUND_TEXTURE_SIZE = 32;
-}
-
 Engine::Engine(
     RatePerSecond desiredFPS,
     Backend::SDL::Rendering::SDLRenderer renderer,
@@ -233,6 +214,7 @@ ErrorCode Engine::start()
         if (inputEventMgr.keyboard.isKeyDown(Backend::SDL::Input::Keys::Space)) {
             // Jumping will be a problem...sooo instead i will add ladders on which
             // the hero will be able to climb
+            // but there still has to be some gravity...
             //movements[0].jump(HERO_JUMP_SIZE, HERO_JUMP_SPEED);
             // Ok sooooo I suppose jumping is kinda different from walking....
             // The direction that the hero is moving at the moment has to be added with the UP vector
@@ -250,19 +232,6 @@ ErrorCode Engine::start()
         for (Movement& mov : movements) {
             mov.update();
         }
-
-        // Apply gravity.
-        //for (Movement& mov : movements) {
-            // Ok soooo before calculating the next step i think we should check if the hero is in the air
-            // If so we should apply some gravity downward force.
-            //if (mov.isInAir) {
-                //constexpr float GRAVITY_FORCE = 0.00001f;
-                //constexpr Vec2 DOWN(0.0f, 1.0f);
-
-                // TODO: hm this scale is a nice candidate for constexpr-ing.
-                //mov.pos = addVec(mov.pos, scale(DOWN, GRAVITY_FORCE));
-            //}
-        //}
 
         /* End State Updates */
 

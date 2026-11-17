@@ -16,9 +16,6 @@ using Height = Dimension;
 
 using AbsPosition = PositionType;
 
-constexpr int WINDOW_WIDTH = 640;
-constexpr int WINDOW_HEIGHT = 448;
-
 /// Helps catching configuration bugs at compile time and enforces invariants on the rate per second value.
 /// Improves the API to the client with a more readable, distinct type.
 struct RatePerSecond {
@@ -89,6 +86,25 @@ inline float dot(const Vec2& a, const Vec2& b) {
 inline float roughlySameDir(const Vec2& a, const Vec2& b) {
 	return dot(a, b) >= 0.0f;
 }
+
+constexpr int WINDOW_WIDTH = 640;
+constexpr int WINDOW_HEIGHT = 448;
+
+constexpr Vec2 left(-1.0f, 0.0f);
+constexpr Vec2 right(1.0f, 0.0f);
+constexpr Vec2 up(0.0f, -1.0f);
+constexpr Vec2 down(0.0f, 1.0f);
+constexpr int PADDING_PX = 1;
+
+constexpr int HERO_STEP_SIZE = 40;
+constexpr int HERO_SPEED = 2;
+constexpr int HERO_JUMP_SIZE = 40;
+constexpr int HERO_JUMP_SPEED = 100;
+constexpr int HERO_ANIM_MS = 500;
+constexpr int HERO_WIDTH = 32;
+constexpr int HERO_HEIGHT = 64;
+    
+constexpr int GROUND_TEXTURE_SIZE = 32;
 
 }
 #endif

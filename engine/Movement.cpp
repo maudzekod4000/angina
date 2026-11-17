@@ -22,8 +22,12 @@ void Movement::stop() {
 
 void Movement::update() {
 	// well...this is not great at all :D :D :D but i think for first game it will do...
+	const Vec2 newPos = addVec(pos, scale(dir, speed));
+	if (newPos.x < 0.0f || newPos.y < 0.0f || newPos.x > WINDOW_WIDTH - HERO_WIDTH || newPos.y > WINDOW_HEIGHT) {
+		return;
+	}
 	prevPos = pos;
-	pos = addVec(pos, scale(dir, speed));
+	pos = newPos;
 
 	if (prevPos.eq(pos) && onMovementEnd) {
 		stop();
